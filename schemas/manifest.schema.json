@@ -107,20 +107,39 @@
           "type": ["string", "null"],
           "description": "Document ID of parent version"
         },
+        "ancestors": {
+          "type": "array",
+          "description": "Chain of ancestor hashes (nearest first)",
+          "items": { "type": "string" }
+        },
         "version": {
           "type": "integer",
           "minimum": 1,
           "description": "Sequential version number"
         },
+        "depth": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Distance from root document"
+        },
         "branch": {
           "type": "string",
           "description": "Branch identifier"
+        },
+        "mergedFrom": {
+          "type": "array",
+          "description": "Document hashes merged into this version",
+          "items": { "type": "string" }
         },
         "note": {
           "type": "string",
           "description": "Description of changes from parent"
         }
       }
+    },
+    "provenance": {
+      "type": "string",
+      "description": "Path to provenance record file"
     }
   },
   "$defs": {
@@ -141,6 +160,16 @@
           "type": "string",
           "description": "Compression method used",
           "enum": ["none", "deflate", "zstd"]
+        },
+        "merkleRoot": {
+          "type": "string",
+          "description": "Merkle root of content blocks",
+          "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+        },
+        "blockCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of content blocks"
         }
       }
     },

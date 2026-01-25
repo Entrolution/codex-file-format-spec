@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/provenance.schema.json",
+  "title": "Codex Provenance Record",
+  "description": "Schema for provenance/record.json in a Codex document",
+  "type": "object",
+  "required": ["version", "documentId", "created"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Provenance schema version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "documentId": {
+      "type": "string",
+      "description": "Document identifier (hash)",
+      "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Document creation timestamp"
+    },
+    "creator": {
+      "$ref": "#/$defs/actor",
+      "description": "Document creator"
+    },
+    "lineage": {
+      "type": "object",
+      "description": "Document lineage information",
+      "properties": {
+        "parent": {
+          "type": ["string", "null"],
+          "description": "Parent document hash"
+        },
+        "ancestors": {
+          "type": "array",
+          "description": "Chain of ancestor hashes",
+          "items": { "type": "string" }
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Distance from root document"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Branch identifier"
+        },
+        "mergedFrom": {
+          "type": "array",
+          "description": "Merged document hashes",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "merkle": {
+      "type": "object",
+      "description": "Merkle tree information",
+      "properties": {
+        "root": {
+          "type": "string",
+          "description": "Merkle root hash",
+          "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+        },
+        "blockCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of content blocks"
+        },
+        "algorithm": {
+          "type": "string",
+          "description": "Hash algorithm used",
+          "enum": ["sha256", "sha384", "sha512", "sha3-256", "sha3-512", "blake3"]
+        }
+      }
+    },
+    "timestamps": {
+      "type": "array",
+      "description": "Timestamp anchors",
+      "items": {
+        "$ref": "#/$defs/timestamp"
+      }
+    },
+    "derivedFrom": {
+      "type": "array",
+      "description": "Source documents this was derived from",
+      "items": {
+        "$ref": "#/$defs/derivation"
+      }
+    }
+  },
+  "$defs": {
+    "actor": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Actor name"
+        },
+        "identifier": {
+          "type": "string",
+          "description": "Actor identifier (DID, email, etc.)"
+        },
+        "organization": {
+          "type": "string",
+          "description": "Organization name"
+        }
+      }
+    },
+    "timestamp": {
+      "type": "object",
+      "required": ["type", "time", "hash"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Timestamp type",
+          "enum": ["rfc3161", "blockchain", "aggregated"]
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp time"
+        },
+        "hash": {
+          "type": "string",
+          "description": "Hash that was timestamped"
+        },
+        "authority": {
+          "type": "string",
+          "description": "Timestamp authority URL (for rfc3161)"
+        },
+        "token": {
+          "type": "string",
+          "description": "Timestamp token (for rfc3161)"
+        },
+        "chain": {
+          "type": "string",
+          "description": "Blockchain name (for blockchain type)",
+          "enum": ["bitcoin", "ethereum"]
+        },
+        "blockHeight": {
+          "type": "integer",
+          "description": "Block height (for blockchain type)"
+        },
+        "blockHash": {
+          "type": "string",
+          "description": "Block hash (for blockchain type)"
+        },
+        "txId": {
+          "type": "string",
+          "description": "Transaction ID (for blockchain type)"
+        },
+        "merkleProof": {
+          "type": "array",
+          "description": "Merkle proof to transaction (for blockchain type)",
+          "items": { "type": "string" }
+        },
+        "provider": {
+          "type": "string",
+          "description": "Aggregation provider (for aggregated type)"
+        },
+        "calendar": {
+          "type": "string",
+          "description": "Calendar URL (for aggregated type)"
+        },
+        "proof": {
+          "type": "object",
+          "description": "Proof of inclusion in aggregate (for aggregated type)",
+          "properties": {
+            "documentHash": { "type": "string" },
+            "path": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/merklePathElement" }
+            }
+          }
+        },
+        "anchor": {
+          "type": "object",
+          "description": "Anchor information (for aggregated type)",
+          "properties": {
+            "chain": { "type": "string" },
+            "blockHeight": { "type": "integer" },
+            "txId": { "type": "string" }
+          }
+        }
+      }
+    },
+    "derivation": {
+      "type": "object",
+      "required": ["documentId", "relationship"],
+      "properties": {
+        "documentId": {
+          "type": "string",
+          "description": "Source document hash"
+        },
+        "relationship": {
+          "type": "string",
+          "description": "Relationship type",
+          "enum": ["excerpt", "translation", "revision", "derivation", "quotation"]
+        },
+        "blocks": {
+          "type": "array",
+          "description": "Specific blocks derived from source",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "merklePathElement": {
+      "type": "object",
+      "required": ["position", "hash"],
+      "properties": {
+        "position": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "description": "Position of sibling in hash computation"
+        },
+        "hash": {
+          "type": "string",
+          "description": "Sibling hash"
+        }
+      }
+    }
+  }
+}
