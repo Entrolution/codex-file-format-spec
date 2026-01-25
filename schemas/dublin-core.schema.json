@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/dublin-core.schema.json",
+  "title": "Dublin Core Metadata",
+  "description": "Schema for Dublin Core metadata in a Codex document",
+  "type": "object",
+  "required": ["version", "terms"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Dublin Core schema version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "terms": {
+      "type": "object",
+      "required": ["title", "creator"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Document title"
+        },
+        "creator": {
+          "oneOf": [
+            { "type": "string", "minLength": 1 },
+            { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          ],
+          "description": "Primary author(s)"
+        },
+        "subject": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ],
+          "description": "Topics or keywords"
+        },
+        "description": {
+          "type": "string",
+          "description": "Summary or abstract"
+        },
+        "publisher": {
+          "type": "string",
+          "description": "Publishing entity"
+        },
+        "contributor": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ],
+          "description": "Other contributors"
+        },
+        "date": {
+          "type": "string",
+          "description": "Publication date (ISO 8601)"
+        },
+        "type": {
+          "type": "string",
+          "description": "Nature of content",
+          "enum": [
+            "Collection",
+            "Dataset",
+            "Event",
+            "Image",
+            "InteractiveResource",
+            "MovingImage",
+            "PhysicalObject",
+            "Service",
+            "Software",
+            "Sound",
+            "StillImage",
+            "Text"
+          ]
+        },
+        "format": {
+          "type": "string",
+          "description": "MIME type"
+        },
+        "identifier": {
+          "type": "string",
+          "description": "Unique identifier"
+        },
+        "source": {
+          "type": ["string", "null"],
+          "description": "Source reference"
+        },
+        "language": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ],
+          "description": "Language code (BCP 47)"
+        },
+        "relation": {
+          "type": ["string", "null"],
+          "description": "Related resource"
+        },
+        "coverage": {
+          "type": "string",
+          "description": "Temporal or spatial scope"
+        },
+        "rights": {
+          "oneOf": [
+            { "type": "string" },
+            { "$ref": "#/$defs/rightsObject" }
+          ],
+          "description": "Rights statement"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "rightsObject": {
+      "type": "object",
+      "properties": {
+        "statement": {
+          "type": "string",
+          "description": "Copyright statement"
+        },
+        "license": {
+          "type": "string",
+          "description": "License name"
+        },
+        "licenseUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "License URL"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,491 @@
+# Asset Embedding
+
+**Section**: Core Specification
+**Version**: 0.1
+
+## 1. Overview
+
+Assets are binary resources embedded within a Codex document. This includes images, fonts, and other files that are referenced by content blocks or presentation layers.
+
+## 2. Asset Categories
+
+### 2.1 Categories
+
+| Category | Directory | Purpose |
+|----------|-----------|---------|
+| Images | `assets/images/` | Photographs, diagrams, icons |
+| Fonts | `assets/fonts/` | Typography resources |
+| Embeds | `assets/embeds/` | Attached files (spreadsheets, data) |
+
+### 2.2 Directory Structure
+
+```
+assets/
+├── images/
+│   ├── index.json
+│   ├── figure1.avif
+│   ├── logo.png
+│   └── diagram.svg
+├── fonts/
+│   ├── index.json
+│   ├── roboto-regular.woff2
+│   └── roboto-bold.woff2
+└── embeds/
+    ├── index.json
+    └── data.xlsx
+```
+
+## 3. Asset Index
+
+### 3.1 Index File
+
+Each asset category has an index file (`index.json`) that catalogs all assets:
+
+```json
+{
+  "version": "0.1",
+  "assets": [
+    {
+      "id": "figure1",
+      "path": "figure1.avif",
+      "type": "image/avif",
+      "size": 45678,
+      "hash": "sha256:...",
+      "metadata": {...}
+    }
+  ]
+}
+```
+
+### 3.2 Asset Entry Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | Yes | Unique identifier for referencing |
+| `path` | string | Yes | File path relative to category directory |
+| `type` | string | Yes | MIME type |
+| `size` | integer | Yes | File size in bytes |
+| `hash` | string | Yes | Content hash |
+| `metadata` | object | No | Type-specific metadata |
+
+### 3.3 Asset IDs
+
+Asset IDs:
+
+- MUST be unique within their category
+- SHOULD be URL-safe (alphanumeric, hyphens, underscores)
+- SHOULD be human-readable when practical
+
+## 4. Images
+
+### 4.1 Supported Formats
+
+| Format | MIME Type | Use Case | Compression |
+|--------|-----------|----------|-------------|
+| AVIF | `image/avif` | Photos, general images | Best |
+| WebP | `image/webp` | Photos, general images | Good |
+| PNG | `image/png` | Lossless, transparency | Fair |
+| JPEG | `image/jpeg` | Photos (legacy) | Good |
+| SVG | `image/svg+xml` | Vector graphics | N/A |
+
+**Recommendation**: Use AVIF for photographs and complex images, SVG for diagrams and icons.
+
+### 4.2 Image Metadata
+
+```json
+{
+  "id": "figure1",
+  "path": "figure1.avif",
+  "type": "image/avif",
+  "size": 45678,
+  "hash": "sha256:...",
+  "metadata": {
+    "width": 1920,
+    "height": 1080,
+    "colorSpace": "sRGB",
+    "hasAlpha": false,
+    "dpi": 72
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `width` | integer | Width in pixels |
+| `height` | integer | Height in pixels |
+| `colorSpace` | string | Color space (sRGB, Display P3, etc.) |
+| `hasAlpha` | boolean | Whether image has transparency |
+| `dpi` | integer | Dots per inch (for print) |
+
+### 4.3 Resolution Variants
+
+For responsive images, multiple resolutions can be provided:
+
+```json
+{
+  "id": "hero-image",
+  "path": "hero-image.avif",
+  "type": "image/avif",
+  "size": 125000,
+  "hash": "sha256:...",
+  "metadata": {
+    "width": 1920,
+    "height": 1080
+  },
+  "variants": [
+    {
+      "path": "hero-image-640.avif",
+      "width": 640,
+      "size": 25000
+    },
+    {
+      "path": "hero-image-1280.avif",
+      "width": 1280,
+      "size": 65000
+    }
+  ]
+}
+```
+
+### 4.4 Image References
+
+Content blocks reference images by path:
+
+```json
+{
+  "type": "image",
+  "src": "assets/images/figure1.avif",
+  "alt": "System architecture diagram"
+}
+```
+
+## 5. Fonts
+
+### 5.1 Supported Formats
+
+| Format | MIME Type | Support |
+|--------|-----------|---------|
+| WOFF2 | `font/woff2` | Required |
+| WOFF | `font/woff` | Optional |
+| TTF | `font/ttf` | Optional |
+| OTF | `font/otf` | Optional |
+
+**Recommendation**: Use WOFF2 for best compression and broad support.
+
+### 5.2 Font Metadata
+
+```json
+{
+  "id": "roboto-regular",
+  "path": "roboto-regular.woff2",
+  "type": "font/woff2",
+  "size": 45000,
+  "hash": "sha256:...",
+  "metadata": {
+    "family": "Roboto",
+    "weight": 400,
+    "style": "normal",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153"
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `family` | string | Font family name |
+| `weight` | integer | Font weight (100-900) |
+| `style` | string | Font style (normal, italic) |
+| `unicodeRange` | string | Supported Unicode ranges |
+
+### 5.3 Font Families
+
+Group related fonts:
+
+```json
+{
+  "families": [
+    {
+      "name": "Roboto",
+      "fonts": [
+        { "id": "roboto-regular", "weight": 400, "style": "normal" },
+        { "id": "roboto-italic", "weight": 400, "style": "italic" },
+        { "id": "roboto-bold", "weight": 700, "style": "normal" }
+      ]
+    }
+  ]
+}
+```
+
+### 5.4 Font References
+
+Presentation layers reference fonts by family name:
+
+```json
+{
+  "styles": {
+    "bodyText": {
+      "fontFamily": "Roboto, system-ui, sans-serif"
+    }
+  }
+}
+```
+
+### 5.5 Font Subsetting
+
+For efficiency, fonts SHOULD be subsetted to include only used characters.
+
+The `metadata.unicodeRange` field indicates the characters available.
+
+### 5.6 Font Licensing
+
+Font embedding must comply with licensing terms. The index MAY include license information:
+
+```json
+{
+  "id": "roboto-regular",
+  "path": "roboto-regular.woff2",
+  "license": {
+    "name": "Apache License 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0"
+  }
+}
+```
+
+## 6. Embedded Files
+
+### 6.1 Purpose
+
+Embedded files are attachments that accompany the document but are not directly rendered (e.g., source data, supplementary materials).
+
+### 6.2 Embedded File Metadata
+
+```json
+{
+  "id": "source-data",
+  "path": "quarterly-data.xlsx",
+  "type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "size": 125000,
+  "hash": "sha256:...",
+  "metadata": {
+    "filename": "Quarterly Financial Data.xlsx",
+    "description": "Source data for charts in this document",
+    "created": "2025-01-10T08:00:00Z"
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `filename` | string | Original filename (for display) |
+| `description` | string | Human-readable description |
+| `created` | string | Original file creation date |
+
+### 6.3 Referencing Embedded Files
+
+Embedded files can be referenced from content:
+
+```json
+{
+  "type": "attachment",
+  "ref": "assets/embeds/quarterly-data.xlsx",
+  "title": "Download source data",
+  "icon": "spreadsheet"
+}
+```
+
+## 7. Asset Compression
+
+### 7.1 Pre-compressed Assets
+
+Already-compressed formats (AVIF, WebP, WOFF2) SHOULD be stored without additional ZIP compression:
+
+```
+ZIP entry: assets/images/photo.avif
+Compression method: Store (0)
+```
+
+### 7.2 Compressible Assets
+
+Uncompressed or less-compressed formats benefit from ZIP compression:
+
+| Format | Recommended ZIP Compression |
+|--------|----------------------------|
+| SVG | Zstandard or Deflate |
+| PNG | Store (already compressed) |
+| TTF/OTF | Zstandard or Deflate |
+| XML/JSON | Zstandard or Deflate |
+
+## 8. Asset Integrity
+
+### 8.1 Hash Verification
+
+Each asset's hash MUST be verified when loading:
+
+1. Read asset file from archive
+2. Compute hash of file contents
+3. Compare with hash in index
+4. Reject on mismatch
+
+### 8.2 Hash Algorithm
+
+Asset hashes use the same algorithm as document hashing (SHA-256 by default):
+
+```
+sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+```
+
+## 9. External References
+
+### 9.1 Policy
+
+By default, Codex documents SHOULD be self-contained. External references:
+
+- MAY be allowed for non-critical assets
+- MUST NOT be required for core content
+- SHOULD include fallback content
+
+### 9.2 External Reference Format
+
+```json
+{
+  "type": "image",
+  "src": "https://example.com/logo.png",
+  "external": true,
+  "fallback": "assets/images/logo-fallback.png",
+  "alt": "Company Logo"
+}
+```
+
+### 9.3 Security Considerations
+
+External references introduce risks:
+
+- Privacy (tracking pixels)
+- Availability (broken links)
+- Integrity (content can change)
+
+Implementations SHOULD:
+
+- Warn users about external content
+- Provide option to fetch and embed external resources
+- Validate URLs against allowlists in sensitive contexts
+
+## 10. Size Optimization
+
+### 10.1 Recommendations
+
+| Asset Type | Recommendation |
+|------------|----------------|
+| Photos | AVIF quality 60-80, max 2000px dimension |
+| Icons | SVG preferred, or PNG with transparency |
+| Fonts | WOFF2, subset to used characters |
+| Documents | Consider compression or conversion |
+
+### 10.2 Deduplication
+
+Identical assets (same hash) SHOULD be stored only once:
+
+```json
+{
+  "assets": [
+    {
+      "id": "logo-header",
+      "path": "logo.png",
+      "hash": "sha256:abc123..."
+    },
+    {
+      "id": "logo-footer",
+      "aliasOf": "logo-header"
+    }
+  ]
+}
+```
+
+## 11. Validation
+
+### 11.1 Required Validation
+
+1. All referenced assets exist in archive
+2. MIME types match file contents
+3. Hashes verify correctly
+4. Sizes match actual file sizes
+
+### 11.2 Optional Validation
+
+1. Images are valid and can be decoded
+2. Fonts are valid and contain declared glyphs
+3. Embedded files are not malicious
+
+## 12. Examples
+
+### 12.1 Image Index
+
+```json
+{
+  "version": "0.1",
+  "assets": [
+    {
+      "id": "cover",
+      "path": "cover.avif",
+      "type": "image/avif",
+      "size": 245000,
+      "hash": "sha256:a1b2c3...",
+      "metadata": {
+        "width": 1600,
+        "height": 900,
+        "colorSpace": "sRGB",
+        "hasAlpha": false,
+        "dpi": 150
+      }
+    },
+    {
+      "id": "architecture-diagram",
+      "path": "architecture.svg",
+      "type": "image/svg+xml",
+      "size": 12500,
+      "hash": "sha256:d4e5f6...",
+      "metadata": {
+        "width": 800,
+        "height": 600
+      }
+    }
+  ]
+}
+```
+
+### 12.2 Font Index
+
+```json
+{
+  "version": "0.1",
+  "families": [
+    {
+      "name": "Source Serif Pro",
+      "fonts": [
+        { "id": "source-serif-regular", "weight": 400, "style": "normal" },
+        { "id": "source-serif-italic", "weight": 400, "style": "italic" },
+        { "id": "source-serif-bold", "weight": 700, "style": "normal" }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "source-serif-regular",
+      "path": "source-serif-pro-regular.woff2",
+      "type": "font/woff2",
+      "size": 35000,
+      "hash": "sha256:789abc...",
+      "metadata": {
+        "family": "Source Serif Pro",
+        "weight": 400,
+        "style": "normal",
+        "unicodeRange": "U+0000-00FF"
+      },
+      "license": {
+        "name": "SIL Open Font License 1.1",
+        "url": "https://scripts.sil.org/OFL"
+      }
+    }
+  ]
+}
+```

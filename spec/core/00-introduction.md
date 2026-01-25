@@ -1,0 +1,141 @@
+# Codex Document Format Specification
+
+**Version**: 0.1 (Draft)
+**Status**: Working Draft
+**Editors**: TBD
+
+## Abstract
+
+This specification defines the Codex Document Format, an open format for documents that unifies viewing and editing modes while providing modern security, efficient compression, and native machine readability.
+
+## Status of This Document
+
+This is a working draft. The specification is subject to change based on community feedback and implementation experience.
+
+## 1. Introduction
+
+### 1.1 Background
+
+The document format landscape has evolved into two distinct camps:
+
+1. **View-optimized formats** (PDF, DJVU) that prioritize faithful reproduction of visual layout but make editing difficult or impossible
+2. **Edit-optimized formats** (DOCX, ODF, Markdown) that enable rich authoring but render inconsistently across applications
+
+This fundamental divide creates significant workflow friction. Documents must be converted between formats as they move from authoring to distribution, losing fidelity and context in the process.
+
+Additionally, existing formats suffer from:
+
+- **Security vulnerabilities**: PDF's signature model has been shown vulnerable to multiple attack classes
+- **Poor machine readability**: Even state-of-the-art extraction achieves only 73-96% accuracy on structured content
+- **Outdated compression**: Most formats use algorithms designed decades ago
+- **Ambiguous document state**: No clear semantic distinction between "draft" and "final" versions
+
+### 1.2 Design Goals
+
+The Codex format addresses these issues through the following design goals:
+
+1. **Semantic-First Architecture**: Content is stored as semantic blocks (headings, paragraphs, lists, etc.) rather than visual instructions. Presentation is derived from semantics, not the other way around.
+
+2. **Content-Addressable Identity**: A document's cryptographic hash serves as its canonical identifier. Any modification creates a new document with a lineage pointer to its predecessor.
+
+3. **Explicit State Machine**: Documents have explicit states (draft, review, frozen, published) with clear transition rules. Signatures bind to specific states.
+
+4. **Modern Security**: Support for current cryptographic standards with algorithm agility to accommodate future advances, including post-quantum cryptography.
+
+5. **Efficient Compression**: Per-stream algorithm selection using modern compression (Zstandard, AVIF, WebP).
+
+6. **Machine Readable by Default**: Structure survives extraction intact. Semantic markup enables reliable AI/ML processing.
+
+7. **Edit-View Continuity**: The same format serves for both authoring and consumption. No format conversion required.
+
+### 1.3 Conformance
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this specification are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
+
+### 1.4 Terminology
+
+**Block**: A discrete unit of content (paragraph, heading, image, etc.)
+
+**Content Layer**: The semantic representation of document content as blocks
+
+**Presentation Layer**: Instructions for rendering content visually
+
+**Document State**: The lifecycle state of a document (draft, review, frozen, published)
+
+**Manifest**: The root metadata structure describing a document's contents and properties
+
+**Asset**: An embedded resource (image, font, file) referenced by content blocks
+
+**Lineage**: The version history chain linking a document to its predecessors
+
+### 1.5 Document Structure Overview
+
+A Codex document is a ZIP archive containing:
+
+```
+document.cdx
+├── manifest.json           # Document manifest (required)
+├── content/
+│   └── document.json       # Semantic content blocks (required)
+├── presentation/
+│   ├── paginated.json      # Fixed layout presentation (optional)
+│   └── continuous.json     # Reflow presentation (optional)
+├── assets/
+│   ├── images/             # Image assets
+│   ├── fonts/              # Font assets
+│   └── embeds/             # Embedded files
+├── security/
+│   └── signatures.json     # Digital signatures (optional)
+└── metadata/
+    └── dublin-core.json    # Dublin Core metadata (required)
+```
+
+### 1.6 Specification Organization
+
+This specification is organized into the following sections:
+
+- **Container Format**: ZIP-based packaging and file structure
+- **Manifest**: Root metadata and document properties
+- **Content Blocks**: Semantic content model
+- **Presentation Layers**: Visual rendering instructions
+- **Asset Embedding**: Resource inclusion and referencing
+- **Document Hashing**: Content-addressable identity
+- **State Machine**: Document lifecycle management
+- **Metadata**: Dublin Core and extended metadata
+
+Extension specifications (optional modules) are defined separately:
+
+- Security Extension
+- Collaboration Extension
+- Presentation Extension
+- Forms Extension
+- Multimedia Extension
+- Semantic Extension
+
+### 1.7 Versioning
+
+This specification uses semantic versioning (MAJOR.MINOR.PATCH):
+
+- **MAJOR**: Breaking changes to core format
+- **MINOR**: Backward-compatible additions
+- **PATCH**: Clarifications and bug fixes
+
+Documents MUST declare the specification version they conform to in their manifest.
+
+## 2. References
+
+### 2.1 Normative References
+
+- [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) - Key words for use in RFCs
+- [RFC 8259](https://www.rfc-editor.org/rfc/rfc8259) - The JSON Data Interchange Format
+- [RFC 1951](https://www.rfc-editor.org/rfc/rfc1951) - DEFLATE Compressed Data Format
+- [RFC 8878](https://www.rfc-editor.org/rfc/rfc8878) - Zstandard Compression
+- [FIPS 180-4](https://csrc.nist.gov/publications/detail/fips/180/4/final) - Secure Hash Standard (SHA)
+- [Dublin Core Metadata Element Set](https://www.dublincore.org/specifications/dublin-core/dces/)
+
+### 2.2 Informative References
+
+- [PDF 2.0 (ISO 32000-2:2020)](https://www.iso.org/standard/75839.html)
+- [EPUB 3.3](https://www.w3.org/TR/epub-33/)
+- [ODF 1.3](https://docs.oasis-open.org/office/OpenDocument/v1.3/)
+- [Portable Text Specification](https://github.com/portabletext/portabletext)

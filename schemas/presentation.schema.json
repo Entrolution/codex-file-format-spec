@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/presentation.schema.json",
+  "title": "Codex Presentation Layer",
+  "description": "Schema for presentation layer files in a Codex document",
+  "type": "object",
+  "required": ["version", "type", "defaults", "styles"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Presentation format version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "type": {
+      "type": "string",
+      "description": "Presentation type",
+      "enum": ["paginated", "continuous", "responsive"]
+    },
+    "defaults": {
+      "type": "object",
+      "description": "Default styling values"
+    },
+    "pages": {
+      "type": "array",
+      "description": "Page definitions (paginated only)",
+      "items": {
+        "$ref": "#/$defs/page"
+      }
+    },
+    "sections": {
+      "type": "array",
+      "description": "Section definitions (continuous only)",
+      "items": {
+        "$ref": "#/$defs/section"
+      }
+    },
+    "breakpoints": {
+      "type": "array",
+      "description": "Responsive breakpoints",
+      "items": {
+        "$ref": "#/$defs/breakpoint"
+      }
+    },
+    "pageTemplate": {
+      "$ref": "#/$defs/pageTemplate"
+    },
+    "styles": {
+      "type": "object",
+      "description": "Style definitions",
+      "additionalProperties": {
+        "$ref": "#/$defs/style"
+      }
+    }
+  },
+  "$defs": {
+    "page": {
+      "type": "object",
+      "required": ["number", "elements"],
+      "properties": {
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Page number"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pageElement"
+          }
+        }
+      }
+    },
+    "pageElement": {
+      "type": "object",
+      "required": ["blockRef", "position"],
+      "properties": {
+        "blockRef": {
+          "type": "string",
+          "description": "Reference to content block ID"
+        },
+        "position": {
+          "$ref": "#/$defs/position"
+        },
+        "style": {
+          "type": "string",
+          "description": "Named style to apply"
+        },
+        "overflow": {
+          "type": "string",
+          "enum": ["visible", "hidden", "flow"],
+          "description": "Overflow behavior"
+        }
+      }
+    },
+    "position": {
+      "type": "object",
+      "required": ["x", "y", "width"],
+      "properties": {
+        "x": {
+          "type": "string",
+          "description": "X position"
+        },
+        "y": {
+          "type": "string",
+          "description": "Y position"
+        },
+        "width": {
+          "type": "string",
+          "description": "Width"
+        },
+        "height": {
+          "type": "string",
+          "description": "Height",
+          "default": "auto"
+        }
+      }
+    },
+    "section": {
+      "type": "object",
+      "required": ["blockRefs"],
+      "properties": {
+        "blockRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "References to content block IDs"
+        },
+        "style": {
+          "type": "string",
+          "description": "Named style to apply"
+        },
+        "attributes": {
+          "type": "object",
+          "description": "Inline style attributes"
+        }
+      }
+    },
+    "breakpoint": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Breakpoint name"
+        },
+        "minWidth": {
+          "type": "string",
+          "description": "Minimum viewport width"
+        },
+        "maxWidth": {
+          "type": "string",
+          "description": "Maximum viewport width"
+        }
+      }
+    },
+    "pageTemplate": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "$ref": "#/$defs/pageHeaderFooter"
+        },
+        "footer": {
+          "$ref": "#/$defs/pageHeaderFooter"
+        }
+      }
+    },
+    "pageHeaderFooter": {
+      "type": "object",
+      "properties": {
+        "height": {
+          "type": "string",
+          "description": "Height of header/footer"
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/headerFooterContent"
+            },
+            "center": {
+              "$ref": "#/$defs/headerFooterContent"
+            },
+            "right": {
+              "$ref": "#/$defs/headerFooterContent"
+            }
+          }
+        }
+      }
+    },
+    "headerFooterContent": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "Text with optional variables like {pageNumber}"
+            }
+          }
+        }
+      ]
+    },
+    "style": {
+      "type": "object",
+      "properties": {
+        "extends": {
+          "type": "string",
+          "description": "Parent style to inherit from"
+        },
+        "base": {
+          "type": "object",
+          "description": "Base styles (for responsive)"
+        },
+        "fontFamily": { "type": "string" },
+        "fontSize": { "type": "string" },
+        "fontWeight": {
+          "oneOf": [
+            { "type": "integer", "minimum": 100, "maximum": 900 },
+            { "type": "string", "enum": ["normal", "bold", "lighter", "bolder"] }
+          ]
+        },
+        "fontStyle": {
+          "type": "string",
+          "enum": ["normal", "italic"]
+        },
+        "lineHeight": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "string" }
+          ]
+        },
+        "letterSpacing": { "type": "string" },
+        "textAlign": {
+          "type": "string",
+          "enum": ["left", "center", "right", "justify"]
+        },
+        "textDecoration": {
+          "type": "string",
+          "enum": ["none", "underline", "line-through"]
+        },
+        "textTransform": {
+          "type": "string",
+          "enum": ["none", "uppercase", "lowercase", "capitalize"]
+        },
+        "color": { "type": "string" },
+        "backgroundColor": { "type": "string" },
+        "marginTop": { "type": "string" },
+        "marginRight": { "type": "string" },
+        "marginBottom": { "type": "string" },
+        "marginLeft": { "type": "string" },
+        "paddingTop": { "type": "string" },
+        "paddingRight": { "type": "string" },
+        "paddingBottom": { "type": "string" },
+        "paddingLeft": { "type": "string" },
+        "borderWidth": { "type": "string" },
+        "borderStyle": { "type": "string" },
+        "borderColor": { "type": "string" },
+        "width": { "type": "string" },
+        "height": { "type": "string" },
+        "maxWidth": { "type": "string" },
+        "maxHeight": { "type": "string" },
+        "display": {
+          "type": "string",
+          "enum": ["block", "inline", "none"]
+        },
+        "pageBreakBefore": {
+          "type": "string",
+          "enum": ["auto", "always", "avoid"]
+        },
+        "pageBreakAfter": {
+          "type": "string",
+          "enum": ["auto", "always", "avoid"]
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

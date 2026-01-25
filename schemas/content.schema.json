@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/content.schema.json",
+  "title": "Codex Document Content",
+  "description": "Schema for the content/document.json file in a Codex document",
+  "type": "object",
+  "required": ["version", "blocks"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Content model version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "blocks": {
+      "type": "array",
+      "description": "Array of content blocks",
+      "items": {
+        "$ref": "#/$defs/block"
+      }
+    }
+  },
+  "$defs": {
+    "block": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Block type identifier"
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique block identifier"
+        },
+        "attributes": {
+          "type": "object",
+          "description": "Type-specific attributes"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "text" } } },
+          "then": { "$ref": "#/$defs/textNode" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "paragraph" } } },
+          "then": { "$ref": "#/$defs/paragraph" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "heading" } } },
+          "then": { "$ref": "#/$defs/heading" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "list" } } },
+          "then": { "$ref": "#/$defs/list" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "listItem" } } },
+          "then": { "$ref": "#/$defs/listItem" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "blockquote" } } },
+          "then": { "$ref": "#/$defs/blockquote" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "codeBlock" } } },
+          "then": { "$ref": "#/$defs/codeBlock" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "image" } } },
+          "then": { "$ref": "#/$defs/image" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "table" } } },
+          "then": { "$ref": "#/$defs/table" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "math" } } },
+          "then": { "$ref": "#/$defs/math" }
+        }
+      ]
+    },
+    "textNode": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "text" },
+        "value": {
+          "type": "string",
+          "description": "Text content"
+        },
+        "marks": {
+          "type": "array",
+          "description": "Formatting marks",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": ["bold", "italic", "underline", "strikethrough", "code", "superscript", "subscript"]
+              },
+              { "$ref": "#/$defs/linkMark" }
+            ]
+          }
+        }
+      }
+    },
+    "linkMark": {
+      "type": "object",
+      "required": ["type", "href"],
+      "properties": {
+        "type": { "const": "link" },
+        "href": {
+          "type": "string",
+          "description": "Link URL"
+        },
+        "title": {
+          "type": "string",
+          "description": "Link title"
+        }
+      }
+    },
+    "paragraph": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "paragraph" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/textNode" }
+        }
+      }
+    },
+    "heading": {
+      "type": "object",
+      "required": ["type", "level", "children"],
+      "properties": {
+        "type": { "const": "heading" },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6,
+          "description": "Heading level"
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/textNode" }
+        }
+      }
+    },
+    "list": {
+      "type": "object",
+      "required": ["type", "ordered", "children"],
+      "properties": {
+        "type": { "const": "list" },
+        "ordered": {
+          "type": "boolean",
+          "description": "Whether list is ordered"
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Starting number for ordered lists"
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/listItem" }
+        }
+      }
+    },
+    "listItem": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "listItem" },
+        "checked": {
+          "type": ["boolean", "null"],
+          "description": "Checkbox state (null = not a checkbox)"
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/block" }
+        }
+      }
+    },
+    "blockquote": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "blockquote" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/block" }
+        }
+      }
+    },
+    "codeBlock": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "codeBlock" },
+        "language": {
+          "type": "string",
+          "description": "Programming language identifier"
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/textNode" },
+          "maxItems": 1
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "required": ["type", "src", "alt"],
+      "properties": {
+        "type": { "const": "image" },
+        "src": {
+          "type": "string",
+          "description": "Image source path or URL"
+        },
+        "alt": {
+          "type": "string",
+          "description": "Alternative text"
+        },
+        "title": {
+          "type": "string",
+          "description": "Image title/caption"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Width in pixels"
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Height in pixels"
+        }
+      }
+    },
+    "table": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "table" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/tableRow" }
+        }
+      }
+    },
+    "tableRow": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "tableRow" },
+        "header": {
+          "type": "boolean",
+          "description": "Whether row is a header row"
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/tableCell" }
+        }
+      }
+    },
+    "tableCell": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "tableCell" },
+        "colspan": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Number of columns to span"
+        },
+        "rowspan": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Number of rows to span"
+        },
+        "align": {
+          "type": "string",
+          "enum": ["left", "center", "right"],
+          "description": "Text alignment"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/$defs/textNode" },
+              { "$ref": "#/$defs/block" }
+            ]
+          }
+        }
+      }
+    },
+    "math": {
+      "type": "object",
+      "required": ["type", "display", "format", "value"],
+      "properties": {
+        "type": { "const": "math" },
+        "display": {
+          "type": "boolean",
+          "description": "Display mode (true) vs inline (false)"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["latex", "mathml"],
+          "description": "Math content format"
+        },
+        "value": {
+          "type": "string",
+          "description": "Math content"
+        }
+      }
+    },
+    "horizontalRule": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "const": "horizontalRule" }
+      }
+    },
+    "break": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "const": "break" }
+      }
+    }
+  }
+}

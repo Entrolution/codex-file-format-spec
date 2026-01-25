@@ -1,0 +1,129 @@
+{
+  "version": "0.1",
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "title",
+      "level": 1,
+      "children": [
+        { "type": "text", "value": "Welcome to Codex" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "intro",
+      "children": [
+        { "type": "text", "value": "This is a simple " },
+        { "type": "text", "value": "Codex", "marks": ["bold"] },
+        { "type": "text", "value": " document demonstrating the basic structure of the format." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "features-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Key Features" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "features-intro",
+      "children": [
+        { "type": "text", "value": "The Codex format offers several advantages:" }
+      ]
+    },
+    {
+      "type": "list",
+      "id": "features-list",
+      "ordered": false,
+      "children": [
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Semantic-first design", "marks": ["bold"] },
+                { "type": "text", "value": " — content is stored as meaning, not layout" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Modern security", "marks": ["bold"] },
+                { "type": "text", "value": " — algorithm-agile cryptographic signatures" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Machine readable", "marks": ["bold"] },
+                { "type": "text", "value": " — structure survives extraction intact" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "example-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Code Example" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "code-intro",
+      "children": [
+        { "type": "text", "value": "Here's how you might validate a Codex document:" }
+      ]
+    },
+    {
+      "type": "codeBlock",
+      "id": "code-example",
+      "language": "javascript",
+      "children": [
+        {
+          "type": "text",
+          "value": "import { validate } from '@codex/validator';\n\nconst result = await validate('./document.cdx');\nif (result.valid) {\n  console.log('Document is valid!');\n} else {\n  console.error('Validation errors:', result.errors);\n}"
+        }
+      ]
+    },
+    {
+      "type": "horizontalRule",
+      "id": "divider"
+    },
+    {
+      "type": "paragraph",
+      "id": "footer",
+      "children": [
+        { "type": "text", "value": "Learn more at the " },
+        {
+          "type": "text",
+          "value": "Codex Documentation",
+          "marks": [
+            {
+              "type": "link",
+              "href": "https://codex.document",
+              "title": "Codex Documentation"
+            }
+          ]
+        },
+        { "type": "text", "value": "." }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "version": "0.1",
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "title",
+      "level": 1,
+      "children": [
+        { "type": "text", "value": "Service Agreement" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "parties",
+      "children": [
+        { "type": "text", "value": "This Service Agreement (\"Agreement\") is entered into as of " },
+        { "type": "text", "value": "January 15, 2025", "marks": ["bold"] },
+        { "type": "text", "value": " by and between:" }
+      ]
+    },
+    {
+      "type": "list",
+      "id": "party-list",
+      "ordered": false,
+      "children": [
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Acme Corporation", "marks": ["bold"] },
+                { "type": "text", "value": " (\"Service Provider\")" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "XYZ Enterprises", "marks": ["bold"] },
+                { "type": "text", "value": " (\"Client\")" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "scope-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "1. Scope of Services" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "scope-content",
+      "children": [
+        { "type": "text", "value": "Service Provider agrees to provide the following services to Client: consulting services related to document management systems, including analysis, design, implementation, and support." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "term-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "2. Term" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "term-content",
+      "children": [
+        { "type": "text", "value": "This Agreement shall commence on " },
+        { "type": "text", "value": "February 1, 2025", "marks": ["bold"] },
+        { "type": "text", "value": " and shall continue for a period of twelve (12) months unless terminated earlier in accordance with the provisions herein." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "compensation-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "3. Compensation" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "compensation-content",
+      "children": [
+        { "type": "text", "value": "Client agrees to pay Service Provider a monthly fee of " },
+        { "type": "text", "value": "$10,000", "marks": ["bold"] },
+        { "type": "text", "value": " for services rendered under this Agreement." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "signatures-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Signatures" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "signature-note",
+      "children": [
+        { "type": "text", "value": "This document has been digitally signed by both parties. The cryptographic signatures verify the authenticity and integrity of this agreement.", "marks": ["italic"] }
+      ]
+    }
+  ]
+}
