@@ -1,0 +1,564 @@
+# Presentation Extension
+
+**Extension ID**: `codex.presentation`
+**Version**: 0.1
+**Status**: Draft
+
+## 1. Overview
+
+The Presentation Extension provides advanced layout and styling capabilities beyond the core specification:
+
+- Advanced page layout (columns, grids)
+- Print-specific features (bleeds, crop marks)
+- Master pages and templates
+- Advanced typography
+
+## 2. Extension Declaration
+
+```json
+{
+  "extensions": [
+    {
+      "id": "codex.presentation",
+      "version": "0.1",
+      "required": false
+    }
+  ]
+}
+```
+
+## 3. Advanced Page Layout
+
+### 3.1 Multi-Column Layout
+
+```json
+{
+  "layout": {
+    "type": "columns",
+    "columns": 2,
+    "gap": "0.25in",
+    "balance": true
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `columns` | integer | Number of columns (1-6) |
+| `gap` | string | Gap between columns |
+| `balance` | boolean | Balance column heights |
+| `rule` | object | Column rule (separator line) |
+
+### 3.2 Grid Layout
+
+```json
+{
+  "layout": {
+    "type": "grid",
+    "columns": 12,
+    "rows": "auto",
+    "gap": "16px",
+    "areas": [
+      { "name": "header", "column": "1 / 13", "row": "1" },
+      { "name": "sidebar", "column": "1 / 4", "row": "2" },
+      { "name": "content", "column": "4 / 13", "row": "2" }
+    ]
+  }
+}
+```
+
+### 3.3 Flow Regions
+
+Define multiple regions for text to flow through:
+
+```json
+{
+  "flowRegions": [
+    {
+      "id": "main-flow",
+      "regions": [
+        { "page": 1, "area": "content" },
+        { "page": 2, "area": "full" },
+        { "page": 3, "area": "content" }
+      ]
+    }
+  ]
+}
+```
+
+## 4. Print Features
+
+### 4.1 Bleed and Trim
+
+For professional printing:
+
+```json
+{
+  "print": {
+    "bleed": {
+      "top": "0.125in",
+      "right": "0.125in",
+      "bottom": "0.125in",
+      "left": "0.125in"
+    },
+    "trim": {
+      "width": "8.5in",
+      "height": "11in"
+    },
+    "cropMarks": true,
+    "registrationMarks": true,
+    "colorBars": false
+  }
+}
+```
+
+### 4.2 Spot Colors
+
+```json
+{
+  "colors": {
+    "brand-blue": {
+      "type": "spot",
+      "name": "PANTONE 286 C",
+      "fallback": "#0033a0"
+    }
+  }
+}
+```
+
+### 4.3 Overprint
+
+```json
+{
+  "styles": {
+    "blackText": {
+      "color": "#000000",
+      "overprint": true
+    }
+  }
+}
+```
+
+### 4.4 PDF/X Compliance
+
+```json
+{
+  "print": {
+    "standard": "PDF/X-4",
+    "outputIntent": {
+      "profile": "sRGB IEC61966-2.1",
+      "condition": "sRGB"
+    }
+  }
+}
+```
+
+## 5. Master Pages
+
+### 5.1 Definition
+
+Master pages define reusable page templates:
+
+```json
+{
+  "masterPages": {
+    "default": {
+      "margins": { "top": "1in", "right": "1in", "bottom": "1in", "left": "1in" },
+      "header": { "height": "0.5in" },
+      "footer": { "height": "0.5in" }
+    },
+    "chapter-start": {
+      "basedOn": "default",
+      "margins": { "top": "2in" },
+      "header": null
+    },
+    "full-bleed": {
+      "margins": { "top": "0", "right": "0", "bottom": "0", "left": "0" }
+    }
+  }
+}
+```
+
+### 5.2 Application
+
+Apply master pages to specific pages:
+
+```json
+{
+  "pages": [
+    { "number": 1, "master": "chapter-start" },
+    { "number": 2, "master": "default" },
+    { "number": 3, "master": "full-bleed" }
+  ]
+}
+```
+
+### 5.3 Auto-Application Rules
+
+```json
+{
+  "masterRules": [
+    { "match": { "first": true }, "master": "chapter-start" },
+    { "match": { "contains": "full-bleed-image" }, "master": "full-bleed" },
+    { "match": { "default": true }, "master": "default" }
+  ]
+}
+```
+
+## 6. Advanced Typography
+
+### 6.1 OpenType Features
+
+```json
+{
+  "styles": {
+    "body": {
+      "fontFamily": "Source Serif Pro",
+      "fontFeatureSettings": {
+        "liga": true,
+        "kern": true,
+        "onum": true,
+        "smcp": false
+      }
+    }
+  }
+}
+```
+
+Common features:
+- `liga` - Standard ligatures
+- `kern` - Kerning
+- `onum` - Oldstyle numerals
+- `lnum` - Lining numerals
+- `smcp` - Small caps
+- `swsh` - Swash
+- `frac` - Fractions
+
+### 6.2 Variable Fonts
+
+```json
+{
+  "styles": {
+    "heading": {
+      "fontFamily": "Roboto Flex",
+      "fontVariationSettings": {
+        "wght": 700,
+        "wdth": 100,
+        "slnt": 0
+      }
+    }
+  }
+}
+```
+
+### 6.3 Hyphenation
+
+```json
+{
+  "typography": {
+    "hyphenation": {
+      "enabled": true,
+      "language": "en-US",
+      "minWordLength": 6,
+      "minBefore": 3,
+      "minAfter": 2,
+      "maxConsecutive": 2
+    }
+  }
+}
+```
+
+### 6.4 Widow/Orphan Control
+
+```json
+{
+  "typography": {
+    "widows": 2,
+    "orphans": 2,
+    "avoidBreakInside": ["blockquote", "table"]
+  }
+}
+```
+
+### 6.5 Drop Caps
+
+```json
+{
+  "styles": {
+    "chapter-first-para": {
+      "dropCap": {
+        "lines": 3,
+        "fontFamily": "inherit",
+        "fontWeight": "bold",
+        "marginRight": "0.1em"
+      }
+    }
+  }
+}
+```
+
+### 6.6 Baseline Grid
+
+```json
+{
+  "typography": {
+    "baselineGrid": {
+      "enabled": true,
+      "lineHeight": "14pt",
+      "offset": "0pt"
+    }
+  }
+}
+```
+
+## 7. Figures and Floats
+
+### 7.1 Float Positioning
+
+```json
+{
+  "type": "image",
+  "src": "assets/images/figure1.avif",
+  "float": {
+    "position": "top",
+    "span": "column",
+    "clearance": "1em"
+  }
+}
+```
+
+Position options: `top`, `bottom`, `inline`, `page-top`, `page-bottom`
+Span options: `column`, `page`, `spread`
+
+### 7.2 Figure Captions
+
+```json
+{
+  "type": "figure",
+  "children": [
+    { "type": "image", "src": "..." },
+    {
+      "type": "figcaption",
+      "children": [{ "type": "text", "value": "Figure 1: System architecture" }]
+    }
+  ],
+  "numbering": {
+    "style": "Figure #",
+    "chapter": true
+  }
+}
+```
+
+### 7.3 Cross-References
+
+```json
+{
+  "type": "text",
+  "value": "See ",
+  "marks": []
+},
+{
+  "type": "reference",
+  "target": "fig-architecture",
+  "format": "Figure #"
+}
+```
+
+## 8. Table of Contents
+
+### 8.1 TOC Generation
+
+```json
+{
+  "tableOfContents": {
+    "title": "Contents",
+    "levels": [1, 2, 3],
+    "styles": {
+      "toc1": { "fontWeight": "bold", "marginTop": "1em" },
+      "toc2": { "marginLeft": "1em" },
+      "toc3": { "marginLeft": "2em", "fontSize": "0.9em" }
+    },
+    "pageNumbers": true,
+    "leaders": "dots"
+  }
+}
+```
+
+### 8.2 List of Figures/Tables
+
+```json
+{
+  "listOfFigures": {
+    "title": "List of Figures",
+    "style": "toc2"
+  },
+  "listOfTables": {
+    "title": "List of Tables",
+    "style": "toc2"
+  }
+}
+```
+
+## 9. Index
+
+### 9.1 Index Entries
+
+In content:
+
+```json
+{
+  "type": "text",
+  "value": "algorithm",
+  "marks": [
+    { "type": "index", "term": "algorithm", "subterm": "sorting" }
+  ]
+}
+```
+
+### 9.2 Index Generation
+
+```json
+{
+  "index": {
+    "title": "Index",
+    "columns": 2,
+    "style": {
+      "mainEntry": { "fontWeight": "bold" },
+      "subEntry": { "marginLeft": "1em" }
+    }
+  }
+}
+```
+
+## 10. Footnotes and Endnotes
+
+### 10.1 Footnote Definition
+
+In content:
+
+```json
+{
+  "type": "text",
+  "value": "important claim",
+  "marks": [
+    {
+      "type": "footnote",
+      "id": "fn1",
+      "content": [
+        { "type": "text", "value": "Source: Annual Report 2024" }
+      ]
+    }
+  ]
+}
+```
+
+### 10.2 Footnote Styling
+
+```json
+{
+  "footnotes": {
+    "numbering": "1",
+    "position": "page-bottom",
+    "separator": {
+      "width": "2in",
+      "style": "solid",
+      "margin": "0.5em"
+    },
+    "style": {
+      "fontSize": "0.85em",
+      "lineHeight": 1.4
+    }
+  }
+}
+```
+
+### 10.3 Endnotes
+
+```json
+{
+  "endnotes": {
+    "title": "Notes",
+    "numbering": "1",
+    "perChapter": false
+  }
+}
+```
+
+## 11. Running Headers/Footers
+
+### 11.1 Dynamic Content
+
+```json
+{
+  "pageTemplate": {
+    "header": {
+      "left": { "variable": "chapter-title" },
+      "right": { "variable": "section-title" }
+    },
+    "footer": {
+      "center": { "text": "Page {pageNumber} of {pageCount}" }
+    }
+  }
+}
+```
+
+### 11.2 Variables
+
+| Variable | Description |
+|----------|-------------|
+| `{pageNumber}` | Current page number |
+| `{pageCount}` | Total pages |
+| `{chapter-title}` | Current chapter title |
+| `{section-title}` | Current section title |
+| `{date}` | Current date |
+| `{title}` | Document title |
+| `{author}` | Document author |
+
+### 11.3 Different Headers for Odd/Even
+
+```json
+{
+  "pageTemplate": {
+    "odd": {
+      "header": { "right": { "variable": "section-title" } }
+    },
+    "even": {
+      "header": { "left": { "variable": "chapter-title" } }
+    }
+  }
+}
+```
+
+## 12. Examples
+
+### 12.1 Book Layout
+
+```json
+{
+  "version": "0.1",
+  "type": "paginated",
+  "defaults": {
+    "pageSize": { "width": "6in", "height": "9in" },
+    "margins": { "top": "0.75in", "outside": "0.75in", "bottom": "0.875in", "inside": "1in" }
+  },
+  "masterPages": {
+    "chapter": {
+      "margins": { "top": "2in" },
+      "footer": { "center": { "text": "{pageNumber}" } }
+    },
+    "body": {
+      "header": {
+        "outside": { "variable": "section-title" }
+      },
+      "footer": {
+        "outside": { "text": "{pageNumber}" }
+      }
+    }
+  },
+  "typography": {
+    "hyphenation": { "enabled": true, "language": "en-US" },
+    "widows": 2,
+    "orphans": 2
+  }
+}
+```

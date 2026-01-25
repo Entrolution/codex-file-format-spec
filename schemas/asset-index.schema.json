@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/asset-index.schema.json",
+  "title": "Asset Index",
+  "description": "Schema for asset index files in a Codex document",
+  "type": "object",
+  "required": ["version", "assets"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Asset index version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "families": {
+      "type": "array",
+      "description": "Font families (for font assets only)",
+      "items": {
+        "$ref": "#/$defs/fontFamily"
+      }
+    },
+    "assets": {
+      "type": "array",
+      "description": "Array of asset entries",
+      "items": {
+        "$ref": "#/$defs/asset"
+      }
+    }
+  },
+  "$defs": {
+    "asset": {
+      "type": "object",
+      "required": ["id", "path", "type", "size", "hash"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique asset identifier",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "path": {
+          "type": "string",
+          "description": "File path relative to category directory"
+        },
+        "type": {
+          "type": "string",
+          "description": "MIME type"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "File size in bytes"
+        },
+        "hash": {
+          "type": "string",
+          "description": "Content hash",
+          "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+        },
+        "aliasOf": {
+          "type": "string",
+          "description": "ID of asset this is an alias of (for deduplication)"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Type-specific metadata"
+        },
+        "license": {
+          "$ref": "#/$defs/license"
+        },
+        "variants": {
+          "type": "array",
+          "description": "Resolution variants (for images)",
+          "items": {
+            "$ref": "#/$defs/imageVariant"
+          }
+        }
+      }
+    },
+    "imageMetadata": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Width in pixels"
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Height in pixels"
+        },
+        "colorSpace": {
+          "type": "string",
+          "description": "Color space (sRGB, Display P3, etc.)"
+        },
+        "hasAlpha": {
+          "type": "boolean",
+          "description": "Whether image has transparency"
+        },
+        "dpi": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Dots per inch"
+        }
+      }
+    },
+    "fontMetadata": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "type": "string",
+          "description": "Font family name"
+        },
+        "weight": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 900,
+          "description": "Font weight"
+        },
+        "style": {
+          "type": "string",
+          "enum": ["normal", "italic", "oblique"],
+          "description": "Font style"
+        },
+        "unicodeRange": {
+          "type": "string",
+          "description": "Supported Unicode ranges"
+        }
+      }
+    },
+    "embedMetadata": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string",
+          "description": "Original filename"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Original file creation date"
+        }
+      }
+    },
+    "imageVariant": {
+      "type": "object",
+      "required": ["path", "width", "size"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Variant file path"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Variant width in pixels"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Variant file size in bytes"
+        }
+      }
+    },
+    "fontFamily": {
+      "type": "object",
+      "required": ["name", "fonts"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Font family name"
+        },
+        "fonts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "weight", "style"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Reference to asset ID"
+              },
+              "weight": {
+                "type": "integer",
+                "minimum": 100,
+                "maximum": 900
+              },
+              "style": {
+                "type": "string",
+                "enum": ["normal", "italic", "oblique"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "License name"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "License URL"
+        }
+      }
+    }
+  }
+}

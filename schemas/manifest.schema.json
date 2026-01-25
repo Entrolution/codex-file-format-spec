@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/manifest.schema.json",
+  "title": "Codex Document Manifest",
+  "description": "Schema for the manifest.json file in a Codex document",
+  "type": "object",
+  "required": ["codex", "id", "state", "created", "modified", "content", "metadata"],
+  "properties": {
+    "codex": {
+      "type": "string",
+      "description": "Specification version",
+      "pattern": "^\\d+\\.\\d+$",
+      "examples": ["0.1", "1.0"]
+    },
+    "id": {
+      "type": "string",
+      "description": "Content-addressable document identifier",
+      "oneOf": [
+        { "const": "pending" },
+        { "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$" }
+      ]
+    },
+    "state": {
+      "type": "string",
+      "description": "Document lifecycle state",
+      "enum": ["draft", "review", "frozen", "published"]
+    },
+    "hashAlgorithm": {
+      "type": "string",
+      "description": "Hash algorithm used for document ID",
+      "enum": ["sha256", "sha384", "sha512", "sha3-256", "sha3-512", "blake3"],
+      "default": "sha256"
+    },
+    "created": {
+      "type": "string",
+      "description": "ISO 8601 creation timestamp",
+      "format": "date-time"
+    },
+    "modified": {
+      "type": "string",
+      "description": "ISO 8601 last modification timestamp",
+      "format": "date-time"
+    },
+    "content": {
+      "$ref": "#/$defs/fileReference",
+      "description": "Content layer reference"
+    },
+    "presentation": {
+      "type": "array",
+      "description": "Presentation layer references",
+      "items": {
+        "$ref": "#/$defs/presentationReference"
+      }
+    },
+    "assets": {
+      "type": "object",
+      "description": "Asset manifest",
+      "properties": {
+        "images": { "$ref": "#/$defs/assetCategory" },
+        "fonts": { "$ref": "#/$defs/assetCategory" },
+        "embeds": { "$ref": "#/$defs/assetCategory" }
+      },
+      "additionalProperties": { "$ref": "#/$defs/assetCategory" }
+    },
+    "security": {
+      "type": ["object", "null"],
+      "description": "Security layer reference",
+      "properties": {
+        "signatures": {
+          "type": ["string", "null"],
+          "description": "Path to signatures file"
+        },
+        "encryption": {
+          "type": ["string", "null"],
+          "description": "Path to encryption metadata"
+        }
+      }
+    },
+    "extensions": {
+      "type": "array",
+      "description": "Active extension declarations",
+      "items": {
+        "$ref": "#/$defs/extension"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Metadata references",
+      "required": ["dublinCore"],
+      "properties": {
+        "dublinCore": {
+          "type": "string",
+          "description": "Path to Dublin Core metadata"
+        },
+        "custom": {
+          "type": "object",
+          "description": "Custom metadata references",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "description": "Version history and parent reference",
+      "properties": {
+        "parent": {
+          "type": ["string", "null"],
+          "description": "Document ID of parent version"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Sequential version number"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Branch identifier"
+        },
+        "note": {
+          "type": "string",
+          "description": "Description of changes from parent"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "fileReference": {
+      "type": "object",
+      "required": ["path", "hash"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Relative path within archive"
+        },
+        "hash": {
+          "type": "string",
+          "description": "Hash of file contents",
+          "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+        },
+        "compression": {
+          "type": "string",
+          "description": "Compression method used",
+          "enum": ["none", "deflate", "zstd"]
+        }
+      }
+    },
+    "presentationReference": {
+      "type": "object",
+      "required": ["type", "path", "hash"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Presentation type identifier",
+          "enum": ["paginated", "continuous", "responsive"]
+        },
+        "path": {
+          "type": "string",
+          "description": "Relative path within archive"
+        },
+        "hash": {
+          "type": "string",
+          "description": "Hash of file contents"
+        },
+        "default": {
+          "type": "boolean",
+          "description": "Whether this is the default presentation"
+        },
+        "contentHash": {
+          "type": "string",
+          "description": "Content hash when presentation was generated"
+        },
+        "generated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When presentation was generated"
+        }
+      }
+    },
+    "assetCategory": {
+      "type": "object",
+      "required": ["count", "totalSize", "index"],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of assets in category"
+        },
+        "totalSize": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total size in bytes"
+        },
+        "index": {
+          "type": "string",
+          "description": "Path to index file"
+        }
+      }
+    },
+    "extension": {
+      "type": "object",
+      "required": ["id", "version", "required"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Extension identifier"
+        },
+        "version": {
+          "type": "string",
+          "description": "Extension version"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether extension is required for correct rendering"
+        }
+      }
+    }
+  }
+}

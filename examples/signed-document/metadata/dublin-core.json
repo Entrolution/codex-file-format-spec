@@ -1,0 +1,14 @@
+{
+  "version": "1.1",
+  "terms": {
+    "title": "Service Agreement",
+    "creator": ["Acme Corporation", "XYZ Enterprises"],
+    "subject": ["Contract", "Service Agreement", "Legal"],
+    "description": "Service agreement between Acme Corporation and XYZ Enterprises for consulting services.",
+    "date": "2025-01-15",
+    "type": "Text",
+    "format": "application/vnd.codex+json",
+    "language": "en",
+    "rights": "Confidential. All rights reserved."
+  }
+}

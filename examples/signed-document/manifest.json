@@ -1,0 +1,39 @@
+{
+  "codex": "0.1",
+  "id": "sha256:3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b",
+  "state": "frozen",
+  "hashAlgorithm": "sha256",
+  "created": "2025-01-10T08:00:00Z",
+  "modified": "2025-01-15T14:22:00Z",
+  "content": {
+    "path": "content/document.json",
+    "hash": "sha256:abc123def456789012345678901234567890123456789012345678901234567890",
+    "compression": "zstd"
+  },
+  "presentation": [
+    {
+      "type": "paginated",
+      "path": "presentation/paginated.json",
+      "hash": "sha256:def456abc789012345678901234567890123456789012345678901234567890123",
+      "default": true
+    }
+  ],
+  "security": {
+    "signatures": "security/signatures.json",
+    "encryption": null
+  },
+  "extensions": [
+    {
+      "id": "codex.security",
+      "version": "0.1",
+      "required": true
+    }
+  ],
+  "metadata": {
+    "dublinCore": "metadata/dublin-core.json"
+  },
+  "lineage": {
+    "parent": null,
+    "version": 1
+  }
+}

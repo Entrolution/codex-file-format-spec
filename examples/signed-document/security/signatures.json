@@ -1,0 +1,40 @@
+{
+  "version": "0.1",
+  "documentId": "sha256:3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b",
+  "signatures": [
+    {
+      "id": "sig-provider",
+      "algorithm": "ES256",
+      "signedAt": "2025-01-15T10:00:00Z",
+      "signer": {
+        "name": "Jane Smith",
+        "email": "jane.smith@acme.com",
+        "organization": "Acme Corporation",
+        "title": "Chief Executive Officer"
+      },
+      "value": "MEUCIQDf9Ky7BpL5Rj9E8JH3YqKPvXxNmVhKD5bXc4Qz1A2wAiEA7HjKLm8NoPqRsTuVwXyZ012ABcdEFghIJklMNopQRst",
+      "timestamp": {
+        "authority": "https://timestamp.digicert.com",
+        "time": "2025-01-15T10:00:05Z",
+        "token": "MIIEpgYJKoZIhvcNAQcCoIIElzCCBJMCAQExDTALBglghkgBZQMEAgEw..."
+      }
+    },
+    {
+      "id": "sig-client",
+      "algorithm": "ES256",
+      "signedAt": "2025-01-15T14:22:00Z",
+      "signer": {
+        "name": "John Doe",
+        "email": "john.doe@xyz-enterprises.com",
+        "organization": "XYZ Enterprises",
+        "title": "President"
+      },
+      "value": "MEQCIH5abcDEFghijKLmnoPQRstuvWXyz012345ABCdefGHIJKLMAIgMNop456qrSTUvwxYZ789abcdefghijklmnopqrstuvwx",
+      "timestamp": {
+        "authority": "https://timestamp.digicert.com",
+        "time": "2025-01-15T14:22:05Z",
+        "token": "MIIEqQYJKoZIhvcNAQcCoIIEmjCCBJYCAQExDTALBglghkgBZQMEAgEw..."
+      }
+    }
+  ]
+}
