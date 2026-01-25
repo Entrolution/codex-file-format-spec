@@ -18,6 +18,7 @@ This divide creates workflow friction, format conversion overhead, and lost fide
 - **Machine readability is an afterthought**: 73-96% accuracy even with state-of-the-art extraction
 - **Compression is outdated**: PDF uses 30-year-old DEFLATE, missing modern algorithms
 - **No clear "frozen" semantics**: Signatures don't truly lock documents
+- **No verifiable history**: Document lineage and provenance are external concerns, not built-in
 
 ## Design Goals
 
@@ -28,12 +29,14 @@ This divide creates workflow friction, format conversion overhead, and lost fide
 3. **Modern Security**: Algorithm-agile cryptography, post-quantum ready
 4. **Machine Readable**: AI/ML extraction works reliably by design
 5. **Content-Addressable**: Document hash is its identity; modifications create new versions
+6. **Verifiable Provenance**: Built-in hash chains and Merkle trees for tamper-evident history
 
 ### Secondary Goals
 
 - Efficient compression using modern algorithms (Zstandard, AVIF)
 - Clear document state machine (draft → review → frozen/signed)
-- Native version control and lineage tracking
+- Block-level proofs (prove a section exists without revealing the whole document)
+- Timestamp anchoring (RFC 3161, blockchain)
 - Accessibility built-in (WCAG-aligned)
 
 ### Non-Goals
@@ -54,20 +57,44 @@ This divide creates workflow friction, format conversion overhead, and lost fide
 │  │ MANIFEST         │  │ CONTENT STREAMS                  │ │
 │  │ - Version        │  │ ┌────────────────────────────┐   │ │
 │  │ - State          │  │ │ Semantic Document Layer    │   │ │
-│  │ - Signatures[]   │  │ │ (JSON blocks)              │   │ │
-│  │ - Metadata       │  │ └────────────────────────────┘   │ │
-│  │ - Compression    │  │ ┌────────────────────────────┐   │ │
+│  │ - Signatures[]   │  │ │ (JSON blocks + Merkle tree)│   │ │
+│  │ - Lineage        │  │ └────────────────────────────┘   │ │
+│  │ - Merkle root    │  │ ┌────────────────────────────┐   │ │
 │  └──────────────────┘  │ │ Presentation Layer(s)      │   │ │
 │                        │ │ (paginated, continuous,    │   │ │
 │  ┌──────────────────┐  │ │  responsive)               │   │ │
 │  │ SECURITY LAYER   │  │ └────────────────────────────┘   │ │
 │  │ - Signatures     │  │ ┌────────────────────────────┐   │ │
 │  │ - Encryption     │  │ │ Assets                     │   │ │
-│  │ - Access control │  │ │ (images, fonts, embeds)    │   │ │
+│  │ - Timestamps     │  │ │ (images, fonts, embeds)    │   │ │
 │  └──────────────────┘  │ └────────────────────────────┘   │ │
 │                        └──────────────────────────────────┘ │
+│  ┌──────────────────┐                                       │
+│  │ PROVENANCE       │  ← Links to parent document hash      │
+│  │ - Parent hash    │    (documents form a hash chain)      │
+│  │ - Ancestors      │                                       │
+│  │ - Timestamps     │                                       │
+│  └──────────────────┘                                       │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+## Key Feature: Verifiable Provenance
+
+Codex documents form a **cryptographic hash chain** — each document's identity IS its content hash, and each document can reference its parent by hash:
+
+```
+doc-v1 (sha256:aaa)  ←──  doc-v2 (sha256:bbb)  ←──  doc-v3 (sha256:ccc)
+      │                        │                        │
+      └── parent: null         └── parent: aaa          └── parent: bbb
+```
+
+This enables:
+
+- **Tamper-evident history**: Forging an intermediate version is computationally infeasible
+- **No external infrastructure**: Documents themselves ARE the chain
+- **Block-level Merkle proofs**: Prove a specific section exists without revealing the whole document
+- **Selective disclosure**: Share redacted documents with cryptographic proof of what was removed
+- **Timestamp anchoring**: Anchor document hashes to RFC 3161 TSAs or public blockchains
 
 ## Specification Structure
 
@@ -102,9 +129,10 @@ A Codex document is a ZIP archive with this structure:
 
 ```
 document.cdx
-├── manifest.json          # Document manifest
+├── manifest.json          # Document manifest (includes lineage, Merkle root)
 ├── content/
-│   └── document.json      # Semantic content blocks
+│   ├── document.json      # Semantic content blocks
+│   └── block-index.json   # Block hashes for Merkle proofs
 ├── presentation/
 │   ├── paginated.json     # Print/fixed layout
 │   └── continuous.json    # Screen/reflow layout
@@ -114,6 +142,8 @@ document.cdx
 │   └── embeds/
 ├── security/
 │   └── signatures.json    # Digital signatures
+├── provenance/
+│   └── record.json        # Lineage, timestamps, derivations
 └── metadata/
     └── dublin-core.json   # Standard metadata
 ```
@@ -190,3 +220,6 @@ This specification draws inspiration from:
 - Portable Text (Sanity) for semantic content modeling
 - EPUB for reflowable document structure
 - CRDTs (Yjs, Automerge) for collaboration patterns
+- Git for content-addressable storage and hash chain lineage
+- Merkle trees for efficient integrity proofs
+- OpenTimestamps for decentralized timestamp anchoring
