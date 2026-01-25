@@ -273,6 +273,61 @@ This document records key design decisions made during the Codex format specific
 
 ---
 
+## DD-013: Hash Chain Lineage with Merkle Trees
+
+**Decision**: Documents form a hash chain via parent references, with block-level Merkle trees for granular proofs.
+
+**Alternatives Considered**:
+1. External version control only (Git, etc.)
+2. Simple parent pointer without Merkle trees
+3. Full blockchain with consensus mechanism
+4. Centralized version registry
+
+**Rationale**:
+- Documents themselves become the chain — no external infrastructure required
+- Content-addressable identity (hash = ID) makes forgery computationally infeasible
+- Merkle trees enable block-level proofs without revealing entire document
+- Supports selective disclosure and redaction proofs
+- Compatible with external timestamping (RFC 3161, blockchain anchoring)
+- Git has proven this model works at scale
+- Decentralized verification — anyone with the documents can verify the chain
+
+**Consequences**:
+- Slightly larger documents (block index adds ~50-100 bytes per block)
+- Hash algorithm becomes critical dependency (algorithm agility required)
+- Chain verification requires access to ancestor documents (or trust in chain)
+- Merkle proofs add complexity for implementers
+
+**Key Insight**: The "blockchain-like" property comes from the hash chain structure, not from consensus mechanisms or distributed networks. The documents ARE the chain.
+
+---
+
+## DD-014: Timestamp Anchoring Options
+
+**Decision**: Support multiple timestamp anchoring methods: RFC 3161 TSAs, blockchain anchoring, and aggregated timestamps.
+
+**Alternatives Considered**:
+1. RFC 3161 only (traditional)
+2. Blockchain only (decentralized)
+3. No timestamp support (signatures only)
+4. Proprietary timestamp service
+
+**Rationale**:
+- RFC 3161 is established standard, widely supported
+- Blockchain anchoring provides decentralized, censorship-resistant timestamps
+- Aggregated timestamps (OpenTimestamps-style) provide efficiency for high-volume use
+- Different use cases have different trust requirements
+- Legal contexts may require specific timestamp authorities
+- Academic/archival contexts may prefer decentralized proofs
+
+**Consequences**:
+- Multiple code paths for timestamp verification
+- Trust model varies by timestamp type
+- Blockchain timestamps have latency (Bitcoin: ~10 min, Ethereum: ~12 sec)
+- RFC 3161 requires trust in TSA; blockchain requires trust in chain security
+
+---
+
 ## Open Questions
 
 ### OQ-001: Binary Variant
