@@ -152,17 +152,19 @@ document.cdx
 
 ## Roadmap
 
-### Phase 1: Core Specification (Current)
-- [ ] Complete core specification documents
-- [ ] JSON Schema for validation
-- [ ] Example documents
+### Phase 1: Core Specification
+- [x] Complete core specification documents
+- [x] JSON Schema for validation
+- [x] Example documents
 
 ### Phase 2: Extensions
-- [ ] Security extension (signatures, encryption)
-- [ ] Collaboration extension (CRDT integration)
-- [ ] Presentation extension (advanced layout)
+- [x] Security extension (signatures, encryption)
+- [x] Collaboration extension (CRDT integration)
+- [x] Presentation extension (advanced layout)
+- [x] Forms extension (input fields, validation)
+- [x] Semantic extension (JSON-LD, citations)
 
-### Phase 3: Reference Implementation
+### Phase 3: Reference Implementation (Current)
 - [ ] TypeScript parser/writer library
 - [ ] Web-based viewer
 - [ ] Basic editor integration
