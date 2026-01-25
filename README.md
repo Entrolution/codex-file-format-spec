@@ -83,6 +83,7 @@ The specification is modular:
 - [Document Hashing](spec/core/06-document-hashing.md) - Content-addressable identity
 - [State Machine](spec/core/07-state-machine.md) - Draft/frozen lifecycle
 - [Metadata](spec/core/08-metadata.md) - Dublin Core and extensions
+- [Provenance and Lineage](spec/core/09-provenance-and-lineage.md) - Hash chains, Merkle trees, timestamping
 
 ### Extension Specifications (Optional)
 
