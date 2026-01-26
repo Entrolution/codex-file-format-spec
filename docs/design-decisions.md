@@ -328,6 +328,50 @@ This document records key design decisions made during the Codex format specific
 
 ---
 
+## DD-015: State-Aware Progressive Enhancement Presentation
+
+**Decision**: Presentation precision evolves with document maturity — reactive presentation for drafts, with precise layout snapshots required for FROZEN and PUBLISHED states.
+
+**Alternatives Considered**:
+1. Always require precise layouts (PDF model)
+2. Never require precise layouts (pure semantic)
+3. Optional precise layouts regardless of state
+4. External rendering only (no stored layouts)
+
+**Rationale**:
+- **Provenance integrity** — When frozen, the hash covers exact appearance, not just content
+- **Legal/academic needs** — Citations reference "page 7, line 23" with confidence
+- **Lifecycle alignment** — Precision emerges naturally as documents mature
+- **No capability loss** — Semantic content always present for accessibility/search
+- **Stable cross-references** — Internal refs ("see page 7") guaranteed stable once frozen
+- Draft documents are fluid; layout doesn't matter yet
+- Review documents can preview approximate pagination
+- Frozen/published documents become immutable records with exact appearance
+
+**Presentation Types**:
+| Type | Purpose | When Required |
+|------|---------|---------------|
+| Reactive (paginated, continuous, responsive) | Hints and styles for renderers | Optional always |
+| Precise (layouts/) | Exact coordinates for pixel-perfect reproduction | Required for FROZEN/PUBLISHED |
+
+**Precise Layout Features**:
+- Exact element coordinates (x, y, width, height)
+- Content hash for staleness detection
+- Page continuation markers for multi-page blocks
+- Optional line-level precision for legal documents
+- Font metrics for exact text reproduction
+
+**Consequences**:
+- FROZEN/PUBLISHED validation must check for precise layout
+- Layout content hash must match current content (staleness check)
+- State transition to FROZEN may fail if no precise layout exists
+- Layout generation is external tooling responsibility
+- Increases document size for frozen documents (layout data)
+
+**Key Insight**: Just as document content becomes immutable when frozen, so does its visual appearance. The precise layout is part of the immutable record.
+
+---
+
 ## Open Questions
 
 ### OQ-001: Binary Variant
