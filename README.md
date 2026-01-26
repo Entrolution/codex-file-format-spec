@@ -19,6 +19,7 @@ This divide creates workflow friction, format conversion overhead, and lost fide
 - **Compression is outdated**: PDF uses 30-year-old DEFLATE, missing modern algorithms
 - **No clear "frozen" semantics**: Signatures don't truly lock documents
 - **No verifiable history**: Document lineage and provenance are external concerns, not built-in
+- **Appearance varies by viewer**: Even PDF renders differently across implementations
 
 ## Design Goals
 
@@ -35,6 +36,7 @@ This divide creates workflow friction, format conversion overhead, and lost fide
 
 - Efficient compression using modern algorithms (Zstandard, AVIF)
 - Clear document state machine (draft → review → frozen/signed)
+- State-aware presentation (reactive for drafts, precise for frozen/published)
 - Block-level proofs (prove a section exists without revealing the whole document)
 - Timestamp anchoring (RFC 3161, blockchain)
 - Accessibility built-in (WCAG-aligned)
@@ -61,8 +63,8 @@ This divide creates workflow friction, format conversion overhead, and lost fide
 │  │ - Lineage        │  │ └────────────────────────────┘   │ │
 │  │ - Merkle root    │  │ ┌────────────────────────────┐   │ │
 │  └──────────────────┘  │ │ Presentation Layer(s)      │   │ │
-│                        │ │ (paginated, continuous,    │   │ │
-│  ┌──────────────────┐  │ │  responsive)               │   │ │
+│                        │ │ - Reactive (hints/styles)  │   │ │
+│  ┌──────────────────┐  │ │ - Precise (exact coords)   │   │ │
 │  │ SECURITY LAYER   │  │ └────────────────────────────┘   │ │
 │  │ - Signatures     │  │ ┌────────────────────────────┐   │ │
 │  │ - Encryption     │  │ │ Assets                     │   │ │
@@ -95,6 +97,42 @@ This enables:
 - **Block-level Merkle proofs**: Prove a specific section exists without revealing the whole document
 - **Selective disclosure**: Share redacted documents with cryptographic proof of what was removed
 - **Timestamp anchoring**: Anchor document hashes to RFC 3161 TSAs or public blockchains
+
+## Key Feature: State-Aware Presentation
+
+Codex uses **progressive enhancement** for presentation — the level of layout precision evolves with document maturity:
+
+| Document State | Presentation Requirement | What's Frozen |
+|----------------|-------------------------|---------------|
+| DRAFT | Reactive only (hints/styles) | Nothing — content flows freely |
+| REVIEW | Reactive (precise optional) | Nothing — still editing |
+| FROZEN | Reactive + **precise required** | Content AND exact appearance |
+| PUBLISHED | Same as FROZEN | Authoritative, immutable record |
+
+### Why This Matters
+
+When a document reaches FROZEN or PUBLISHED state, its **precise layout** (exact coordinates for every element) becomes part of the immutable record:
+
+- **Layout is part of the hash**: The document's identity includes its exact visual appearance
+- **Citations are reliable**: "Page 7, line 23" means the same thing in every viewer
+- **Legal/archival integrity**: Frozen documents render pixel-perfectly, forever
+- **No viewer inconsistency**: Unlike PDF, whose appearance varies by renderer
+
+This is the key insight: **the state machine isn't just about workflow** — it enforces the relationship between content stability and presentation precision. You can't freeze a document without committing to exactly how it looks.
+
+```
+DRAFT                    FROZEN/PUBLISHED
+┌─────────────────┐      ┌─────────────────┐
+│ Semantic content│      │ Semantic content│
+│ (JSON blocks)   │      │ (JSON blocks)   │
+├─────────────────┤      ├─────────────────┤
+│ Reactive hints  │  →   │ Reactive hints  │
+│ (optional)      │      │ + Precise layout│ ← Required
+└─────────────────┘      │ (exact coords)  │
+                         └─────────────────┘
+                                ↓
+                         Included in hash
+```
 
 ## Specification Structure
 
@@ -134,8 +172,12 @@ document.cdx
 │   ├── document.json      # Semantic content blocks
 │   └── block-index.json   # Block hashes for Merkle proofs
 ├── presentation/
-│   ├── paginated.json     # Print/fixed layout
-│   └── continuous.json    # Screen/reflow layout
+│   ├── defaults.json      # Base styles
+│   ├── paginated.json     # Print hints (reactive)
+│   ├── continuous.json    # Screen hints (reactive)
+│   └── layouts/           # Precise layouts (required for FROZEN/PUBLISHED)
+│       ├── letter.json    # US Letter format coordinates
+│       └── a4.json        # A4 format coordinates
 ├── assets/
 │   ├── images/
 │   ├── fonts/
