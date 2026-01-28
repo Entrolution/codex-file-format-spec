@@ -101,6 +101,19 @@ function Writer(doc, opts)
     -- Create manifest
     local manifest = create_manifest()
 
+    -- Check if citations were used and add semantic extension declaration
+    local citation_keys = blocks.get_citation_keys()
+    local has_citations = false
+    for _ in pairs(citation_keys) do has_citations = true; break end
+
+    if has_citations then
+        manifest.extensions = {{
+            id = "codex.semantic",
+            version = "0.1",
+            required = false
+        }}
+    end
+
     -- Combine into output structure
     local output = {
         manifest = manifest,

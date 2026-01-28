@@ -157,10 +157,12 @@ function M.convert_inline(inline, marks)
         return {M.text_node(inline.caption and pandoc.utils.stringify(inline.caption) or "[image]", marks)}
 
     elseif tag == "Math" then
-        -- Inline math - represent as code for now (could be extension)
-        local new_marks = deep_copy(marks)
-        table.insert(new_marks, "code")
-        return {M.text_node(inline.text, new_marks)}
+        return {{
+            type = "math_sentinel",
+            mathtype = inline.mathtype,
+            text = inline.text,
+            value = ""
+        }}
 
     elseif tag == "RawInline" then
         -- Raw content - just include as text
@@ -178,8 +180,16 @@ function M.convert_inline(inline, marks)
         return nodes
 
     elseif tag == "Cite" then
-        -- Citations - just render the content for now
-        return M.flatten(inline.content, marks)
+        local citations = {}
+        for _, c in ipairs(inline.citations) do
+            table.insert(citations, {
+                id = c.id,
+                mode = c.mode,
+                prefix = c.prefix and pandoc.utils.stringify(c.prefix) or nil,
+                suffix = c.suffix and pandoc.utils.stringify(c.suffix) or nil,
+            })
+        end
+        return {{type = "citation_sentinel", citations = citations, value = ""}}
 
     elseif tag == "SmallCaps" then
         -- SmallCaps not supported in Codex, render as-is
@@ -223,36 +233,55 @@ function M.text_node(value, marks)
     return node
 end
 
+-- Check if a node is a sentinel (non-text node that needs block-level handling)
+local function is_sentinel(node)
+    return node.type and node.type:match("_sentinel$")
+end
+
 -- Merge adjacent text nodes with identical marks
--- @param nodes Array of text nodes
--- @return Merged array of text nodes
+-- Sentinel nodes are passed through untouched
+-- @param nodes Array of text nodes (and possibly sentinel nodes)
+-- @return Merged array of nodes
 function M.merge_adjacent(nodes)
     if #nodes == 0 then
         return {}
     end
 
     local result = {}
-    local current = deep_copy(nodes[1])
+    local current = nil
 
-    for i = 2, #nodes do
-        local node = nodes[i]
-        local current_marks = current.marks or {}
-        local node_marks = node.marks or {}
-
-        if marks_arrays_equal(current_marks, node_marks) then
-            -- Same marks, merge text
-            current.value = current.value .. node.value
-        else
-            -- Different marks, push current and start new
-            if current.value ~= "" then
-                table.insert(result, current)
+    for _, node in ipairs(nodes) do
+        if is_sentinel(node) then
+            -- Flush current text node if any
+            if current then
+                if current.value ~= "" then
+                    table.insert(result, current)
+                end
+                current = nil
             end
+            -- Pass sentinel through as-is
+            table.insert(result, node)
+        elseif current == nil then
             current = deep_copy(node)
+        else
+            local current_marks = current.marks or {}
+            local node_marks = node.marks or {}
+
+            if marks_arrays_equal(current_marks, node_marks) then
+                -- Same marks, merge text
+                current.value = current.value .. node.value
+            else
+                -- Different marks, push current and start new
+                if current.value ~= "" then
+                    table.insert(result, current)
+                end
+                current = deep_copy(node)
+            end
         end
     end
 
     -- Don't forget the last node
-    if current.value ~= "" then
+    if current and current.value ~= "" then
         table.insert(result, current)
     end
 

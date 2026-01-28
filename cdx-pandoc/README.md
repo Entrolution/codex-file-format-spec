@@ -59,7 +59,11 @@ Any format Pandoc can read:
 | BlockQuote | blockquote | Nested content |
 | HorizontalRule | horizontalRule | Thematic break |
 | Table | table | Headers and cells |
+| Math (display) | math | LaTeX format, display=true |
+| Math (inline) | math | LaTeX format, display=false; splits paragraph |
+| Cite | semantic:citation | ref, prefix, suffix, suppressAuthor |
 | Div | (unwrapped) | Contents extracted |
+| Div#refs | semantic:bibliography | Citeproc bibliography entries |
 
 ### Inline Formatting
 
@@ -194,9 +198,8 @@ Convert:
 ## Limitations
 
 - Images are referenced but not embedded (future enhancement)
-- Math blocks are converted to code format (LaTeX preserved)
-- Citations are rendered inline (bibliography extension planned)
 - Complex table formatting may be simplified
+- Citations require `--citeproc` flag for bibliography generation; without it, only inline citation blocks are emitted
 
 ## License
 

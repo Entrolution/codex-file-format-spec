@@ -6,6 +6,9 @@ local M = {}
 -- Inlines module (will be set by init)
 local inlines = nil
 
+-- Track citation keys used in the document
+M._citation_keys = {}
+
 -- Set the inlines module reference
 function M.set_inlines(inlines_module)
     inlines = inlines_module
@@ -69,7 +72,13 @@ function M.convert_block(block)
         return M.table_block(block)
 
     elseif tag == "Div" then
-        -- Div is a container - unwrap its contents
+        local attr = block.attr or {}
+        local id = attr.identifier or (attr[1] or "")
+        if id == "refs" then
+            -- Citeproc bibliography Div — extract structured entries
+            return M.bibliography_from_refs(block)
+        end
+        -- Normal Div — unwrap contents
         return {
             multi = true,
             blocks = M.convert(block.content)
@@ -113,17 +122,105 @@ function M.convert_block(block)
     end
 end
 
--- Convert Para/Plain to paragraph
+-- Convert Para/Plain to paragraph (sentinel-aware)
 function M.paragraph(block)
     local content = block.content or block.c
-    if not content then
-        return nil
+    if not content then return nil end
+
+    local flat = inlines.flatten(content)
+
+    -- Check for any sentinels
+    local has_sentinel = false
+    for _, node in ipairs(flat) do
+        if node.type and node.type:match("_sentinel$") then
+            has_sentinel = true
+            break
+        end
     end
 
-    return {
-        type = "paragraph",
-        children = inlines.convert(content)
-    }
+    if not has_sentinel then
+        return {type = "paragraph", children = inlines.merge_adjacent(flat)}
+    end
+
+    -- Split around sentinels
+    local result_blocks = {}
+    local current_text = {}
+
+    for _, node in ipairs(flat) do
+        if node.type and node.type:match("_sentinel$") then
+            -- Flush accumulated text as paragraph
+            if #current_text > 0 then
+                local merged = inlines.merge_adjacent(current_text)
+                if #merged > 0 then
+                    table.insert(result_blocks, {type = "paragraph", children = merged})
+                end
+                current_text = {}
+            end
+            -- Convert sentinel to its target block(s)
+            local sentinel_blocks = M.convert_sentinel(node)
+            for _, sb in ipairs(sentinel_blocks) do
+                table.insert(result_blocks, sb)
+            end
+        else
+            table.insert(current_text, node)
+        end
+    end
+
+    -- Flush remaining text
+    if #current_text > 0 then
+        local merged = inlines.merge_adjacent(current_text)
+        if #merged > 0 then
+            table.insert(result_blocks, {type = "paragraph", children = merged})
+        end
+    end
+
+    if #result_blocks == 1 then
+        return result_blocks[1]
+    else
+        return {multi = true, blocks = result_blocks}
+    end
+end
+
+-- Convert a sentinel node to its target block(s)
+function M.convert_sentinel(node)
+    if node.type == "math_sentinel" then
+        return {{
+            type = "math",
+            display = (node.mathtype == "DisplayMath"),
+            format = "latex",
+            value = node.text
+        }}
+    elseif node.type == "citation_sentinel" then
+        return M.convert_citation_sentinel(node)
+    elseif node.type == "image_sentinel" then
+        return {{type = "image", src = node.src, alt = node.alt, title = node.title}}
+    else
+        return {}
+    end
+end
+
+-- Convert a citation sentinel to semantic:citation block(s)
+function M.convert_citation_sentinel(node)
+    local result = {}
+    for _, cite in ipairs(node.citations) do
+        M._citation_keys[cite.id] = true
+        local block = {
+            type = "semantic:citation",
+            ref = cite.id,
+        }
+        if cite.prefix and cite.prefix ~= "" then block.prefix = cite.prefix end
+        if cite.suffix and cite.suffix ~= "" then block.suffix = cite.suffix end
+        if cite.mode == "SuppressAuthor" then block.suppressAuthor = true end
+        table.insert(result, block)
+    end
+    return result
+end
+
+-- Get citation keys collected during conversion and reset tracker
+function M.get_citation_keys()
+    local keys = M._citation_keys
+    M._citation_keys = {}
+    return keys
 end
 
 -- Convert Header to heading
@@ -497,6 +594,32 @@ function M.image(img, caption)
     end
 
     return result
+end
+
+-- Convert citeproc #refs Div to a bibliography block
+function M.bibliography_from_refs(block)
+    local entries = {}
+    for _, child in ipairs(block.content) do
+        if child.t == "Div" then
+            local entry_id = child.attr and (child.attr.identifier or child.attr[1]) or ""
+            local text = pandoc.utils.stringify(child)
+            if entry_id ~= "" then
+                table.insert(entries, {
+                    id = entry_id:gsub("^ref%-", ""),
+                    entryType = "other",
+                    title = text,
+                })
+            end
+        end
+    end
+    if #entries > 0 then
+        return {
+            type = "semantic:bibliography",
+            style = "apa",
+            entries = entries,
+        }
+    end
+    return {multi = true, blocks = {}}
 end
 
 return M
