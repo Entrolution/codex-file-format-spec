@@ -1,7 +1,0 @@
-# Test outputs
-tests/outputs/
-
-# Editor files
-*.swp
-*~
-.DS_Store
