@@ -99,6 +99,17 @@
         }
       }
     },
+    "phantoms": {
+      "type": "object",
+      "description": "Phantom layer reference (Phantom Extension)",
+      "required": ["clusters"],
+      "properties": {
+        "clusters": {
+          "type": "string",
+          "description": "Path to phantom clusters file"
+        }
+      }
+    },
     "lineage": {
       "type": "object",
       "description": "Version history and parent reference",

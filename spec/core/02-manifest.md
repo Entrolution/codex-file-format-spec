@@ -61,6 +61,7 @@ The manifest MUST be:
 | `security` | object | Security layer reference |
 | `extensions` | array | Active extension declarations |
 | `lineage` | object | Version history and parent reference |
+| `phantoms` | object | Phantom layer reference (Phantom Extension) |
 
 ## 4. Field Definitions
 
@@ -285,7 +286,25 @@ References to metadata files.
 | `dublinCore` | string | Yes | Path to Dublin Core metadata |
 | `custom` | string | No | Path to custom metadata |
 
-### 4.12 `lineage` (Optional)
+### 4.12 `phantoms` (Optional)
+
+Reference to the phantom annotation layer. Presence indicates the Phantom Extension is active.
+
+```json
+{
+  "phantoms": {
+    "clusters": "phantoms/clusters.json"
+  }
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `clusters` | string | Yes | Path to phantom clusters file |
+
+Phantom data is explicitly outside the content hash boundary. No `hash` field is included — adding or editing phantoms never changes the document ID.
+
+### 4.13 `lineage` (Optional)
 
 Version history and document relationships.
 

@@ -92,10 +92,14 @@ The canonical content includes:
 3. Asset hashes (not asset content)
 
 The canonical content EXCLUDES:
-- Presentation layers (derived from content)
-- Timestamps (change on every edit)
-- Security data (signatures reference the hash)
-- Extension-specific data (optional)
+- Presentation layers (visual rendering, not part of content identity)
+- Precise layouts (rendering fidelity, not part of content identity)
+- Timestamps (administrative, change on every edit)
+- Security data (signatures reference the hash, not part of it)
+- Collaboration data (comments, change tracking)
+- Phantom data (off-page annotations)
+
+> **Note**: The document ID represents the document's semantic identity — what it says, not how it looks. Multiple visual presentations (letter, A4, responsive) of the same content produce the same document ID. For appearance attestation, see Scoped Signatures in the Security Extension.
 
 ### 4.2 Canonical Content Structure
 

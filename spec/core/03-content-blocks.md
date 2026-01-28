@@ -67,9 +67,13 @@ Every block has the following base structure:
 Block IDs:
 
 - MUST be unique within the document
-- SHOULD be stable across edits (for collaboration)
-- MAY be omitted for simple documents
+- SHOULD be present on all blocks
+- MUST be present when the document uses any extension that references content positions (collaboration, phantoms, semantic, presentation extension)
+- MUST be stable across edits for documents in REVIEW or later states
+- SHOULD be stable across edits in DRAFT state (for collaboration)
 - SHOULD use URL-safe characters
+
+Block IDs share the document-wide ID namespace with named anchor IDs (see Anchors and References specification). Block IDs and anchor IDs MUST be unique across both sets.
 
 ## 4. Core Block Types
 
@@ -102,6 +106,28 @@ Text nodes are the leaf nodes that contain actual text content.
 | `code` | Inline code (monospace) |
 | `superscript` | Superscript text |
 | `subscript` | Subscript text |
+| `anchor` | Named anchor point (see below and Anchors and References spec) |
+
+#### 4.1.1a Anchor Mark
+
+The `anchor` mark places a named, stable anchor point within text. Anchor marks enable internal references that survive content edits.
+
+```json
+{
+  "type": "text",
+  "value": "key concept",
+  "marks": [
+    { "type": "anchor", "id": "def-key-concept" }
+  ]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"anchor"` |
+| `id` | string | Yes | Unique anchor identifier (shares namespace with block IDs) |
+
+See the Anchors and References specification for full details on the anchor system, including Content Anchor URIs, character offset computation, and validation rules.
 
 #### 4.1.2 Link Mark
 
@@ -120,6 +146,24 @@ Links use an extended mark format:
   ]
 }
 ```
+
+The `href` field also accepts Content Anchor URIs for internal links. Values beginning with `#` are interpreted as internal references:
+
+```json
+{
+  "type": "text",
+  "value": "See the introduction",
+  "marks": [
+    {
+      "type": "link",
+      "href": "#intro",
+      "title": "Introduction"
+    }
+  ]
+}
+```
+
+See the Anchors and References specification for the full Content Anchor URI syntax.
 
 ### 4.2 Paragraph
 

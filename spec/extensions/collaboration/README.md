@@ -1,7 +1,7 @@
 # Collaboration Extension
 
 **Extension ID**: `codex.collaboration`
-**Version**: 0.1
+**Version**: 0.2
 **Status**: Draft
 
 ## 1. Overview
@@ -20,12 +20,14 @@ The Collaboration Extension enables multi-user editing and feedback:
   "extensions": [
     {
       "id": "codex.collaboration",
-      "version": "0.1",
+      "version": "0.2",
       "required": false
     }
   ]
 }
 ```
+
+> **Migration note (0.1 → 0.2)**: Version 0.2 replaces the `blockRef` + `range` addressing pattern with the unified `anchor` field using ContentAnchor objects from the core Anchors and References specification. Implementations SHOULD migrate existing `blockRef`/`range` pairs to the equivalent `anchor` object: `{ "blockId": "<blockRef>", "start": <range.start>, "end": <range.end> }`. Block-level references (no range) become `{ "blockId": "<blockRef>" }`.
 
 ## 3. CRDT Integration
 
@@ -127,13 +129,12 @@ Location: `collaboration/comments.json`
 
 ```json
 {
-  "version": "0.1",
+  "version": "0.2",
   "comments": [
     {
       "id": "comment-1",
       "type": "comment",
-      "blockRef": "block-456",
-      "range": { "start": 10, "end": 25 },
+      "anchor": { "blockId": "block-456", "start": 10, "end": 25 },
       "author": {
         "name": "Jane Doe",
         "email": "jane@example.com"
@@ -154,8 +155,7 @@ Location: `collaboration/comments.json`
 |-------|------|----------|-------------|
 | `id` | string | Yes | Unique comment identifier |
 | `type` | string | Yes | Comment type |
-| `blockRef` | string | Yes | Reference to content block |
-| `range` | object | No | Text range within block |
+| `anchor` | ContentAnchor | Yes | Anchor to content (see Anchors and References spec) |
 | `author` | object | Yes | Comment author |
 | `created` | string | Yes | Creation timestamp |
 | `modified` | string | No | Last modification timestamp |
@@ -163,18 +163,17 @@ Location: `collaboration/comments.json`
 | `resolved` | boolean | No | Whether comment is resolved |
 | `replies` | array | No | Reply comments |
 
-### 4.4 Text Range
+### 4.4 Content Anchors
+
+The `anchor` field uses a ContentAnchor object from the core Anchors and References specification. Block-level, point, and range anchors are supported:
 
 ```json
-{
-  "range": {
-    "start": 10,
-    "end": 25
-  }
-}
+{ "blockId": "block-456" }
+{ "blockId": "block-456", "start": 10, "end": 25 }
+{ "blockId": "block-456", "offset": 15 }
 ```
 
-Range positions are character offsets within the block's text content.
+Character offsets follow the computation rules defined in the Anchors and References specification.
 
 ### 4.5 Suggestions
 
@@ -182,8 +181,7 @@ Range positions are character offsets within the block's text content.
 {
   "id": "suggestion-1",
   "type": "suggestion",
-  "blockRef": "block-789",
-  "range": { "start": 0, "end": 5 },
+  "anchor": { "blockId": "block-789", "start": 0, "end": 5 },
   "author": { "name": "Editor" },
   "created": "2025-01-15T11:00:00Z",
   "originalText": "Hello",
@@ -200,7 +198,7 @@ Suggestion statuses: `pending`, `accepted`, `rejected`
 {
   "id": "reaction-1",
   "type": "reaction",
-  "blockRef": "block-123",
+  "anchor": { "blockId": "block-123" },
   "author": { "name": "Reader" },
   "created": "2025-01-15T12:00:00Z",
   "emoji": "thumbsup"
@@ -226,13 +224,13 @@ Location: `collaboration/changes.json`
 
 ```json
 {
-  "version": "0.1",
+  "version": "0.2",
   "baseVersion": "sha256:abc123...",
   "changes": [
     {
       "id": "change-1",
       "type": "insert",
-      "blockRef": "block-new",
+      "anchor": { "blockId": "block-new" },
       "position": { "after": "block-456" },
       "author": { "name": "Jane Doe" },
       "timestamp": "2025-01-15T10:00:00Z"
@@ -240,7 +238,7 @@ Location: `collaboration/changes.json`
     {
       "id": "change-2",
       "type": "modify",
-      "blockRef": "block-789",
+      "anchor": { "blockId": "block-789" },
       "before": { "type": "text", "value": "old text" },
       "after": { "type": "text", "value": "new text" },
       "author": { "name": "Jane Doe" },
@@ -289,15 +287,8 @@ This is typically ephemeral (not stored in document), but can be synchronized:
       "userId": "jane@example.com",
       "name": "Jane Doe",
       "color": "#ff6b6b",
-      "cursor": {
-        "blockRef": "block-123",
-        "offset": 42
-      },
-      "selection": {
-        "blockRef": "block-123",
-        "start": 40,
-        "end": 50
-      },
+      "cursor": { "blockId": "block-123", "offset": 42 },
+      "selection": { "blockId": "block-123", "start": 40, "end": 50 },
       "lastActive": "2025-01-15T10:00:00Z"
     }
   ]
@@ -374,12 +365,12 @@ When conflicts occur:
 
 ```json
 {
-  "version": "0.1",
+  "version": "0.2",
   "comments": [
     {
       "id": "c1",
       "type": "comment",
-      "blockRef": "intro-para",
+      "anchor": { "blockId": "intro-para" },
       "author": { "name": "Reviewer", "email": "reviewer@example.com" },
       "created": "2025-01-15T10:00:00Z",
       "content": "Consider adding more context here.",
@@ -401,13 +392,13 @@ When conflicts occur:
 
 ```json
 {
-  "version": "0.1",
+  "version": "0.2",
   "baseVersion": "sha256:original...",
   "changes": [
     {
       "id": "ch1",
       "type": "delete",
-      "blockRef": "old-section",
+      "anchor": { "blockId": "old-section" },
       "author": { "name": "Editor" },
       "timestamp": "2025-01-15T11:00:00Z",
       "status": "pending"
@@ -415,7 +406,7 @@ When conflicts occur:
     {
       "id": "ch2",
       "type": "insert",
-      "blockRef": "new-section",
+      "anchor": { "blockId": "new-section" },
       "position": { "after": "intro" },
       "author": { "name": "Editor" },
       "timestamp": "2025-01-15T11:05:00Z",

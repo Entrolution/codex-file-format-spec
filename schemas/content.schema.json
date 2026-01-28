@@ -98,7 +98,8 @@
                 "type": "string",
                 "enum": ["bold", "italic", "underline", "strikethrough", "code", "superscript", "subscript"]
               },
-              { "$ref": "#/$defs/linkMark" }
+              { "$ref": "#/$defs/linkMark" },
+              { "$ref": "#/$defs/anchorMark" }
             ]
           }
         }
@@ -111,11 +112,23 @@
         "type": { "const": "link" },
         "href": {
           "type": "string",
-          "description": "Link URL"
+          "description": "Link URL or Content Anchor URI (values beginning with '#' are internal references)"
         },
         "title": {
           "type": "string",
           "description": "Link title"
+        }
+      }
+    },
+    "anchorMark": {
+      "type": "object",
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "const": "anchor" },
+        "id": {
+          "type": "string",
+          "description": "Unique anchor identifier (shares namespace with block IDs)",
+          "pattern": "^[A-Za-z0-9._-]+$"
         }
       }
     },

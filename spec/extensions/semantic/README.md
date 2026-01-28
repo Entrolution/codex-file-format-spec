@@ -199,6 +199,8 @@ Based on Schema.org types:
 
 ### 7.1 Internal References
 
+Internal references use Content Anchor URI syntax (see core Anchors and References specification) for the `target` field. Values beginning with `#` are internal document references:
+
 ```json
 {
   "type": "semantic:ref",

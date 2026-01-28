@@ -68,6 +68,7 @@ The initial state for new documents.
 - Add/remove assets
 - Modify presentation
 - Modify metadata
+- Add/edit/remove phantom clusters
 - Transition to REVIEW
 
 ### 3.3 REVIEW
@@ -83,6 +84,7 @@ Documents ready for feedback and approval.
 **Permitted Operations:**
 - Edit content (changes tracked)
 - Add comments/annotations
+- Add/edit/remove phantom clusters
 - Transition to FROZEN (with signature)
 - Transition back to DRAFT (if unsigned)
 - Fork to new DRAFT
@@ -100,6 +102,7 @@ Documents that have been signed and locked.
 **Permitted Operations:**
 - Add annotation layer (separate from content)
 - Add additional signatures
+- Add/edit/remove phantom clusters (outside hashing boundary)
 - Transition to PUBLISHED
 - Fork to new DRAFT
 
@@ -118,7 +121,7 @@ Documents officially released for distribution.
 - May have distribution metadata
 
 **Permitted Operations:**
-- Same as FROZEN
+- Same as FROZEN (including phantom cluster operations)
 - Fork to new DRAFT
 
 ## 4. State Transitions
@@ -337,7 +340,7 @@ Annotations do NOT affect the document ID or signatures.
     {
       "id": "annot-1",
       "type": "comment",
-      "blockRef": "block-456",
+      "anchor": { "blockId": "block-456" },
       "author": "Jane Doe",
       "created": "2025-01-15T10:00:00Z",
       "content": "This section needs a citation."
@@ -345,6 +348,28 @@ Annotations do NOT affect the document ID or signatures.
   ]
 }
 ```
+
+The `anchor` field uses a ContentAnchor object from the Anchors and References specification. For range-specific annotations, include `start` and `end`:
+
+```json
+{
+  "anchor": { "blockId": "block-456", "start": 10, "end": 25 }
+}
+```
+
+### 7.5 Annotation Layer Relationships
+
+There are three annotation storage locations, each serving a different purpose:
+
+| Layer | Location | Purpose | Extension Required |
+|-------|----------|---------|--------------------|
+| Core annotations | `security/annotations.json` | Minimal annotation support for frozen/published documents. Lightweight format for implementations that don't support extensions. | No (core) |
+| Collaboration | `collaboration/comments.json` | Full-featured comments, suggestions, change tracking, presence. Supersedes core annotations when active. | `codex.collaboration` |
+| Phantoms | `phantoms/clusters.json` | Spatially-organized off-page annotation clusters. Orthogonal to inline annotations. | `codex.phantoms` |
+
+When the collaboration extension is active, implementations SHOULD use `collaboration/comments.json` rather than `security/annotations.json` for new annotations. Core annotations exist as a fallback for minimal implementations.
+
+Phantoms are a separate concept from inline annotations — they provide spatially-organized, off-page content that is anchored to document content but rendered outside the page plane.
 
 ## 8. State Persistence
 
