@@ -339,7 +339,7 @@ This document records key design decisions made during the Codex format specific
 4. External rendering only (no stored layouts)
 
 **Rationale**:
-- **Provenance integrity** — When frozen, the hash covers exact appearance, not just content
+- **Rendering fidelity** — When frozen, the precise layout is required for rendering fidelity, but the document ID covers semantic content only. For legal contexts requiring appearance attestation, use scoped signatures (see Security Extension).
 - **Legal/academic needs** — Citations reference "page 7, line 23" with confidence
 - **Lifecycle alignment** — Precision emerges naturally as documents mature
 - **No capability loss** — Semantic content always present for accessibility/search
@@ -368,7 +368,82 @@ This document records key design decisions made during the Codex format specific
 - Layout generation is external tooling responsibility
 - Increases document size for frozen documents (layout data)
 
-**Key Insight**: Just as document content becomes immutable when frozen, so does its visual appearance. The precise layout is part of the immutable record.
+**Key Insight**: Just as document content becomes immutable when frozen, so does its visual appearance. The precise layout is part of the immutable record, but the document ID covers semantic content only. Scoped signatures (DD-018) allow separate attestation of appearance when required.
+
+---
+
+## DD-016: Unified Anchor System
+
+**Decision**: Define a single anchor addressing system (Content Anchor URIs and ContentAnchor objects) in the core specification, consumed by all extensions.
+
+**Alternatives Considered**:
+1. Per-extension addressing (each extension defines its own `blockRef` + `range`)
+2. Only named anchors (no offset-based addressing)
+3. XPath-style addressing
+4. Character offsets only (no block-level anchors)
+
+**Rationale**:
+- **Consistency** — All extensions (collaboration, phantoms, presentation, semantic) use the same addressing model
+- **Reduces duplication** — One schema definition, one validation rule set, one offset computation algorithm
+- **Named anchors as stable alternative** — Offset-based anchors are fragile under edits; named anchor marks provide a stable alternative that moves with content
+- **State-dependent validation** — Broken anchors are warnings in DRAFT/REVIEW (content is fluid) but errors in FROZEN/PUBLISHED (content is immutable)
+- **Link mark integration** — Internal links use the same URI syntax (`#blockId`) as external links use URLs, keeping the mark model simple
+
+**Consequences**:
+- Block IDs are now SHOULD (upgraded from MAY) for all blocks
+- Block IDs are MUST when any referencing extension is active
+- Named anchor IDs share the namespace with block IDs (uniqueness constraint)
+- Implementations need offset adjustment logic for mutable documents
+
+---
+
+## DD-017: Phantom Layer
+
+**Decision**: Provide an off-page annotation layer (phantoms) that is outside the hashing boundary and mutable in all states.
+
+**Alternatives Considered**:
+1. Extend the collaboration extension with spatial annotations
+2. Use the core annotation layer for all annotation types
+3. Embed annotations inline in content blocks
+4. No spatial annotation support
+
+**Rationale**:
+- **Orthogonal to inline annotations** — Phantoms are spatially organized clusters, not inline comments. They serve a different purpose (research notes, marginalia, mind-maps)
+- **Outside hashing boundary** — Phantoms are commentary, not content. Adding a margin note should never change document identity or invalidate signatures
+- **Mutable in all states** — Even frozen/published documents benefit from annotation. This follows the PDF model where annotations don't affect the document
+- **Scope control** — Private, shared, and role-based visibility allows personal notes alongside team annotations
+- **Fork behavior** — Shared phantoms travel with the document; private ones stay with their author
+
+**Consequences**:
+- New `phantoms/` directory in the archive
+- Phantom block IDs are in a separate namespace from document content
+- Applications must decide how to render clusters spatially (margin, sidebar, overlay)
+- Fork operations must handle per-scope phantom copying
+
+---
+
+## DD-018: Scoped Signatures for Appearance Attestation
+
+**Decision**: Add optional `scope` field to signatures, enabling per-signature attestation of content plus layout.
+
+**Alternatives Considered**:
+1. Include layout in the content hash (makes layout part of document identity)
+2. Separate signature files for content vs. appearance
+3. Always sign appearance (all signatures cover layout)
+4. No appearance attestation (content-only signatures always)
+
+**Rationale**:
+- **Content identity vs. appearance attestation** — The document ID should represent semantic identity (what it says), not visual appearance (how it looks). But legal/notarial use cases need to attest that a specific rendering was certified
+- **Backward compatible** — Existing signatures (no `scope`) continue to work unchanged as content-only attestation
+- **Flexible** — Different signers can attest to different things. A notary signs content + letter layout; a reviewer signs content only
+- **Extensible** — The `scope` object can be extended with additional fields (metadata, assets) without breaking existing signatures
+- **JCS for determinism** — Using JCS serialization of the scope object provides deterministic bytes for signing
+
+**Consequences**:
+- Verification algorithm has two paths (legacy vs. scoped)
+- Scoped signatures are larger (include scope object)
+- Layout file hashes must be computed and included in scope
+- Applications must expose the scope distinction in signature UI
 
 ---
 

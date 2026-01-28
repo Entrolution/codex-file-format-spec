@@ -86,6 +86,9 @@ document.cdx
 │   └── embeds/             # Embedded files
 ├── security/
 │   └── signatures.json     # Digital signatures (optional)
+├── phantoms/
+│   ├── clusters.json       # Off-page annotation clusters (optional)
+│   └── assets/             # Phantom-specific assets (optional)
 └── metadata/
     └── dublin-core.json    # Dublin Core metadata (required)
 ```
@@ -97,6 +100,7 @@ This specification is organized into the following sections:
 - **Container Format**: ZIP-based packaging and file structure
 - **Manifest**: Root metadata and document properties
 - **Content Blocks**: Semantic content model
+- **Anchors and References**: Unified sub-block addressing system
 - **Presentation Layers**: Visual rendering instructions
 - **Asset Embedding**: Resource inclusion and referencing
 - **Document Hashing**: Content-addressable identity
@@ -108,6 +112,7 @@ Extension specifications (optional modules) are defined separately:
 - Security Extension
 - Collaboration Extension
 - Presentation Extension
+- Phantom Extension
 - Forms Extension
 - Multimedia Extension
 - Semantic Extension

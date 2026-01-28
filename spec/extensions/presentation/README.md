@@ -351,6 +351,8 @@ Span options: `column`, `page`, `spread`
 
 ### 7.3 Cross-References
 
+The `reference` block's `target` field uses Content Anchor URI syntax (see core Anchors and References specification). The `#` prefix identifies internal document references:
+
 ```json
 {
   "type": "text",
@@ -359,7 +361,7 @@ Span options: `column`, `page`, `spread`
 },
 {
   "type": "reference",
-  "target": "fig-architecture",
+  "target": "#fig-architecture",
   "format": "Figure #"
 }
 ```

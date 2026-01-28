@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/anchor.schema.json",
+  "title": "Codex Content Anchor Definitions",
+  "description": "Reusable schema definitions for ContentAnchor and ContentAnchorUri, used by collaboration, phantoms, and other extensions.",
+  "$defs": {
+    "contentAnchor": {
+      "type": "object",
+      "description": "Structured content anchor referencing a block, point, or range within document content.",
+      "required": ["blockId"],
+      "properties": {
+        "blockId": {
+          "type": "string",
+          "description": "Target block ID or named anchor ID",
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Zero-based character offset (point anchor)"
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Range start (inclusive, zero-based)"
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Range end (exclusive, zero-based)"
+        },
+        "contentHash": {
+          "type": "string",
+          "description": "Hash of the target block's text content at anchor creation time, for stale detection",
+          "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+        }
+      },
+      "oneOf": [
+        {
+          "description": "Block-level anchor (no position fields)",
+          "not": {
+            "anyOf": [
+              { "required": ["offset"] },
+              { "required": ["start"] },
+              { "required": ["end"] }
+            ]
+          }
+        },
+        {
+          "description": "Point anchor (offset only)",
+          "required": ["offset"],
+          "not": {
+            "anyOf": [
+              { "required": ["start"] },
+              { "required": ["end"] }
+            ]
+          }
+        },
+        {
+          "description": "Range anchor (start and end)",
+          "required": ["start", "end"],
+          "not": {
+            "required": ["offset"]
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "contentAnchorUri": {
+      "type": "string",
+      "description": "Content Anchor URI string for inline references. Format: #blockId, #blockId/offset, or #blockId/start-end",
+      "pattern": "^#[A-Za-z0-9._-]+(/[0-9]+(-[0-9]+)?)?$"
+    }
+  }
+}

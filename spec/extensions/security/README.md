@@ -96,6 +96,7 @@ Location: `security/signatures.json`
 | `value` | string | Yes | Base64-encoded signature |
 | `certificateChain` | array | No | Certificate chain for validation |
 | `timestamp` | object | No | Trusted timestamp |
+| `scope` | object | No | Scoped signature attestation (see section 9) |
 
 ### 3.5 Signer Information
 
@@ -142,9 +143,10 @@ To verify a signature:
 2. Recompute document ID from content (verify integrity)
 3. For each signature:
    a. Decode the signature value
-   b. Verify signature over document ID using signer's public key
-   c. If certificate present, validate certificate chain
-   d. If timestamp present, verify timestamp token
+   b. If `scope` is absent: verify signature over document ID using signer's public key
+   c. If `scope` is present: verify using scoped signature algorithm (see section 9.5)
+   d. If certificate present, validate certificate chain
+   e. If timestamp present, verify timestamp token
 4. Report verification results
 
 ### 3.8 Signature States
@@ -360,9 +362,79 @@ Implementations MUST use constant-time comparison for cryptographic operations.
 
 Use well-audited cryptographic libraries that protect against side-channel attacks.
 
-## 9. Examples
+## 9. Scoped Signatures
 
-### 9.1 Single Signature
+### 9.1 Overview
+
+By default, signatures cover the document ID (semantic content) only. For use cases that require attesting to visual appearance (e.g., legal documents, notarized contracts), signatures can include an optional `scope` object that makes explicit what the signature covers.
+
+### 9.2 Content-Only Signature (Default)
+
+When `scope` is absent, the signature covers semantic content only. This is backward compatible with existing signatures:
+
+```json
+{
+  "id": "sig-1",
+  "algorithm": "ES256",
+  "signedAt": "2025-01-15T10:00:00Z",
+  "signer": { "name": "Jane Doe", "email": "jane@example.com" },
+  "value": "MEUCIQDf9Ky7..."
+}
+```
+
+Verification: `Verify(PublicKey, value, DocumentID)`
+
+### 9.3 Scoped Signature (Content + Layout Attestation)
+
+When `scope` is present, the signature covers both content identity and additional components specified in the scope:
+
+```json
+{
+  "id": "sig-2",
+  "algorithm": "ES256",
+  "signedAt": "2025-01-15T10:00:00Z",
+  "signer": { "name": "Bob Smith", "email": "bob@example.com" },
+  "scope": {
+    "documentId": "sha256:contenthash...",
+    "layouts": {
+      "presentation/layouts/letter.json": "sha256:layouthash..."
+    }
+  },
+  "value": "MEYCIQCa8Bx2..."
+}
+```
+
+Verification: `Verify(PublicKey, value, JCS(scope))`
+
+The `scope` object is serialized using JCS ([RFC 8785](https://www.rfc-editor.org/rfc/rfc8785)) to produce deterministic bytes for signing.
+
+### 9.4 Scope Object Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `documentId` | string | Yes | Content hash (MUST match top-level `documentId`) |
+| `layouts` | object | No | Map of layout path → layout file hash. Attests visual appearance. |
+
+The `scope` object is extensible — future fields can be added (e.g., `metadata`, `assets`) without breaking existing signatures.
+
+### 9.5 Verification Algorithm for Scoped Signatures
+
+The verification algorithm (section 3.7) is extended to handle both legacy and scoped modes:
+
+1. If `scope` is absent: `Verify(PublicKey, value, documentId)` — legacy content-only verification
+2. If `scope` is present:
+   a. Verify `scope.documentId` matches top-level `documentId`
+   b. If `scope.layouts` is present, verify each layout path exists and its file hash matches the declared hash
+   c. Serialize `scope` with JCS
+   d. `Verify(PublicKey, value, JCS(scope))`
+
+### 9.6 Use Case
+
+In legal contexts, a notary signs with `scope` including the letter layout, attesting: "I certify this content rendered in this exact layout." Another signer might sign content-only if appearance is not relevant to their attestation.
+
+## 10. Examples
+
+### 10.1 Single Signature
 
 ```json
 {
@@ -383,7 +455,7 @@ Use well-audited cryptographic libraries that protect against side-channel attac
 }
 ```
 
-### 9.2 Multiple Signers
+### 10.2 Multiple Signers
 
 ```json
 {

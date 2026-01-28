@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/phantoms.schema.json",
+  "title": "Codex Phantom Clusters",
+  "description": "Schema for the phantoms/clusters.json file in a Codex document",
+  "type": "object",
+  "required": ["version", "clusters"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Phantom extension version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "clusters": {
+      "type": "array",
+      "description": "Array of phantom clusters",
+      "items": {
+        "$ref": "#/$defs/cluster"
+      }
+    }
+  },
+  "$defs": {
+    "cluster": {
+      "type": "object",
+      "required": ["id", "anchor", "scope", "created", "phantoms"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique cluster identifier"
+        },
+        "anchor": {
+          "$ref": "anchor.schema.json#/$defs/contentAnchor",
+          "description": "Anchor to document content"
+        },
+        "label": {
+          "type": "string",
+          "description": "Display label for the cluster"
+        },
+        "scope": {
+          "type": "string",
+          "description": "Visibility scope: 'shared', 'private', or 'role:{name}'",
+          "pattern": "^(shared|private|role:[A-Za-z0-9._-]+)$"
+        },
+        "author": {
+          "$ref": "#/$defs/author",
+          "description": "Cluster creator"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 creation timestamp"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Application-specific metadata",
+          "properties": {
+            "color": {
+              "type": "string",
+              "description": "Display color (CSS color value)"
+            },
+            "collapsed": {
+              "type": "boolean",
+              "description": "Whether the cluster is collapsed in the UI"
+            }
+          },
+          "additionalProperties": true
+        },
+        "phantoms": {
+          "type": "array",
+          "description": "Array of phantom objects within this cluster",
+          "items": {
+            "$ref": "#/$defs/phantom"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "phantom": {
+      "type": "object",
+      "required": ["id", "position", "content", "created"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique phantom identifier within the cluster"
+        },
+        "position": {
+          "$ref": "#/$defs/position",
+          "description": "Position within cluster coordinate space"
+        },
+        "size": {
+          "$ref": "#/$defs/size",
+          "description": "Phantom dimensions"
+        },
+        "content": {
+          "$ref": "#/$defs/phantomContent",
+          "description": "Phantom content using core content block model"
+        },
+        "connections": {
+          "type": "array",
+          "description": "Connections to other phantoms in the cluster",
+          "items": {
+            "$ref": "#/$defs/connection"
+          }
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 creation timestamp"
+        },
+        "author": {
+          "$ref": "#/$defs/author",
+          "description": "Phantom author"
+        }
+      },
+      "additionalProperties": false
+    },
+    "position": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": {
+        "x": {
+          "type": "number",
+          "description": "Horizontal position (abstract units)"
+        },
+        "y": {
+          "type": "number",
+          "description": "Vertical position (abstract units)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "size": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Width (abstract units)"
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Height (abstract units)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "phantomContent": {
+      "type": "object",
+      "required": ["blocks"],
+      "properties": {
+        "blocks": {
+          "type": "array",
+          "description": "Array of content blocks (uses core content block model)",
+          "items": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Block type identifier"
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "connection": {
+      "type": "object",
+      "required": ["target"],
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "ID of the target phantom within the same cluster"
+        },
+        "style": {
+          "type": "string",
+          "enum": ["line", "arrow", "dashed"],
+          "description": "Connection rendering style"
+        },
+        "label": {
+          "type": "string",
+          "description": "Label displayed on the connection"
+        }
+      },
+      "additionalProperties": false
+    },
+    "author": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Author display name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Author email address"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

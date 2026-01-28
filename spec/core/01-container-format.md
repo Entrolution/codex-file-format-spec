@@ -92,6 +92,7 @@ The archive MUST contain the following structure:
 | `/presentation/` | Presentation layer files |
 | `/assets/` | Embedded resources |
 | `/security/` | Signatures and encryption metadata |
+| `/phantoms/` | Off-page annotation clusters (Phantom Extension) |
 
 ### 3.4 File Naming
 
