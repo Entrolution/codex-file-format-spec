@@ -564,7 +564,7 @@ function M.figure(block)
     }
 end
 
--- Convert Image to image block
+-- Convert Image to image block (with optional dimensions)
 function M.image(img, caption)
     local src = img.src or img.target or ""
     local alt = ""
@@ -585,7 +585,20 @@ function M.image(img, caption)
         result.title = img.title
     end
 
-    -- Add caption if present
+    -- Extract dimensions from Pandoc attributes
+    if img.attr and img.attr.attributes then
+        local attrs = img.attr.attributes
+        if attrs.width then
+            local w = tonumber(attrs.width:match("(%d+)"))
+            if w then result.width = w end
+        end
+        if attrs.height then
+            local h = tonumber(attrs.height:match("(%d+)"))
+            if h then result.height = h end
+        end
+    end
+
+    -- Caption from Figure container
     if caption and caption.long then
         local cap_text = pandoc.utils.stringify(caption.long)
         if cap_text and cap_text ~= "" then
@@ -593,6 +606,19 @@ function M.image(img, caption)
         end
     end
 
+    return result
+end
+
+-- Convert accumulated footnotes to semantic:footnote blocks
+function M.convert_footnotes(footnotes)
+    local result = {}
+    for _, fn in ipairs(footnotes) do
+        table.insert(result, {
+            type = "semantic:footnote",
+            number = fn.number,
+            children = M.convert(fn.content)
+        })
+    end
     return result
 end
 

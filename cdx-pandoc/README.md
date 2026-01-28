@@ -62,6 +62,9 @@ Any format Pandoc can read:
 | Math (display) | math | LaTeX format, display=true |
 | Math (inline) | math | LaTeX format, display=false; splits paragraph |
 | Cite | semantic:citation | ref, prefix, suffix, suppressAuthor |
+| Note | semantic:footnote | Superscript ref + block content |
+| Image | image | src, alt, title, width, height |
+| Figure | image | Extracts image with caption |
 | Div | (unwrapped) | Contents extracted |
 | Div#refs | semantic:bibliography | Citeproc bibliography entries |
 
@@ -197,9 +200,10 @@ Convert:
 
 ## Limitations
 
-- Images are referenced but not embedded (future enhancement)
+- Images are referenced by path but not embedded in the archive (future enhancement)
 - Complex table formatting may be simplified
 - Citations require `--citeproc` flag for bibliography generation; without it, only inline citation blocks are emitted
+- Footnote content is appended as blocks at the end of the document
 
 ## License
 

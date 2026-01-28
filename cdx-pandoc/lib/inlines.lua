@@ -3,6 +3,10 @@
 
 local M = {}
 
+-- Footnote accumulator
+M._footnotes = {}
+M._footnote_counter = 0
+
 -- Deep copy a table
 local function deep_copy(t)
     if type(t) ~= "table" then
@@ -153,8 +157,13 @@ function M.convert_inline(inline, marks)
         return M.flatten(inline.content, new_marks)
 
     elseif tag == "Image" then
-        -- Inline images are complex; for now, just use alt text
-        return {M.text_node(inline.caption and pandoc.utils.stringify(inline.caption) or "[image]", marks)}
+        return {{
+            type = "image_sentinel",
+            src = inline.src or inline.target or "",
+            alt = inline.caption and pandoc.utils.stringify(inline.caption) or "",
+            title = (inline.title and inline.title ~= "") and inline.title or nil,
+            value = ""
+        }}
 
     elseif tag == "Math" then
         return {{
@@ -200,8 +209,15 @@ function M.convert_inline(inline, marks)
         return M.flatten(inline.content, marks)
 
     elseif tag == "Note" then
-        -- Footnote - render content inline for now
-        return M.flatten(inline.content, marks)
+        M._footnote_counter = M._footnote_counter + 1
+        local fn_num = M._footnote_counter
+        table.insert(M._footnotes, {
+            number = fn_num,
+            content = inline.content
+        })
+        local new_marks = deep_copy(marks)
+        table.insert(new_marks, "superscript")
+        return {M.text_node(tostring(fn_num), new_marks)}
 
     else
         -- Unknown inline type - try to stringify if possible
@@ -295,6 +311,14 @@ end
 function M.convert(inlines)
     local flat = M.flatten(inlines)
     return M.merge_adjacent(flat)
+end
+
+-- Retrieve accumulated footnotes and reset state
+function M.get_footnotes()
+    local fns = M._footnotes
+    M._footnotes = {}
+    M._footnote_counter = 0
+    return fns
 end
 
 return M
