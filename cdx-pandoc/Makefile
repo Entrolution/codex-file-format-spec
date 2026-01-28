@@ -9,7 +9,7 @@ TEST_INPUTS := $(wildcard tests/inputs/*.md)
 TEST_OUTPUTS := $(patsubst tests/inputs/%.md,tests/outputs/%.json,$(TEST_INPUTS))
 TEST_CDX := $(patsubst tests/inputs/%.md,tests/outputs/%.cdx,$(TEST_INPUTS))
 
-.PHONY: all test clean test-json test-cdx help check-deps
+.PHONY: all test clean test-json test-cdx test-reader help check-deps
 
 all: test
 
@@ -17,10 +17,11 @@ help:
 	@echo "Codex Pandoc Writer"
 	@echo ""
 	@echo "Targets:"
-	@echo "  test        Run all tests (JSON output)"
-	@echo "  test-cdx    Run full pipeline tests (creates .cdx files)"
-	@echo "  clean       Remove generated files"
-	@echo "  check-deps  Check for required dependencies"
+	@echo "  test         Run all tests (JSON output)"
+	@echo "  test-cdx     Run full pipeline tests (creates .cdx files)"
+	@echo "  test-reader  Test round-trip (JSON → Pandoc → markdown)"
+	@echo "  clean        Remove generated files"
+	@echo "  check-deps   Check for required dependencies"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make test"
@@ -69,6 +70,16 @@ validate: test-json
 		echo "  OK"; \
 	done
 	@echo "Validation complete."
+
+# Test reader round-trip: JSON → Pandoc → markdown
+test-reader: test-json
+	@echo "Testing round-trip..."
+	@for f in tests/outputs/*.json; do \
+		base=$$(basename $$f .json); \
+		echo "Round-trip: $$base"; \
+		$(PANDOC) -f cdx-reader.lua $$f -t markdown > tests/outputs/$$base.roundtrip.md 2>/dev/null && echo "  OK" || echo "  FAIL"; \
+	done
+	@echo "Reader tests complete."
 
 # Clean generated files
 clean:

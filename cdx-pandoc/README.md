@@ -45,6 +45,18 @@ Any format Pandoc can read:
 - reStructuredText (.rst)
 - And many more...
 
+## Reading Codex Documents
+
+Convert Codex JSON back to any Pandoc-supported output format:
+
+```bash
+pandoc -f cdx-reader.lua output.json -o document.md
+pandoc -f cdx-reader.lua output.json -o document.tex
+pandoc -f cdx-reader.lua output.json -o document.html
+```
+
+The reader handles core block types (paragraphs, headings, lists, code blocks, blockquotes, tables, math, images). Extension blocks (`semantic:citation`, `semantic:footnote`) are silently skipped.
+
 ## Features
 
 ### Block Types Supported
@@ -137,23 +149,27 @@ The packaging script extracts these into the proper Codex directory structure.
 make test          # Run JSON output tests
 make validate      # Validate JSON structure
 make test-cdx      # Run full pipeline tests
+make test-reader   # Test round-trip (JSON → markdown)
 ```
 
 ### Project Structure
 
 ```
 cdx-pandoc/
-├── codex.lua           # Main Pandoc custom writer
+├── codex.lua              # Main Pandoc custom writer
+├── cdx-reader.lua         # Codex → Pandoc reader
 ├── lib/
-│   ├── blocks.lua      # Block type converters
-│   ├── inlines.lua     # Inline/text node converters
-│   ├── metadata.lua    # Dublin Core extraction
-│   └── json.lua        # JSON encoding utilities
+│   ├── blocks.lua         # Writer: block type converters
+│   ├── inlines.lua        # Writer: inline/text node converters
+│   ├── metadata.lua       # Writer: Dublin Core extraction
+│   ├── json.lua           # Writer: JSON encoding utilities
+│   ├── reader_blocks.lua  # Reader: block type reverse mapping
+│   └── reader_inlines.lua # Reader: mark → inline wrapping
 ├── scripts/
-│   └── pandoc-to-cdx.sh  # Full pipeline wrapper
+│   └── pandoc-to-cdx.sh   # Full pipeline wrapper
 ├── tests/
-│   ├── inputs/         # Test input files
-│   └── outputs/        # Generated test outputs
+│   ├── inputs/            # Test input files
+│   └── outputs/           # Generated test outputs
 ├── Makefile
 └── README.md
 ```
