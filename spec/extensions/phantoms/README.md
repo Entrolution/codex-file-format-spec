@@ -321,7 +321,7 @@ Phantom content references these assets with paths relative to the archive root 
                 "children": [
                   {
                     "type": "text",
-                    "value": "TODO: Verify sample size is comparable."
+                    "value": "Needs further investigation - compare with control group data."
                   }
                 ]
               }
