@@ -190,6 +190,18 @@ Connections between phantoms support mind-map style layouts:
 | `style` | string | No | Connection style: `"line"`, `"arrow"`, `"dashed"` |
 | `label` | string | No | Label displayed on the connection |
 
+### 4.7 Connection Validation
+
+Connections between phantoms MUST satisfy the following rules:
+
+| Rule | Requirement | Violation Behavior |
+|------|-------------|--------------------|
+| Target exists | `target` MUST reference an existing phantom ID within the same cluster | Warning in DRAFT/REVIEW; Error in FROZEN/PUBLISHED |
+| No cycles | Connections SHOULD NOT form cycles (A→B→A) | Warning in all states |
+| Same cluster | Connections MUST NOT reference phantoms in other clusters | Error in all states |
+
+Implementations MUST validate connection targets when loading phantom data. Broken connection targets (referencing non-existent phantom IDs) indicate data corruption in frozen documents and partial construction in mutable documents.
+
 ## 5. Hashing Boundary
 
 Phantoms are explicitly OUTSIDE the content hash boundary. The `phantoms/` directory has no `hash` field in the manifest reference. Adding, editing, or removing phantoms never changes the document ID or invalidates signatures.
@@ -252,7 +264,7 @@ The asset index follows the same structure as the core asset index:
     {
       "id": "sketch",
       "path": "sketch.png",
-      "mimeType": "image/png",
+      "type": "image/png",
       "size": 15360
     }
   ]

@@ -98,6 +98,9 @@ The canonical content EXCLUDES:
 - Security data (signatures reference the hash, not part of it)
 - Collaboration data (comments, change tracking)
 - Phantom data (off-page annotations)
+- Form data (`forms/data.json` — filled values are mutable even on frozen documents)
+
+> **Metadata inclusion**: The Dublin Core terms included in the hash are `title`, `creator`, `subject`, `description`, and `language`. Administrative terms (`date`, `publisher`, `identifier`, `rights`) are excluded. See Metadata specification, section 6 for details.
 
 > **Note**: The document ID represents the document's semantic identity — what it says, not how it looks. Multiple visual presentations (letter, A4, responsive) of the same content produce the same document ID. For appearance attestation, see Scoped Signatures in the Security Extension.
 

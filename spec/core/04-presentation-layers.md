@@ -44,7 +44,7 @@ Presentation precision evolves with document maturity. The presentation layer fo
 
 ### 3.2 Why State-Awareness Matters
 
-1. **Provenance integrity** — When frozen, the hash covers exact appearance, not just content
+1. **Provenance integrity** — When frozen, the precise layout is immutable alongside the content. The document ID covers semantic content; use scoped signatures (Security Extension) for appearance attestation
 2. **Legal/academic needs** — Citations reference "page 7, line 23" with confidence
 3. **Lifecycle alignment** — Precision emerges naturally as documents mature
 4. **No capability loss** — Semantic content always present for accessibility/search
@@ -208,7 +208,7 @@ Each page contains positioned elements that reference content blocks:
   "number": 1,
   "elements": [
     {
-      "blockRef": "block-123",
+      "blockId": "block-123",
       "position": {
         "x": "1in",
         "y": "1in",
@@ -218,7 +218,7 @@ Each page contains positioned elements that reference content blocks:
       "style": "heading1"
     },
     {
-      "blockRef": "block-456",
+      "blockId": "block-456",
       "position": {
         "x": "1in",
         "y": "2in",
@@ -233,7 +233,7 @@ Each page contains positioned elements that reference content blocks:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `blockRef` | string | Yes | Reference to content block ID |
+| `blockId` | string | Yes | Reference to content block ID |
 | `position` | object | Yes | Position and size |
 | `style` | string | No | Named style to apply |
 | `overflow` | string | No | "visible", "hidden", "flow" |
@@ -245,7 +245,7 @@ For automatic text flow across pages:
 ```json
 {
   "type": "flow",
-  "blockRefs": ["block-1", "block-2", "block-3"],
+  "blockIds": ["block-1", "block-2", "block-3"],
   "columns": 1,
   "startPage": 1,
   "regions": [
@@ -547,7 +547,7 @@ presentation/
 | `targetFormat` | string | Yes | Page format name (letter, a4, legal, custom) |
 | `pageSize` | object | Yes | Exact page dimensions |
 | `contentHash` | string | Yes | Hash of content when layout was generated |
-| `generatedAt` | string | Yes | ISO 8601 timestamp |
+| `generatedAt` | string | Yes | ISO 8601 timestamp (when layout was generated — distinct from document `created`/`modified` which are lifecycle timestamps) |
 | `pageTemplate` | object | No | Headers, footers, margins for all pages |
 | `pages` | array | Yes | Array of page definitions |
 | `fonts` | object | No | Font metrics for exact reproduction |

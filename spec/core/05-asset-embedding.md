@@ -147,6 +147,12 @@ For responsive images, multiple resolutions can be provided:
 }
 ```
 
+**Variant integrity**: Variants inherit the parent asset's hash algorithm. Implementations SHOULD compute and verify variant hashes using the same algorithm as the parent asset.
+
+**Variant selection**: Renderers SHOULD select the variant closest to the display size. If displaying at 800px width, the 640px variant would be used (or the 1280px variant if the renderer prefers to scale down rather than up). If no variant is a good match, fall back to the full-resolution image.
+
+**Missing variants**: If a variant file is missing from the archive, implementations MUST fall back to the full-resolution image. Missing variants SHOULD produce a warning but MUST NOT prevent the image from being displayed.
+
 ### 4.4 Image References
 
 Content blocks reference images by path:

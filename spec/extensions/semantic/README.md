@@ -89,6 +89,8 @@ Location: `metadata/jsonld.json`
 
 ### 4.2 Bibliography Entry
 
+Bibliography entries follow the [CSL JSON schema](https://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html) for entry types, fields, and formatting conventions.
+
 Location: `semantic/bibliography.json`
 
 ```json
@@ -148,7 +150,7 @@ Supported styles:
     {
       "type": "entity",
       "uri": "https://www.wikidata.org/wiki/Q937",
-      "type": "Person"
+      "entityType": "Person"
     }
   ]
 }
