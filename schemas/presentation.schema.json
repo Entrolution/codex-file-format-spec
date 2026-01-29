@@ -130,9 +130,11 @@
         },
         "attributes": {
           "type": "object",
-          "description": "Inline style attributes"
+          "description": "Inline style attributes",
+          "additionalProperties": true
         }
-      }
+      },
+      "additionalProperties": false
     },
     "breakpoint": {
       "type": "object",
@@ -150,7 +152,8 @@
           "type": "string",
           "description": "Maximum viewport width"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "pageTemplate": {
       "type": "object",
@@ -182,9 +185,11 @@
             "right": {
               "$ref": "#/$defs/headerFooterContent"
             }
-          }
+          },
+          "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     },
     "headerFooterContent": {
       "oneOf": [
@@ -272,7 +277,7 @@
           "enum": ["auto", "always", "avoid"]
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     }
   }
 }

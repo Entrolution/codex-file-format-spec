@@ -155,7 +155,6 @@ The specification is modular:
 - [Collaboration Extension](spec/extensions/collaboration/) - CRDT hooks, comments, change tracking
 - [Presentation Extension](spec/extensions/presentation/) - Advanced layout, print styling
 - [Forms Extension](spec/extensions/forms/) - Input fields, validation
-- [Multimedia Extension](spec/extensions/multimedia/) - Video, audio, interactive elements
 - [Semantic Extension](spec/extensions/semantic/) - JSON-LD, knowledge graphs, citations
 
 ## Quick Start
