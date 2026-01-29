@@ -102,6 +102,26 @@ document.cdx
     └── dublin-core.json    # Dublin Core metadata (required)
 ```
 
+### 1.5a Annotation Layers
+
+Codex provides three annotation storage locations, each serving different purposes:
+
+| Layer | Location | Purpose | Extension Required |
+|-------|----------|---------|--------------------|
+| Core annotations | `security/annotations.json` | Minimal annotation support for frozen/published documents. Lightweight format for implementations that don't support extensions. | No (core) |
+| Collaboration | `collaboration/comments.json` | Full-featured comments, suggestions, change tracking, presence awareness. Supersedes core annotations when active. | `codex.collaboration` |
+| Phantoms | `phantoms/clusters.json` | Spatially-organized off-page annotation clusters (margin notes, mind maps). Orthogonal to inline annotations. | `codex.phantoms` |
+
+**When to use each layer:**
+
+- **Core annotations**: Use for simple read-only annotation on frozen documents when the collaboration extension is not available. Provides basic comment support without extension dependencies.
+
+- **Collaboration extension**: Use when you need threaded discussions, suggestions with accept/reject workflow, change tracking, or real-time presence. When active, prefer this over core annotations.
+
+- **Phantoms extension**: Use for spatial annotations that exist "off the page" — research notes, margin comments with visual layouts, mind-map style connections between concepts. Phantoms are anchored to content but rendered separately from the document flow.
+
+All annotation layers are **outside the content hash boundary** — adding annotations never changes the document's identity or invalidates signatures.
+
 ### 1.6 Specification Organization
 
 This specification is organized into the following sections:
@@ -123,7 +143,6 @@ Extension specifications (optional modules) are defined separately:
 - Presentation Extension
 - Phantom Extension
 - Forms Extension
-- Multimedia Extension
 - Semantic Extension
 
 ### 1.7 Versioning

@@ -14,6 +14,7 @@ This directory contains JSON Schema definitions for validating Codex document co
 | `dublin-core.schema.json` | Dublin Core metadata | `metadata/dublin-core.json` |
 | `provenance.schema.json` | Provenance records | `provenance/record.json` |
 | `anchor.schema.json` | Content anchor definitions | (shared definitions) |
+| `annotations.schema.json` | Core annotations | `security/annotations.json` |
 | `phantoms.schema.json` | Phantom clusters | `phantoms/clusters.json` |
 
 ## Schema Dependencies
@@ -21,11 +22,14 @@ This directory contains JSON Schema definitions for validating Codex document co
 Some schemas reference definitions from other schema files:
 
 ```
+annotations.schema.json
+    └── $ref: anchor.schema.json#/$defs/contentAnchor
+
 phantoms.schema.json
     └── $ref: anchor.schema.json#/$defs/contentAnchor
 ```
 
-The `anchor.schema.json` file provides shared definitions for `ContentAnchor` and `ContentAnchorUri` that are used by multiple extensions (phantoms, collaboration, etc.).
+The `anchor.schema.json` file provides shared definitions for `ContentAnchor` and `ContentAnchorUri` that are used by core annotations, phantoms, collaboration, and other extensions.
 
 ## Using These Schemas
 

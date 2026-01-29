@@ -138,6 +138,83 @@ Supported styles:
 }
 ```
 
+### 4.5 Footnotes
+
+Footnotes provide numbered references to supplementary content. The semantic extension defines the footnote content; the presentation extension (section 10) controls footnote styling and positioning.
+
+#### 4.5.1 Footnote Mark
+
+Use a footnote mark on text to create a footnote reference:
+
+```json
+{
+  "type": "text",
+  "value": "important claim",
+  "marks": [
+    {
+      "type": "footnote",
+      "number": 1,
+      "id": "fn1"
+    }
+  ]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"footnote"` |
+| `number` | integer | Yes | Sequential footnote number |
+| `id` | string | No | Unique footnote identifier for cross-referencing |
+
+#### 4.5.2 Footnote Block
+
+Footnote content is stored as a block, typically at the end of a section or document:
+
+```json
+{
+  "type": "semantic:footnote",
+  "number": 1,
+  "id": "fn1",
+  "children": [
+    {
+      "type": "paragraph",
+      "children": [
+        { "type": "text", "value": "Source: Annual Report 2024, p. 42. See also " },
+        {
+          "type": "text",
+          "value": "Smith (2023)",
+          "marks": [{ "type": "citation", "refs": ["smith2023"] }]
+        },
+        { "type": "text", "value": " for additional context." }
+      ]
+    }
+  ]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"semantic:footnote"` |
+| `number` | integer | Yes | Footnote number (must match mark) |
+| `id` | string | No | Unique identifier (must match mark if present) |
+| `children` | array | Yes | Footnote content (paragraph blocks) |
+
+Footnote blocks support full rich text content including citations, links, and formatting. For simple text-only footnotes, a shorthand form is available:
+
+```json
+{
+  "type": "semantic:footnote",
+  "number": 1,
+  "content": "Source: Annual Report 2024, p. 42."
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `content` | string | No | Simple text content (alternative to `children`) |
+
+Implementations MUST support either `children` (rich content) or `content` (plain text), but not both on the same footnote.
+
 ## 5. Entity Linking
 
 ### 5.1 Entity Annotation
