@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/annotations.schema.json",
+  "title": "Codex Core Annotations",
+  "description": "Schema for the security/annotations.json file in a Codex document. Provides minimal annotation support for implementations that don't use the collaboration extension.",
+  "type": "object",
+  "required": ["annotations"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Annotations format version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "annotations": {
+      "type": "array",
+      "description": "Array of annotations",
+      "items": {
+        "$ref": "#/$defs/annotation"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "annotation": {
+      "type": "object",
+      "required": ["id", "type", "anchor", "author", "created", "content"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique annotation identifier"
+        },
+        "type": {
+          "type": "string",
+          "description": "Annotation type",
+          "enum": ["comment", "highlight", "note", "reaction"]
+        },
+        "anchor": {
+          "$ref": "anchor.schema.json#/$defs/contentAnchor",
+          "description": "Anchor to document content"
+        },
+        "author": {
+          "type": "string",
+          "description": "Author name or identifier"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 creation timestamp"
+        },
+        "content": {
+          "type": "string",
+          "description": "Annotation content (text)"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

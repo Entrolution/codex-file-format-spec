@@ -163,6 +163,30 @@ Location: `collaboration/comments.json`
 | `resolved` | boolean | No | Whether comment is resolved |
 | `replies` | array | No | Reply comments |
 
+### 4.3a Author Object
+
+The `author` field uses a consistent structure throughout the collaboration extension:
+
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "userId": "user-12345",
+  "avatar": "https://example.com/avatars/jane.png",
+  "color": "#ff6b6b"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Display name |
+| `email` | string | No | Email address |
+| `userId` | string | No | User identifier in an external system |
+| `avatar` | string | No | URL to avatar image |
+| `color` | string | No | Color for real-time cursor/highlight display (CSS color value, e.g., `"#ff6b6b"` or `"blue"`) |
+
+The `color` field enables consistent visual identification across real-time collaboration sessions. When a user's cursor or selection is shown, implementations SHOULD use this color. If not specified, implementations SHOULD assign a consistent color based on `userId` or `email`.
+
 ### 4.4 Content Anchors
 
 The `anchor` field uses a ContentAnchor object from the core Anchors and References specification. Block-level, point, and range anchors are supported:
