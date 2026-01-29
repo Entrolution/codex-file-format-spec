@@ -106,14 +106,15 @@ Codex uses **progressive enhancement** for presentation — the level of layout 
 |----------------|-------------------------|---------------|
 | DRAFT | Reactive only (hints/styles) | Nothing — content flows freely |
 | REVIEW | Reactive (precise optional) | Nothing — still editing |
-| FROZEN | Reactive + **precise required** | Content AND exact appearance |
+| FROZEN | Reactive + **precise required** | Content immutable; appearance locked |
 | PUBLISHED | Same as FROZEN | Authoritative, immutable record |
 
 ### Why This Matters
 
 When a document reaches FROZEN or PUBLISHED state, its **precise layout** (exact coordinates for every element) becomes part of the immutable record:
 
-- **Layout is part of the hash**: The document's identity includes its exact visual appearance
+- **Semantic content is the hash**: The document ID covers semantic content only — what it says, not how it looks
+- **Appearance is locked alongside content**: Precise layouts are immutable when frozen, but separate from the content hash. Use scoped signatures (Security Extension) for appearance attestation
 - **Citations are reliable**: "Page 7, line 23" means the same thing in every viewer
 - **Legal/archival integrity**: Frozen documents render pixel-perfectly, forever
 - **No viewer inconsistency**: Unlike PDF, whose appearance varies by renderer
@@ -123,15 +124,13 @@ This is the key insight: **the state machine isn't just about workflow** — it 
 ```
 DRAFT                    FROZEN/PUBLISHED
 ┌─────────────────┐      ┌─────────────────┐
-│ Semantic content│      │ Semantic content│
-│ (JSON blocks)   │      │ (JSON blocks)   │
+│ Semantic content│      │ Semantic content│  ← Document ID
+│ (JSON blocks)   │      │ (JSON blocks)   │    (content hash)
 ├─────────────────┤      ├─────────────────┤
 │ Reactive hints  │  →   │ Reactive hints  │
-│ (optional)      │      │ + Precise layout│ ← Required
-└─────────────────┘      │ (exact coords)  │
-                         └─────────────────┘
-                                ↓
-                         Included in hash
+│ (optional)      │      │ + Precise layout│ ← Required, immutable
+└─────────────────┘      │ (exact coords)  │    (scoped signatures
+                         └─────────────────┘     for attestation)
 ```
 
 ## Specification Structure

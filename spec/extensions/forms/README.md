@@ -140,14 +140,54 @@ The Forms Extension enables interactive form fields within documents:
 | `pattern` | Regular expression match |
 | `email` | Valid email format |
 | `url` | Valid URL format |
+| `containsUppercase` | Must contain at least one uppercase letter |
+| `containsLowercase` | Must contain at least one lowercase letter |
+| `containsDigit` | Must contain at least one digit |
+| `containsSpecial` | Must contain at least one special character |
+| `matchesField` | Must match the value of another named field |
 
-### 4.2 Custom Validation
+### 4.2 Declarative Validation
+
+Validation rules are purely declarative. Executable expressions (JavaScript, etc.) are not permitted in validation rules, consistent with the core specification's no-scripting policy (see DD-010, DD-019).
+
+Multiple validators can be combined on a single field:
+
+```json
+{
+  "type": "forms:textInput",
+  "name": "password",
+  "label": "Password",
+  "required": true,
+  "validation": {
+    "minLength": 8,
+    "containsUppercase": true,
+    "containsDigit": true,
+    "message": "Password must be at least 8 characters with uppercase and number"
+  }
+}
+```
+
+For complex string matching beyond built-in validators, use the `pattern` validator:
 
 ```json
 {
   "validation": {
-    "custom": "value.length >= 8 && /[A-Z]/.test(value) && /[0-9]/.test(value)",
+    "pattern": "^(?=.*[A-Z])(?=.*[0-9]).{8,}$",
     "message": "Password must be at least 8 characters with uppercase and number"
+  }
+}
+```
+
+For cross-field validation (e.g., password confirmation):
+
+```json
+{
+  "type": "forms:textInput",
+  "name": "confirmPassword",
+  "label": "Confirm Password",
+  "validation": {
+    "matchesField": "password",
+    "message": "Passwords must match"
   }
 }
 ```
@@ -183,7 +223,37 @@ Form values are stored in `forms/data.json`:
 }
 ```
 
-## 6. Fallback Rendering
+## 6. State Behavior
+
+### 6.1 Form Definition vs. Form Data
+
+Form content has two distinct parts with different hashing and mutability rules:
+
+| Component | Location | Part of Content Hash | Frozen Behavior |
+|-----------|----------|---------------------|-----------------|
+| Form field blocks (definition) | `content/document.json` | Yes | Immutable — field layout, labels, and validation rules cannot change |
+| Form data (filled values) | `forms/data.json` | No | Mutable — forms can be filled even on frozen documents |
+
+### 6.2 Frozen/Published Documents
+
+When a document containing forms is frozen or published:
+
+1. **Form field blocks** are immutable content — they are part of the content hash and cannot be modified
+2. **Form data** (`forms/data.json`) is outside the content hash boundary and can continue to be filled, similar to how annotations remain mutable on frozen documents
+3. Filling in form data does not change the document ID or invalidate signatures
+
+### 6.3 Form Submission
+
+When a form is submitted (`"submitted": true` in `forms/data.json`):
+
+- The submission state is recorded in the form data file
+- For archival purposes, implementations MAY create a new document version with form data folded into the content layer, producing a new document ID that captures the filled state
+
+### 6.4 Hashing Exclusion
+
+The `forms/` directory is excluded from the content hash computation, alongside other non-content directories (see Document Hashing specification, section 4.1).
+
+## 7. Fallback Rendering
 
 For viewers that don't support forms:
 
@@ -201,9 +271,9 @@ For viewers that don't support forms:
 }
 ```
 
-## 7. Examples
+## 8. Examples
 
-### 7.1 Contact Form
+### 8.1 Contact Form
 
 ```json
 {

@@ -410,8 +410,12 @@ Mathematical content using MathML or LaTeX.
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `display` | boolean | Yes | Display mode (true) vs inline (false) |
-| `format` | string | Yes | "latex" or "mathml" |
+| `format` | string | Yes | `"latex"` or `"mathml"` |
 | `value` | string | Yes | Math content in specified format |
+
+**Format details:**
+- `"latex"` — LaTeX math mode using amsmath package conventions. Content is the expression only (no `$` or `\begin{equation}` delimiters). Example: `"E = mc^2"`, `"\\frac{1}{2}"`, `"\\sum_{i=1}^{n} x_i"`
+- `"mathml"` — MathML 3.0 (W3C Recommendation). Content is the `<math>` element body
 
 Children: None (content in `value` attribute)
 

@@ -47,7 +47,9 @@ Beyond document-level hashing, individual content blocks have their own hashes. 
 
 ### 3.1 Chain Structure
 
-The lineage field in the manifest establishes the chain:
+The provenance lineage extends the manifest's summary lineage (which contains `parent`, `version`, `branch`, `note`) with additional fields for the full ancestor chain, depth, and merge history. The manifest provides quick access to the immediate parent and version; the provenance record provides the complete lineage for verification and auditing.
+
+The provenance lineage:
 
 ```json
 {

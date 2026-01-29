@@ -237,7 +237,39 @@ Implementations SHOULD validate that anchor targets (block IDs, named anchor IDs
 - `offset` MUST be non-negative
 - For valid ranges, `end` SHOULD NOT exceed the target block's text content length
 
-## 8. Relationship to Extensions
+## 8. Shared Types
+
+### 8.1 Person Object
+
+The Person object is a base type used across multiple extensions to represent a person (author, signer, creator). Defining it once ensures consistency across the specification.
+
+**Base Person fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Display name |
+| `email` | string | No | Email address |
+
+**Base example:**
+
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com"
+}
+```
+
+Extensions extend the base Person type with additional fields as needed:
+
+| Extension | Additional Fields | Description |
+|-----------|------------------|-------------|
+| Security (signer) | `organization`, `certificate`, `keyId` | Cryptographic identity |
+| Provenance (creator) | `identifier` | DID or URI-based identifier |
+| Collaboration (presence) | `userId`, `color` | Real-time collaboration identity |
+
+All Person objects MUST include at minimum the `name` field. Extensions SHOULD include the base fields alongside their extension-specific fields.
+
+## 9. Relationship to Extensions
 
 The anchor system is defined in the core specification but is primarily consumed by extensions:
 

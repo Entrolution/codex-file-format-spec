@@ -158,6 +158,8 @@ Reference to the content layer.
 | `path` | string | Yes | Relative path within archive |
 | `hash` | string | Yes | Hash of file contents |
 | `compression` | string | No | Compression used ("deflate", "zstd", "none") |
+| `merkleRoot` | string | No | Merkle tree root hash of content blocks (see Provenance spec section 4.4) |
+| `blockCount` | integer | No | Number of content blocks in the document |
 
 ### 4.7 `presentation` (Optional)
 
@@ -306,7 +308,7 @@ Phantom data is explicitly outside the content hash boundary. No `hash` field is
 
 ### 4.13 `lineage` (Optional)
 
-Version history and document relationships.
+Version history and document relationships. The manifest lineage provides a summary of the document's version context. The full provenance record (`provenance/record.json`) extends this with the complete ancestor chain, depth, merge history, and timestamps. See the Provenance and Lineage specification for the extended model.
 
 ```json
 {
@@ -350,8 +352,10 @@ The manifest state MUST be consistent with other indicators:
 |-------|---------------------|----------------|
 | draft | Optional | Optional |
 | review | Optional | Optional |
-| frozen | Required | Required |
-| published | Required | Required |
+| frozen | Required | Required if forked |
+| published | Required | Required if forked |
+
+> **Note**: `Lineage.parent` is required for frozen/published documents that were derived from another document (forked). Root documents — those created from scratch, not forked from a parent — have no parent and omit this field.
 
 ## 6. Processing Model
 

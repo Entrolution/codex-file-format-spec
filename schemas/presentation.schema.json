@@ -72,9 +72,9 @@
     },
     "pageElement": {
       "type": "object",
-      "required": ["blockRef", "position"],
+      "required": ["blockId", "position"],
       "properties": {
-        "blockRef": {
+        "blockId": {
           "type": "string",
           "description": "Reference to content block ID"
         },

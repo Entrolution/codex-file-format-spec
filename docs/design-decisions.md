@@ -447,6 +447,29 @@ This document records key design decisions made during the Codex format specific
 
 ---
 
+## DD-019: Declarative Forms Validation Only
+
+**Decision**: Form validation rules must be purely declarative JSON. No executable expressions (JavaScript or otherwise) are permitted.
+
+**Alternatives Considered**:
+1. JavaScript expression strings (like PDF form scripts)
+2. Sandboxed expression language
+3. WebAssembly-based validators
+4. No custom validation (built-in validators only)
+
+**Rationale**:
+- **Consistent with DD-010** — The core specification explicitly excludes executable content. PDF JavaScript is cited as a cautionary tale in DD-010, and allowing it in form validation would undermine that decision
+- **Security** — Expression evaluation opens injection attack vectors. Even "sandboxed" JavaScript has a long history of sandbox escapes
+- **Declarative sufficiency** — The built-in validators (`required`, `minLength`, `maxLength`, `min`, `max`, `pattern`, `email`, `url`, `containsUppercase`, `containsDigit`, `containsSpecial`, `matchesField`) cover the vast majority of form validation needs
+- **Pattern validator as escape hatch** — The `pattern` validator accepts regular expressions, providing complex string matching without executable code
+- **Implementer simplicity** — Declarative rules can be validated by any JSON processor without requiring a JavaScript runtime
+
+**Consequences**:
+- Some highly dynamic validation (e.g., "field B required only if field A > 10") is not expressible. This is an acceptable limitation — such logic belongs in the application layer, not the document format
+- The `pattern` validator inherits regex complexity concerns, but regex is well-understood and does not enable arbitrary code execution
+
+---
+
 ## Open Questions
 
 ### OQ-001: Binary Variant

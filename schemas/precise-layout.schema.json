@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/precise-layout.schema.json",
+  "title": "Codex Precise Layout",
+  "description": "Schema for precise layout files (presentation/layouts/*.json) in a Codex document. Required for FROZEN and PUBLISHED states.",
+  "type": "object",
+  "required": ["version", "presentationType", "targetFormat", "pageSize", "contentHash", "generatedAt", "pages"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Layout format version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "presentationType": {
+      "type": "string",
+      "description": "Must be 'precise'",
+      "const": "precise"
+    },
+    "targetFormat": {
+      "type": "string",
+      "description": "Page format name (letter, a4, legal, custom)"
+    },
+    "pageSize": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width": {
+          "type": "string",
+          "description": "Page width with unit"
+        },
+        "height": {
+          "type": "string",
+          "description": "Page height with unit"
+        }
+      }
+    },
+    "contentHash": {
+      "type": "string",
+      "description": "Hash of content when layout was generated. Must match current content hash for FROZEN/PUBLISHED.",
+      "pattern": "^[a-z0-9-]+:[a-f0-9]+$"
+    },
+    "generatedAt": {
+      "type": "string",
+      "description": "ISO 8601 timestamp when layout was generated",
+      "format": "date-time"
+    },
+    "pageTemplate": {
+      "$ref": "#/$defs/pageTemplate"
+    },
+    "pages": {
+      "type": "array",
+      "description": "Array of page definitions with precisely positioned elements",
+      "items": {
+        "$ref": "#/$defs/page"
+      },
+      "minItems": 1
+    },
+    "fonts": {
+      "type": "object",
+      "description": "Font metrics for exact text reproduction",
+      "additionalProperties": {
+        "$ref": "#/$defs/fontMetrics"
+      }
+    }
+  },
+  "$defs": {
+    "page": {
+      "type": "object",
+      "required": ["number", "elements"],
+      "properties": {
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Page number"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/preciseElement"
+          }
+        }
+      }
+    },
+    "preciseElement": {
+      "type": "object",
+      "required": ["blockId", "x", "y", "width", "height"],
+      "properties": {
+        "blockId": {
+          "type": "string",
+          "description": "Reference to content block ID"
+        },
+        "x": {
+          "type": "string",
+          "description": "Horizontal position from left edge"
+        },
+        "y": {
+          "type": "string",
+          "description": "Vertical position from top edge"
+        },
+        "width": {
+          "type": "string",
+          "description": "Element width"
+        },
+        "height": {
+          "type": "string",
+          "description": "Element height"
+        },
+        "continues": {
+          "type": "boolean",
+          "description": "True if element continues to next page"
+        },
+        "continuation": {
+          "type": "boolean",
+          "description": "True if element is continued from previous page"
+        },
+        "lines": {
+          "type": "array",
+          "description": "Line-level coordinates for legal/court documents",
+          "items": {
+            "$ref": "#/$defs/linePrecision"
+          }
+        }
+      }
+    },
+    "linePrecision": {
+      "type": "object",
+      "required": ["number", "y", "height"],
+      "properties": {
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Line number"
+        },
+        "y": {
+          "type": "string",
+          "description": "Vertical position of line"
+        },
+        "height": {
+          "type": "string",
+          "description": "Line height"
+        }
+      }
+    },
+    "pageTemplate": {
+      "type": "object",
+      "properties": {
+        "margins": {
+          "type": "object",
+          "properties": {
+            "top": { "type": "string" },
+            "bottom": { "type": "string" },
+            "left": { "type": "string" },
+            "right": { "type": "string" }
+          }
+        },
+        "header": {
+          "$ref": "#/$defs/headerFooter"
+        },
+        "footer": {
+          "$ref": "#/$defs/headerFooter"
+        }
+      }
+    },
+    "headerFooter": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Text content with optional variables like {pageNumber}"
+        },
+        "style": {
+          "type": "string",
+          "description": "Named style to apply"
+        },
+        "y": {
+          "type": "string",
+          "description": "Vertical position"
+        }
+      }
+    },
+    "fontMetrics": {
+      "type": "object",
+      "required": ["family", "style", "weight"],
+      "properties": {
+        "family": {
+          "type": "string",
+          "description": "Font family name"
+        },
+        "style": {
+          "type": "string",
+          "description": "Font style (normal, italic)"
+        },
+        "weight": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 900,
+          "description": "Font weight"
+        },
+        "unitsPerEm": {
+          "type": "integer",
+          "description": "Units per em square"
+        },
+        "ascender": {
+          "type": "integer",
+          "description": "Ascender height in font units"
+        },
+        "descender": {
+          "type": "integer",
+          "description": "Descender depth in font units (typically negative)"
+        }
+      }
+    }
+  }
+}

@@ -205,7 +205,7 @@ Suggestion statuses: `pending`, `accepted`, `rejected`
 }
 ```
 
-Standard emoji identifiers (without colons).
+Standard emoji identifiers using Unicode CLDR short names (without colons). Examples: `thumbsup`, `heart`, `thinking`, `rocket`. See the [Unicode CLDR annotations](https://cldr.unicode.org/translation/characters-emoji-symbols/short-names-and-keywords) for the canonical list.
 
 ## 5. Change Tracking
 

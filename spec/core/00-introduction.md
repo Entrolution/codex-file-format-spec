@@ -76,16 +76,25 @@ A Codex document is a ZIP archive containing:
 document.cdx
 ├── manifest.json           # Document manifest (required)
 ├── content/
-│   └── document.json       # Semantic content blocks (required)
+│   ├── document.json       # Semantic content blocks (required)
+│   └── block-index.json    # Block hashes for Merkle proofs (optional)
 ├── presentation/
 │   ├── paginated.json      # Fixed layout presentation (optional)
-│   └── continuous.json     # Reflow presentation (optional)
+│   ├── continuous.json     # Reflow presentation (optional)
+│   └── layouts/            # Precise layouts (required for FROZEN/PUBLISHED)
+│       ├── letter.json     # US Letter format coordinates
+│       └── a4.json         # A4 format coordinates
 ├── assets/
 │   ├── images/             # Image assets
 │   ├── fonts/              # Font assets
 │   └── embeds/             # Embedded files
 ├── security/
 │   └── signatures.json     # Digital signatures (optional)
+├── provenance/
+│   └── record.json         # Lineage, timestamps, derivations (optional)
+├── collaboration/
+│   ├── comments.json       # Comments and annotations (optional)
+│   └── changes.json        # Change tracking (optional)
 ├── phantoms/
 │   ├── clusters.json       # Off-page annotation clusters (optional)
 │   └── assets/             # Phantom-specific assets (optional)
