@@ -428,7 +428,35 @@ Cell within a table row.
 | `rowspan` | integer | No | Number of rows to span (default: 1) |
 | `align` | string | No | Text alignment: "left", "center", "right" |
 
-Children: Block-level content only (typically `paragraph` blocks)
+Children: Block-level content (typically `paragraph` blocks)
+
+#### 4.12.1 Simplified Cell Content
+
+For simple cells containing only plain or formatted text, implementations MAY accept text nodes directly as children (without wrapping in a paragraph block). This is a shorthand for common cases:
+
+**Standard form (block-level children):**
+
+```json
+{
+  "type": "tableCell",
+  "children": [
+    { "type": "paragraph", "children": [{ "type": "text", "value": "Name" }] }
+  ]
+}
+```
+
+**Simplified form (text nodes directly):**
+
+```json
+{
+  "type": "tableCell",
+  "children": [
+    { "type": "text", "value": "Name" }
+  ]
+}
+```
+
+Implementations MUST support the standard form. Support for the simplified form is OPTIONAL for readers and SHOULD NOT be used when generating documents intended for maximum compatibility.
 
 ### 4.13 Math
 
@@ -467,7 +495,30 @@ Line break within a block.
 
 Children: None (void element)
 
-Used for hard line breaks within paragraphs.
+Used for hard/forced line breaks within paragraphs.
+
+#### 4.14.1 Inline Breaks vs Block Breaks
+
+Text nodes MAY contain newline characters (`\n`) for soft line breaks. These represent inline breaks where the text flow continues but a line break is rendered. Soft breaks are typically used for poetry, addresses, or other content where line breaks are semantically meaningful but not paragraph separators.
+
+The `break` block represents a hard break — a forced line break that interrupts text flow. This is equivalent to HTML's `<br>` element.
+
+| Type | Representation | Use Case |
+|------|---------------|----------|
+| Soft break | `\n` in text value | Poetry lines, addresses, natural line continuation |
+| Hard break | `{ "type": "break" }` | Forced breaks in structured content |
+| Paragraph break | New paragraph block | Semantic paragraph separation |
+
+**Example with soft breaks:**
+
+```json
+{
+  "type": "paragraph",
+  "children": [
+    { "type": "text", "value": "Roses are red,\nViolets are blue" }
+  ]
+}
+```
 
 ### 4.15 Definition List
 

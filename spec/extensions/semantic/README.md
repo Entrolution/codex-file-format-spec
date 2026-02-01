@@ -81,11 +81,24 @@ Location: `metadata/jsonld.json`
     {
       "type": "citation",
       "refs": ["smith2024", "jones2023"],
-      "pages": "42-45"
+      "locator": "42-45",
+      "prefix": "see",
+      "suffix": "for details"
     }
   ]
 }
 ```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"citation"` |
+| `refs` | array | Yes | Bibliography entry IDs to cite |
+| `locator` | string | No | Page, chapter, section, or other location reference (CSL-compatible) |
+| `prefix` | string | No | Text to display before the citation (e.g., "see", "cf.") |
+| `suffix` | string | No | Text to display after the citation |
+| `suppressAuthor` | boolean | No | If true, omit the author name from the rendered citation |
+
+**Note:** The `pages` field is deprecated in favor of `locator`, which supports a wider range of locator types per CSL specifications. Implementations SHOULD accept both for backwards compatibility.
 
 ### 4.2 Bibliography Entry
 
@@ -129,6 +142,10 @@ Supported styles:
 
 ### 4.4 Bibliography Block
 
+The bibliography block renders citations. It can reference an external bibliography file or include inline entries.
+
+**External reference (recommended for reuse):**
+
 ```json
 {
   "type": "semantic:bibliography",
@@ -137,6 +154,42 @@ Supported styles:
   "filter": null
 }
 ```
+
+**Inline entries (self-contained documents):**
+
+```json
+{
+  "type": "semantic:bibliography",
+  "style": "apa",
+  "title": "References",
+  "entries": [
+    {
+      "id": "smith2024",
+      "type": "article-journal",
+      "title": "Advances in Document Processing",
+      "author": [
+        { "family": "Smith", "given": "John" }
+      ],
+      "issued": { "date-parts": [[2024]] },
+      "container-title": "Journal of Digital Documents",
+      "volume": 15,
+      "page": "234-256",
+      "DOI": "10.1234/jdd.2024.001",
+      "renderedText": "Smith, J. (2024). Advances in Document Processing. <i>Journal of Digital Documents</i>, 15, 234-256."
+    }
+  ]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"semantic:bibliography"` |
+| `style` | string | No | Citation style (apa, mla, chicago, ieee, harvard, vancouver) |
+| `title` | string | No | Section heading for the bibliography |
+| `filter` | string\|null | No | Filter expression for selective bibliography |
+| `entries` | array | No | Inline CSL JSON entries (alternative to external file) |
+
+When `entries` is provided, each entry MAY include a `renderedText` field containing pre-rendered citation text from citeproc. This enables accurate display without requiring a CSL processor in the reader.
 
 ### 4.5 Footnotes
 
@@ -227,11 +280,19 @@ Implementations MUST support either `children` (rich content) or `content` (plai
     {
       "type": "entity",
       "uri": "https://www.wikidata.org/wiki/Q937",
-      "entityType": "Person"
+      "entityType": "Person",
+      "source": "wikidata"
     }
   ]
 }
 ```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"entity"` |
+| `uri` | string | Yes | URI identifying the entity in a knowledge graph |
+| `entityType` | string | No | Schema.org type of the entity |
+| `source` | string | No | Knowledge graph origin (e.g., "wikidata", "dbpedia", "geonames") |
 
 ### 5.2 Entity Types
 
@@ -261,6 +322,8 @@ Based on Schema.org types:
 
 ### 6.2 Measurements
 
+The semantic extension provides `semantic:measurement` for measurements with linked data integration:
+
 ```json
 {
   "type": "semantic:measurement",
@@ -273,6 +336,35 @@ Based on Schema.org types:
   }
 }
 ```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"semantic:measurement"` |
+| `value` | number | Yes | Numeric measurement value |
+| `unit` | string | Yes | Unit of measurement |
+| `schema` | object | No | Schema.org QuantitativeValue for linked data |
+
+#### 6.2.1 Core vs Semantic Measurements
+
+The Codex format defines two measurement types for different use cases:
+
+| Type | Location | Purpose |
+|------|----------|---------|
+| `measurement` | Core (content.schema.json) | Metrology/scientific data with uncertainty notation |
+| `semantic:measurement` | Semantic extension | General measurements with linked data integration |
+
+**Core `measurement`** is designed for scientific and metrology documents requiring:
+- Measurement uncertainty (e.g., `7.677(9)`)
+- Uncertainty notation styles (parenthetical, plusminus, range, percent)
+- Scientific notation with exponents
+- Required display string for accessibility
+
+**Semantic `semantic:measurement`** is designed for:
+- Schema.org integration via QuantitativeValue
+- Machine-readable linked data
+- E-commerce and general web content
+
+For documents requiring both uncertainty notation AND linked data, use the core `measurement` block and add a `semantic` annotation with the JSON-LD representation.
 
 ## 7. Cross-References
 
