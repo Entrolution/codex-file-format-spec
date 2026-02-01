@@ -499,3 +499,80 @@ Should the format support DRM?
 
 **Status**: Explicitly out of scope
 **Considerations**: Opens governance issues; encryption provides confidentiality
+
+---
+
+## Strategic Insights
+
+This section captures key strategic insights from early design discussions that inform the specification's direction and adoption approach. Full discussion notes are archived in `docs/archive/`.
+
+### SI-001: Technical Merit vs Adoption
+
+**Insight**: Technical problems are real and documented, but technical merit is approximately 20% of what determines format success. The other 80% is ecosystem, timing, and adoption strategy.
+
+**Evidence**:
+- PDF signature vulnerabilities proven in published security research (21 of 22 desktop viewers vulnerable)
+- View/edit divide creates universal workflow friction
+- Multi-billion dollar AI extraction industry exists because PDF structure is unreliable
+
+**Implication**: Technical case is necessary but not sufficient. A spec without robust tooling is just documentation.
+
+---
+
+### SI-002: Beachhead Strategy — Academia First
+
+**Insight**: Academia is the optimal initial adoption target, with legal/enterprise as a secondary market.
+
+**Why Academia**:
+- Lower switching costs (no enterprise contracts, IT approval chains)
+- Cultural alignment with open standards
+- Acute pain points: citations as flat text, figures as inaccessible blobs, unreliable text extraction
+- LaTeX users prove academics tolerate complexity for better output
+- Natural integration points: Overleaf, Zotero, Pandoc, Jupyter
+- Long-term pipeline: grad student → professor → journal editor → department mandate (10-15 year arc)
+
+**Why Legal Secondary**:
+- High pain point but high friction (entrenched tooling, tech-averse users)
+- Better play: become "killer feature" for tooling vendor entering legal market
+- "If lawyers trust it for contracts" provides powerful social proof
+
+---
+
+### SI-003: Development Philosophy
+
+**Insight**: Start solo, design for OSS. Empty repos don't attract contributors; working code does.
+
+**Approach**:
+1. Begin implementation alone to move fast and establish patterns
+2. Design for OSS from day one (clear architecture, good docs, contribution points)
+3. Open implementation once there's something functional to contribute to
+4. The spec is already open — that's the legitimacy part
+
+**Rationale**: Speed now, community later. Avoid "design by committee" early.
+
+---
+
+### SI-004: Implementation Priorities
+
+**Insight**: Pandoc integration is the highest-leverage early move.
+
+**Build Order**:
+1. **cdx-core** (Rust library) — Foundation everything else builds on
+2. **cdx-cli** — Dogfoods the core library, essential for tooling development
+3. **Pandoc writer** — Markdown → Codex (the academia unlock)
+4. **Web viewer** — cdx-core compiled to WASM (zero-install demonstration)
+
+**Why Pandoc**: Academics don't adopt new editors, they adopt new export targets. A Pandoc writer fits existing workflows with zero friction for authors.
+
+---
+
+### SI-005: Spec Evolution Principles
+
+**Insight**: Specs accumulate ad-hoc solutions. Catching inconsistencies early (pre-v1.0) and unifying is much cheaper than fixing later.
+
+**Lessons Learned**:
+- "Where does this live?" is the critical question for new features (inside vs outside hashing boundary)
+- Contradictions hide in prose — normative algorithms trump aspirational text
+- Each fix pulls on connected threads — changes are individually clean but interdependent
+
+**Example**: Three extensions independently invented sub-block addressing. Unifying into the anchor system prevented fragmentation.

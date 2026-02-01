@@ -2,7 +2,7 @@
 
 **Version**: 0.1 (Draft)
 **Status**: Working Draft
-**Editors**: TBD
+**Editors**: Codex Specification Team
 
 ## Abstract
 

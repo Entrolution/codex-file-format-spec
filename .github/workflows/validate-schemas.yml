@@ -1,0 +1,82 @@
+name: Validate Schemas
+
+on:
+  push:
+    paths:
+      - 'schemas/**'
+      - 'examples/**'
+      - '.github/workflows/validate-schemas.yml'
+  pull_request:
+    paths:
+      - 'schemas/**'
+      - 'examples/**'
+      - '.github/workflows/validate-schemas.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli ajv-formats
+
+      - name: Validate schemas compile
+        run: |
+          # Compile standalone schemas
+          for f in schemas/anchor.schema.json schemas/asset-index.schema.json \
+                   schemas/content.schema.json schemas/dublin-core.schema.json \
+                   schemas/manifest.schema.json schemas/precise-layout.schema.json \
+                   schemas/presentation.schema.json schemas/provenance.schema.json; do
+            echo "Compiling $f..."
+            ajv compile -s "$f" --spec=draft2020 --strict=false
+          done
+
+          # Compile schemas with cross-references (need -r for referenced schemas)
+          echo "Compiling schemas/annotations.schema.json..."
+          ajv compile -s schemas/annotations.schema.json \
+            -r schemas/anchor.schema.json --spec=draft2020 --strict=false
+          echo "Compiling schemas/phantoms.schema.json..."
+          ajv compile -s schemas/phantoms.schema.json \
+            -r schemas/anchor.schema.json --spec=draft2020 --strict=false
+
+      - name: Validate example documents
+        run: |
+          # Validate simple-document
+          ajv validate -s schemas/manifest.schema.json \
+            -d examples/simple-document/manifest.json \
+            --spec=draft2020 --strict=false
+          ajv validate -s schemas/content.schema.json \
+            -d examples/simple-document/content/document.json \
+            --spec=draft2020 --strict=false
+          ajv validate -s schemas/dublin-core.schema.json \
+            -d examples/simple-document/metadata/dublin-core.json \
+            --spec=draft2020 --strict=false
+
+          # Validate signed-document
+          ajv validate -s schemas/manifest.schema.json \
+            -d examples/signed-document/manifest.json \
+            --spec=draft2020 --strict=false
+          ajv validate -s schemas/content.schema.json \
+            -d examples/signed-document/content/document.json \
+            --spec=draft2020 --strict=false
+          ajv validate -s schemas/dublin-core.schema.json \
+            -d examples/signed-document/metadata/dublin-core.json \
+            --spec=draft2020 --strict=false
+
+          # Validate comprehensive-document (if exists)
+          if [ -d examples/comprehensive-document ]; then
+            ajv validate -s schemas/manifest.schema.json \
+              -d examples/comprehensive-document/manifest.json \
+              --spec=draft2020 --strict=false
+            ajv validate -s schemas/content.schema.json \
+              -d examples/comprehensive-document/content/document.json \
+              --spec=draft2020 --strict=false
+            ajv validate -s schemas/dublin-core.schema.json \
+              -d examples/comprehensive-document/metadata/dublin-core.json \
+              --spec=draft2020 --strict=false
+          fi

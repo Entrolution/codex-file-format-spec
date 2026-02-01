@@ -365,15 +365,23 @@ Tabular data.
       "type": "tableRow",
       "header": true,
       "children": [
-        { "type": "tableCell", "children": [{ "type": "text", "value": "Name" }] },
-        { "type": "tableCell", "children": [{ "type": "text", "value": "Value" }] }
+        { "type": "tableCell", "children": [
+          { "type": "paragraph", "children": [{ "type": "text", "value": "Name" }] }
+        ]},
+        { "type": "tableCell", "children": [
+          { "type": "paragraph", "children": [{ "type": "text", "value": "Value" }] }
+        ]}
       ]
     },
     {
       "type": "tableRow",
       "children": [
-        { "type": "tableCell", "children": [{ "type": "text", "value": "Foo" }] },
-        { "type": "tableCell", "children": [{ "type": "text", "value": "42" }] }
+        { "type": "tableCell", "children": [
+          { "type": "paragraph", "children": [{ "type": "text", "value": "Foo" }] }
+        ]},
+        { "type": "tableCell", "children": [
+          { "type": "paragraph", "children": [{ "type": "text", "value": "42" }] }
+        ]}
       ]
     }
   ]
@@ -420,7 +428,7 @@ Cell within a table row.
 | `rowspan` | integer | No | Number of rows to span (default: 1) |
 | `align` | string | No | Text alignment: "left", "center", "right" |
 
-Children: Text nodes or block-level content
+Children: Block-level content only (typically `paragraph` blocks)
 
 ### 4.13 Math
 
@@ -866,10 +874,11 @@ All text content MUST be valid Unicode (UTF-8 encoded in JSON). Implementations 
 3. List children MUST be listItem blocks
 4. Table children MUST be tableRow blocks
 5. TableRow children MUST be tableCell blocks
-6. DefinitionList children MUST be definitionItem blocks
-7. DefinitionItem children MUST include at least one definitionTerm and one definitionDescription
-8. Figure children MUST include exactly one content block and zero or one figcaption
-9. Figcaption is only valid as a child of figure
+6. TableCell children MUST be block-level content (typically paragraph blocks)
+7. DefinitionList children MUST be definitionItem blocks
+8. DefinitionItem children MUST include at least one definitionTerm and one definitionDescription
+9. Figure children MUST include exactly one content block and zero or one figcaption
+10. Figcaption is only valid as a child of figure
 
 ### 7.3 Cross-References
 
@@ -973,15 +982,23 @@ Before comparison or hashing, content SHOULD be normalized:
           "type": "tableRow",
           "header": true,
           "children": [
-            { "type": "tableCell", "children": [{ "type": "text", "value": "Quarter" }] },
-            { "type": "tableCell", "children": [{ "type": "text", "value": "Revenue" }] }
+            { "type": "tableCell", "children": [
+              { "type": "paragraph", "children": [{ "type": "text", "value": "Quarter" }] }
+            ]},
+            { "type": "tableCell", "children": [
+              { "type": "paragraph", "children": [{ "type": "text", "value": "Revenue" }] }
+            ]}
           ]
         },
         {
           "type": "tableRow",
           "children": [
-            { "type": "tableCell", "children": [{ "type": "text", "value": "Q1" }] },
-            { "type": "tableCell", "children": [{ "type": "text", "value": "$1.2M" }] }
+            { "type": "tableCell", "children": [
+              { "type": "paragraph", "children": [{ "type": "text", "value": "Q1" }] }
+            ]},
+            { "type": "tableCell", "children": [
+              { "type": "paragraph", "children": [{ "type": "text", "value": "$1.2M" }] }
+            ]}
           ]
         }
       ]
