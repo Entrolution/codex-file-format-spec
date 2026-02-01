@@ -18,6 +18,7 @@ interface DependentSchema {
 
 // Standalone schemas (no cross-references)
 const standaloneSchemas: string[] = [
+  'academic.schema.json',
   'anchor.schema.json',
   'asset-index.schema.json',
   'content.schema.json',

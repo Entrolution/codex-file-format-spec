@@ -1,0 +1,518 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/academic.schema.json",
+  "title": "Codex Academic Extension",
+  "description": "Schema for academic extension blocks and marks in a Codex document",
+  "$defs": {
+    "theoremVariant": {
+      "type": "string",
+      "description": "Built-in theorem-like environment variants",
+      "enum": [
+        "theorem",
+        "lemma",
+        "proposition",
+        "corollary",
+        "definition",
+        "conjecture",
+        "remark",
+        "example"
+      ]
+    },
+    "proofMethod": {
+      "type": "string",
+      "description": "Proof methodology",
+      "enum": [
+        "direct",
+        "contradiction",
+        "contrapositive",
+        "induction",
+        "strong-induction",
+        "structural-induction",
+        "cases",
+        "construction",
+        "counting",
+        "probabilistic"
+      ]
+    },
+    "qedStyle": {
+      "type": "string",
+      "description": "QED marker style",
+      "enum": ["symbol", "text", "none"],
+      "default": "symbol"
+    },
+    "difficulty": {
+      "type": "string",
+      "description": "Exercise difficulty level",
+      "enum": ["easy", "medium", "hard"]
+    },
+    "solutionVisibility": {
+      "type": "string",
+      "description": "Solution visibility mode",
+      "enum": ["visible", "hidden", "spoiler", "instructor-only"],
+      "default": "hidden"
+    },
+    "equationEnvironment": {
+      "type": "string",
+      "description": "LaTeX multi-line equation environment",
+      "enum": ["align", "gather", "alignat", "split"]
+    },
+    "numberingStyle": {
+      "type": "string",
+      "description": "Numbering style pattern",
+      "enum": ["number", "chapter.number", "section.number", "chapter.section.number"]
+    },
+    "resetTrigger": {
+      "type": "string",
+      "description": "When to reset counters",
+      "enum": ["chapter", "section", "none"]
+    },
+    "theoremBlock": {
+      "type": "object",
+      "description": "Theorem-like environment block",
+      "required": ["type", "variant", "children"],
+      "properties": {
+        "type": { "const": "academic:theorem" },
+        "variant": {
+          "type": "string",
+          "description": "Variant name (built-in or custom)"
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for cross-referencing"
+        },
+        "number": {
+          "type": "string",
+          "description": "Explicit number (e.g., '2.3.8')"
+        },
+        "numbering": {
+          "type": "string",
+          "description": "Numbering mode",
+          "enum": ["auto", "none"]
+        },
+        "title": {
+          "type": "string",
+          "description": "Custom title (e.g., 'Maximum Principle')"
+        },
+        "uses": {
+          "type": "array",
+          "description": "Content Anchor URIs of dependencies",
+          "items": { "type": "string" }
+        },
+        "restate": {
+          "type": "boolean",
+          "description": "If true, this is a restatement of a previously stated theorem",
+          "default": false
+        },
+        "children": {
+          "type": "array",
+          "description": "Theorem content blocks"
+        }
+      },
+      "additionalProperties": false
+    },
+    "proofBlock": {
+      "type": "object",
+      "description": "Proof block",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "academic:proof" },
+        "of": {
+          "type": "string",
+          "description": "Content Anchor URI to the theorem being proved"
+        },
+        "title": {
+          "type": "string",
+          "description": "Override title (default: 'Proof')"
+        },
+        "method": { "$ref": "#/$defs/proofMethod" },
+        "qed": { "$ref": "#/$defs/qedStyle" },
+        "children": {
+          "type": "array",
+          "description": "Proof content blocks"
+        }
+      },
+      "additionalProperties": false
+    },
+    "solution": {
+      "type": "object",
+      "description": "Exercise solution",
+      "required": ["children"],
+      "properties": {
+        "visibility": { "$ref": "#/$defs/solutionVisibility" },
+        "revealAfter": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 datetime after which solution becomes visible"
+        },
+        "children": {
+          "type": "array",
+          "description": "Solution content blocks"
+        }
+      },
+      "additionalProperties": false
+    },
+    "exercisePart": {
+      "type": "object",
+      "description": "A sub-part of a multi-part exercise",
+      "required": ["label", "children"],
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Part label (e.g., 'a', 'i', '1')"
+        },
+        "children": {
+          "type": "array",
+          "description": "Part problem statement"
+        },
+        "hints": {
+          "type": "array",
+          "description": "Part-specific hints"
+        },
+        "solution": { "$ref": "#/$defs/solution" }
+      },
+      "additionalProperties": false
+    },
+    "exerciseBlock": {
+      "type": "object",
+      "description": "Exercise/problem block",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "academic:exercise" },
+        "id": {
+          "type": "string",
+          "description": "Unique identifier"
+        },
+        "number": {
+          "type": "string",
+          "description": "Exercise number"
+        },
+        "difficulty": { "$ref": "#/$defs/difficulty" },
+        "children": {
+          "type": "array",
+          "description": "Problem statement (preamble if parts exist)"
+        },
+        "parts": {
+          "type": "array",
+          "description": "Multi-part sub-exercises",
+          "items": { "$ref": "#/$defs/exercisePart" }
+        },
+        "hints": {
+          "type": "array",
+          "description": "Hint paragraphs"
+        },
+        "solution": { "$ref": "#/$defs/solution" }
+      },
+      "additionalProperties": false
+    },
+    "exerciseSetBlock": {
+      "type": "object",
+      "description": "Container for grouped exercises with shared context",
+      "required": ["type", "exercises"],
+      "properties": {
+        "type": { "const": "academic:exercise-set" },
+        "id": {
+          "type": "string",
+          "description": "Unique identifier"
+        },
+        "title": {
+          "type": "string",
+          "description": "Set title"
+        },
+        "preamble": {
+          "type": "array",
+          "description": "Shared context/instructions for all exercises"
+        },
+        "exercises": {
+          "type": "array",
+          "description": "Array of exercise blocks",
+          "items": { "$ref": "#/$defs/exerciseBlock" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "equationLine": {
+      "type": "object",
+      "description": "A single line in an equation group",
+      "required": ["value"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "LaTeX content for this line"
+        },
+        "number": {
+          "type": ["string", "null"],
+          "description": "Line number, or null for unnumbered"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Custom tag (e.g., '*', '\\dagger') instead of number"
+        },
+        "id": {
+          "type": "string",
+          "description": "Line identifier for references"
+        }
+      },
+      "additionalProperties": false
+    },
+    "equationGroupBlock": {
+      "type": "object",
+      "description": "Multi-line equation environment",
+      "required": ["type", "lines"],
+      "properties": {
+        "type": { "const": "academic:equation-group" },
+        "environment": { "$ref": "#/$defs/equationEnvironment" },
+        "id": {
+          "type": "string",
+          "description": "Group identifier"
+        },
+        "lines": {
+          "type": "array",
+          "description": "Array of equation lines",
+          "items": { "$ref": "#/$defs/equationLine" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "algorithmParameter": {
+      "type": "object",
+      "description": "Algorithm input or output parameter",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Parameter name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Parameter description"
+        }
+      },
+      "additionalProperties": false
+    },
+    "algorithmLine": {
+      "type": "object",
+      "description": "A line of pseudocode in an algorithm",
+      "required": ["content"],
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Line content (may include LaTeX)"
+        },
+        "indent": {
+          "type": "integer",
+          "description": "Indentation level",
+          "minimum": 0,
+          "default": 0
+        },
+        "label": {
+          "type": "string",
+          "description": "Label for line references"
+        },
+        "comment": {
+          "type": "string",
+          "description": "Inline comment"
+        }
+      },
+      "additionalProperties": false
+    },
+    "algorithmBlock": {
+      "type": "object",
+      "description": "Algorithm block with line-numbered pseudocode",
+      "required": ["type", "lines"],
+      "properties": {
+        "type": { "const": "academic:algorithm" },
+        "id": {
+          "type": "string",
+          "description": "Unique identifier"
+        },
+        "number": {
+          "type": "string",
+          "description": "Algorithm number"
+        },
+        "title": {
+          "type": "string",
+          "description": "Algorithm name"
+        },
+        "caption": {
+          "type": "string",
+          "description": "Description caption"
+        },
+        "lineNumbering": {
+          "type": "boolean",
+          "description": "Show line numbers",
+          "default": true
+        },
+        "startLine": {
+          "type": "integer",
+          "description": "Starting line number",
+          "minimum": 1,
+          "default": 1
+        },
+        "lines": {
+          "type": "array",
+          "description": "Pseudocode lines",
+          "items": { "$ref": "#/$defs/algorithmLine" }
+        },
+        "inputs": {
+          "type": "array",
+          "description": "Input parameters",
+          "items": { "$ref": "#/$defs/algorithmParameter" }
+        },
+        "outputs": {
+          "type": "array",
+          "description": "Output description",
+          "items": { "$ref": "#/$defs/algorithmParameter" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "theoremRefMark": {
+      "type": "object",
+      "description": "Reference to a theorem-like block",
+      "required": ["type", "target"],
+      "properties": {
+        "type": { "const": "theorem-ref" },
+        "target": {
+          "type": "string",
+          "description": "Content Anchor URI to the theorem"
+        },
+        "format": {
+          "type": "string",
+          "description": "Display format (e.g., 'Theorem {number}')"
+        }
+      },
+      "additionalProperties": false
+    },
+    "equationRefMark": {
+      "type": "object",
+      "description": "Reference to a numbered equation",
+      "required": ["type", "target"],
+      "properties": {
+        "type": { "const": "equation-ref" },
+        "target": {
+          "type": "string",
+          "description": "Content Anchor URI to the equation"
+        },
+        "format": {
+          "type": "string",
+          "description": "Display format (e.g., '({number})')"
+        }
+      },
+      "additionalProperties": false
+    },
+    "algorithmRefMark": {
+      "type": "object",
+      "description": "Reference to an algorithm or algorithm line",
+      "required": ["type", "target"],
+      "properties": {
+        "type": { "const": "algorithm-ref" },
+        "target": {
+          "type": "string",
+          "description": "Content Anchor URI to the algorithm"
+        },
+        "line": {
+          "type": "string",
+          "description": "Line label for line-specific references"
+        },
+        "format": {
+          "type": "string",
+          "description": "Display format"
+        }
+      },
+      "additionalProperties": false
+    },
+    "customVariantDefinition": {
+      "type": "object",
+      "description": "Definition of a custom theorem-like variant",
+      "required": ["label"],
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Display label for the variant"
+        },
+        "sharesWith": {
+          "type": ["string", "null"],
+          "description": "Share counter with this variant, or null for independent"
+        }
+      },
+      "additionalProperties": false
+    },
+    "counterConfig": {
+      "type": "object",
+      "description": "Counter sharing configuration for a theorem variant",
+      "properties": {
+        "share": {
+          "type": "array",
+          "description": "Variants that share this counter",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "numberingConfig": {
+      "type": "object",
+      "description": "Numbering configuration for the academic extension",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Configuration version"
+        },
+        "equations": {
+          "type": "object",
+          "description": "Equation numbering settings",
+          "properties": {
+            "style": { "$ref": "#/$defs/numberingStyle" },
+            "resetOn": { "$ref": "#/$defs/resetTrigger" }
+          },
+          "additionalProperties": false
+        },
+        "theorems": {
+          "type": "object",
+          "description": "Theorem numbering settings",
+          "properties": {
+            "style": { "$ref": "#/$defs/numberingStyle" },
+            "counters": {
+              "type": "object",
+              "description": "Counter sharing configuration",
+              "additionalProperties": { "$ref": "#/$defs/counterConfig" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "algorithms": {
+          "type": "object",
+          "description": "Algorithm numbering settings",
+          "properties": {
+            "style": { "$ref": "#/$defs/numberingStyle" },
+            "resetOn": { "$ref": "#/$defs/resetTrigger" }
+          },
+          "additionalProperties": false
+        },
+        "exercises": {
+          "type": "object",
+          "description": "Exercise numbering settings",
+          "properties": {
+            "style": { "$ref": "#/$defs/numberingStyle" },
+            "resetOn": { "$ref": "#/$defs/resetTrigger" }
+          },
+          "additionalProperties": false
+        },
+        "customVariants": {
+          "type": "object",
+          "description": "Custom theorem-like variant definitions",
+          "additionalProperties": { "$ref": "#/$defs/customVariantDefinition" }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "description": "Academic extension configuration",
+  "properties": {
+    "numbering": {
+      "type": "string",
+      "description": "Path to numbering configuration file (e.g., 'academic/numbering.json')"
+    }
+  },
+  "additionalProperties": false
+}
