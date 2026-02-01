@@ -165,6 +165,34 @@ The `href` field also accepts Content Anchor URIs for internal links. Values beg
 
 See the Anchors and References specification for the full Content Anchor URI syntax.
 
+#### 4.1.3 Math Mark
+
+Inline mathematical expressions use the math mark:
+
+```json
+{
+  "type": "text",
+  "value": "7.677(9)×10²",
+  "marks": [
+    {
+      "type": "math",
+      "format": "latex",
+      "source": "7.677(9) \\times 10^{2}"
+    }
+  ]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"math"` |
+| `format` | string | Yes | `"latex"` or `"mathml"` |
+| `source` | string | Yes | Math content in specified format |
+
+The text node's `value` field contains the display/fallback text (used for plain text rendering and accessibility). The mark's `source` field contains the mathematical notation for proper typesetting.
+
+This mark enables inline math without breaking text flow, unlike the block-level `math` type which creates a separate block element.
+
 ### 4.2 Paragraph
 
 Standard paragraph block.
@@ -433,6 +461,315 @@ Children: None (void element)
 
 Used for hard line breaks within paragraphs.
 
+### 4.15 Definition List
+
+Definition lists represent term-description pairs, commonly used for glossaries, metadata displays, and key-value content.
+
+```json
+{
+  "type": "definitionList",
+  "children": [
+    {
+      "type": "definitionItem",
+      "children": [
+        {
+          "type": "definitionTerm",
+          "children": [{ "type": "text", "value": "Nagasa" }]
+        },
+        {
+          "type": "definitionDescription",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [{ "type": "text", "value": "Blade length measured from mune-machi to kissaki." }]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "definitionItem",
+      "children": [
+        {
+          "type": "definitionTerm",
+          "children": [{ "type": "text", "value": "Sori" }]
+        },
+        {
+          "type": "definitionDescription",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [{ "type": "text", "value": "Curvature of the blade." }]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+| Block Type | Children | Description |
+|------------|----------|-------------|
+| `definitionList` | `definitionItem` only | Container for definition items |
+| `definitionItem` | `definitionTerm`, `definitionDescription` | Groups a term with its description(s) |
+| `definitionTerm` | Text nodes only | The term being defined |
+| `definitionDescription` | Block-level content | The definition or description |
+
+A `definitionItem` MUST contain at least one `definitionTerm` and at least one `definitionDescription`. Multiple terms MAY share a single description, and a single term MAY have multiple descriptions.
+
+### 4.16 Measurement
+
+Semantic representation of a measurement with optional uncertainty and units. Used for scientific, engineering, and metrology documents.
+
+```json
+{
+  "type": "measurement",
+  "value": 7.677,
+  "uncertainty": 0.009,
+  "uncertaintyNotation": "parenthetical",
+  "exponent": 2,
+  "unit": "mm",
+  "display": "7.677(9)×10² mm"
+}
+```
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `value` | number | Yes | Numeric value |
+| `uncertainty` | number | No | Measurement uncertainty |
+| `uncertaintyNotation` | string | No | How uncertainty is displayed |
+| `exponent` | integer | No | Power of 10 for scientific notation |
+| `unit` | string | No | Unit of measurement |
+| `display` | string | Yes | Human-readable display string |
+
+#### 4.16.1 Uncertainty Notation
+
+| Value | Display Format | Example |
+|-------|---------------|---------|
+| `parenthetical` | Uncertainty in last digit(s) | 7.677(9) |
+| `plusminus` | Plus-minus format | 7.677 ± 0.009 |
+| `range` | Range format | 7.668–7.686 |
+| `percent` | Percentage | 7.677 ± 0.12% |
+
+The `display` field is REQUIRED for accessibility and fallback rendering. It SHOULD accurately represent the measurement as intended for human readers.
+
+Children: None (void element)
+
+**Note:** For complex expressions like vectors, matrices, or multi-variable measurements, use the `math` block type with LaTeX or MathML.
+
+### 4.17 Signature
+
+Semantic representation of a signature with optional image, signer information, and timestamp.
+
+```json
+{
+  "type": "signature",
+  "id": "sig-metrologist",
+  "signatureType": "handwritten",
+  "image": "assets/signatures/metrologist.png",
+  "signer": {
+    "name": "Dr. Jane Smith",
+    "title": "Chief Metrologist",
+    "organization": "BayKen Metrology"
+  },
+  "timestamp": "2026-01-29T14:15:28Z",
+  "purpose": "certification",
+  "digitalSignatureRef": "security/signatures.json#sig-metrologist"
+}
+```
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `signatureType` | string | Yes | Type of signature |
+| `image` | string | No | Path to signature image |
+| `signer` | object | No | Signer identity information |
+| `timestamp` | string | No | ISO 8601 timestamp |
+| `purpose` | string | No | Purpose of the signature |
+| `digitalSignatureRef` | string | No | Reference to cryptographic signature |
+
+#### 4.17.1 Signature Types
+
+| Value | Description |
+|-------|-------------|
+| `handwritten` | Scanned or drawn handwritten signature |
+| `digital` | Cryptographic digital signature |
+| `electronic` | Typed name or simple electronic mark |
+| `stamp` | Official seal or stamp image |
+
+#### 4.17.2 Signature Purpose
+
+| Value | Description |
+|-------|-------------|
+| `certification` | Certifies document accuracy or compliance |
+| `approval` | Approves content or action |
+| `witness` | Witnesses another signature or event |
+| `acknowledgment` | Acknowledges receipt or understanding |
+| `authorship` | Indicates document authorship |
+
+The `signer` object MAY contain:
+- `name` (string) - Signer's full name
+- `title` (string) - Professional title
+- `organization` (string) - Organization name
+- `email` (string) - Contact email
+- `id` (string) - Unique identifier
+
+Children: None (void element)
+
+### 4.18 SVG
+
+Scalable Vector Graphics for charts, diagrams, and illustrations.
+
+```json
+{
+  "type": "svg",
+  "src": "assets/graphics/chart.svg",
+  "alt": "Mass vs Arc Length chart showing linear relationship",
+  "title": "Figure 1: Mass/Arc Length Distribution",
+  "width": 400,
+  "height": 300
+}
+```
+
+Alternative inline form:
+
+```json
+{
+  "type": "svg",
+  "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">...</svg>",
+  "alt": "Simple diagram"
+}
+```
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `src` | string | No* | Path to SVG file |
+| `content` | string | No* | Inline SVG content |
+| `alt` | string | Yes | Alternative text (accessibility) |
+| `title` | string | No | Title/caption |
+| `width` | integer | No | Display width in pixels |
+| `height` | integer | No | Display height in pixels |
+
+*Either `src` or `content` MUST be provided, but not both.
+
+For `src`, the path MUST be a relative path within the archive (e.g., `assets/graphics/chart.svg`) or a URL.
+
+For `content`, the value MUST be a complete SVG element including the `xmlns` attribute.
+
+Children: None (void element)
+
+### 4.19 Barcode
+
+Semantic barcode representation including QR codes, DataMatrix, and linear barcodes.
+
+```json
+{
+  "type": "barcode",
+  "format": "qr",
+  "data": "https://example.com/verify/abc123",
+  "alt": "Verification QR code linking to certificate validation page",
+  "errorCorrection": "M",
+  "size": 100
+}
+```
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `format` | string | Yes | Barcode format |
+| `data` | string | Yes | Encoded content |
+| `alt` | string | Yes | Alternative text description |
+| `errorCorrection` | string | No | Error correction level (QR/DataMatrix) |
+| `size` | integer | No | Rendered size in pixels |
+| `quietZone` | integer | No | Quiet zone size in modules |
+
+#### 4.19.1 Barcode Formats
+
+| Format | Description |
+|--------|-------------|
+| `qr` | QR Code (2D matrix) |
+| `datamatrix` | Data Matrix (2D matrix) |
+| `code128` | Code 128 (linear, alphanumeric) |
+| `code39` | Code 39 (linear, alphanumeric) |
+| `ean13` | EAN-13 (linear, numeric) |
+| `ean8` | EAN-8 (linear, numeric) |
+| `upca` | UPC-A (linear, numeric) |
+| `pdf417` | PDF417 (2D stacked linear) |
+
+#### 4.19.2 Error Correction Levels
+
+For QR codes and DataMatrix:
+
+| Level | Recovery Capacity |
+|-------|------------------|
+| `L` | ~7% |
+| `M` | ~15% (default) |
+| `Q` | ~25% |
+| `H` | ~30% |
+
+The `data` field contains the raw content to encode. For URLs, use the full URL. For structured data, implementations SHOULD encode appropriately for the format.
+
+The `alt` field MUST provide a meaningful description of what the barcode represents, not just "QR code" — include the purpose and destination.
+
+Children: None (void element)
+
+### 4.20 Figure
+
+Container for figures with optional captions. Figures group visual content (images, SVGs, tables, charts) with their captions for semantic association and automatic numbering.
+
+```json
+{
+  "type": "figure",
+  "id": "fig-mass-arc",
+  "children": [
+    {
+      "type": "image",
+      "src": "assets/images/chart.png",
+      "alt": "Line chart showing mass per arc length"
+    },
+    {
+      "type": "figcaption",
+      "children": [
+        { "type": "text", "value": "Figure 1: Mass / Arc Length Distribution" }
+      ]
+    }
+  ],
+  "numbering": "auto"
+}
+```
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `numbering` | string or integer | No | Figure numbering mode |
+
+#### 4.20.1 Numbering Values
+
+| Value | Description |
+|-------|-------------|
+| `auto` | Automatically number in document order |
+| `none` | No numbering |
+| (integer) | Explicit figure number |
+
+**Children:** The figure block MAY contain:
+- Exactly one content block: `image`, `svg`, `table`, `math`, or `barcode`
+- Zero or one `figcaption` block
+
+The `figcaption` block MAY appear before or after the content block.
+
+### 4.21 Figure Caption
+
+Caption for a figure. Only valid as a child of `figure`.
+
+```json
+{
+  "type": "figcaption",
+  "children": [
+    { "type": "text", "value": "Figure 1: System Architecture Overview" }
+  ]
+}
+```
+
+Children: Text nodes or inline content (including links, marks)
+
 ## 5. Extension Block Types
 
 Extensions MAY define additional block types. Extension blocks:
@@ -458,9 +795,9 @@ Example:
 
 ## 6. Internationalization
 
-### 6.1 Text Direction
+### 6.1 Text Direction and Writing Mode
 
-Blocks MAY specify text direction:
+Blocks MAY specify text direction and writing mode:
 
 ```json
 {
@@ -473,10 +810,36 @@ Blocks MAY specify text direction:
 }
 ```
 
+```json
+{
+  "type": "paragraph",
+  "attributes": {
+    "lang": "ja",
+    "writingMode": "vertical-rl"
+  },
+  "children": [...]
+}
+```
+
 | Attribute | Type | Description |
 |-----------|------|-------------|
 | `dir` | string | Text direction: "ltr", "rtl", "auto" |
 | `lang` | string | BCP 47 language tag |
+| `writingMode` | string | Text flow direction (see below) |
+
+#### 6.1.1 Writing Mode Values
+
+| Value | Description | Use Case |
+|-------|-------------|----------|
+| `horizontal-tb` | Horizontal text, top-to-bottom block flow (default) | Latin, Cyrillic, Arabic, Hebrew |
+| `vertical-rl` | Vertical text, right-to-left column flow | Traditional Chinese, Japanese, Korean |
+| `vertical-lr` | Vertical text, left-to-right column flow | Mongolian |
+| `sideways-rl` | Text rotated 90° clockwise | Rotated labels |
+| `sideways-lr` | Text rotated 90° counter-clockwise | Rotated labels |
+
+The `writingMode` attribute indicates the semantic writing mode of the content. For CJK text that was authored in vertical mode, this attribute preserves authorial intent even when presentation may vary.
+
+**Relationship to Presentation:** The presentation layer (see Presentation Layers spec, Section 5.1.1) may override the visual rendering of writing mode. The content-level `writingMode` attribute represents the source/semantic writing direction, while the presentation-level `writingMode` style controls actual rendering.
 
 ### 6.2 Unicode
 
@@ -503,6 +866,10 @@ All text content MUST be valid Unicode (UTF-8 encoded in JSON). Implementations 
 3. List children MUST be listItem blocks
 4. Table children MUST be tableRow blocks
 5. TableRow children MUST be tableCell blocks
+6. DefinitionList children MUST be definitionItem blocks
+7. DefinitionItem children MUST include at least one definitionTerm and one definitionDescription
+8. Figure children MUST include exactly one content block and zero or one figcaption
+9. Figcaption is only valid as a child of figure
 
 ### 7.3 Cross-References
 

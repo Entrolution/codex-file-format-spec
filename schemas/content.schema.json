@@ -33,8 +33,7 @@
           "description": "Unique block identifier"
         },
         "attributes": {
-          "type": "object",
-          "description": "Type-specific attributes"
+          "$ref": "#/$defs/blockAttributes"
         }
       },
       "allOf": [
@@ -77,8 +76,72 @@
         {
           "if": { "properties": { "type": { "const": "math" } } },
           "then": { "$ref": "#/$defs/math" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "definitionList" } } },
+          "then": { "$ref": "#/$defs/definitionList" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "definitionItem" } } },
+          "then": { "$ref": "#/$defs/definitionItem" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "definitionTerm" } } },
+          "then": { "$ref": "#/$defs/definitionTerm" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "definitionDescription" } } },
+          "then": { "$ref": "#/$defs/definitionDescription" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "measurement" } } },
+          "then": { "$ref": "#/$defs/measurement" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "signature" } } },
+          "then": { "$ref": "#/$defs/signature" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "svg" } } },
+          "then": { "$ref": "#/$defs/svg" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "barcode" } } },
+          "then": { "$ref": "#/$defs/barcode" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "figure" } } },
+          "then": { "$ref": "#/$defs/figure" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "figcaption" } } },
+          "then": { "$ref": "#/$defs/figcaption" }
         }
       ]
+    },
+    "blockAttributes": {
+      "type": "object",
+      "description": "Common block attributes for internationalization and styling",
+      "properties": {
+        "dir": {
+          "type": "string",
+          "enum": ["ltr", "rtl", "auto"],
+          "description": "Text direction"
+        },
+        "lang": {
+          "type": "string",
+          "description": "BCP 47 language tag"
+        },
+        "writingMode": {
+          "type": "string",
+          "enum": ["horizontal-tb", "vertical-rl", "vertical-lr", "sideways-rl", "sideways-lr"],
+          "description": "Text flow direction"
+        },
+        "style": {
+          "type": "string",
+          "description": "Named style to apply"
+        }
+      }
     },
     "textNode": {
       "type": "object",
@@ -99,7 +162,8 @@
                 "enum": ["bold", "italic", "underline", "strikethrough", "code", "superscript", "subscript"]
               },
               { "$ref": "#/$defs/linkMark" },
-              { "$ref": "#/$defs/anchorMark" }
+              { "$ref": "#/$defs/anchorMark" },
+              { "$ref": "#/$defs/mathMark" }
             ]
           }
         }
@@ -129,6 +193,22 @@
           "type": "string",
           "description": "Unique anchor identifier (shares namespace with block IDs)",
           "pattern": "^[A-Za-z0-9._-]+$"
+        }
+      }
+    },
+    "mathMark": {
+      "type": "object",
+      "required": ["type", "format", "source"],
+      "properties": {
+        "type": { "const": "math" },
+        "format": {
+          "type": "string",
+          "enum": ["latex", "mathml"],
+          "description": "Math content format"
+        },
+        "source": {
+          "type": "string",
+          "description": "Math content in specified format"
         }
       }
     },
@@ -342,6 +422,247 @@
       "required": ["type"],
       "properties": {
         "type": { "const": "break" }
+      }
+    },
+    "definitionList": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "definitionList" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/definitionItem" },
+          "minItems": 1
+        }
+      }
+    },
+    "definitionItem": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "definitionItem" },
+        "children": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/$defs/definitionTerm" },
+              { "$ref": "#/$defs/definitionDescription" }
+            ]
+          },
+          "minItems": 2
+        }
+      }
+    },
+    "definitionTerm": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "definitionTerm" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/textNode" }
+        }
+      }
+    },
+    "definitionDescription": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "definitionDescription" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/block" }
+        }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "required": ["type", "value", "display"],
+      "properties": {
+        "type": { "const": "measurement" },
+        "value": {
+          "type": "number",
+          "description": "Numeric value"
+        },
+        "uncertainty": {
+          "type": "number",
+          "description": "Measurement uncertainty"
+        },
+        "uncertaintyNotation": {
+          "type": "string",
+          "enum": ["parenthetical", "plusminus", "range", "percent"],
+          "description": "How uncertainty is displayed"
+        },
+        "exponent": {
+          "type": "integer",
+          "description": "Power of 10 for scientific notation"
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit of measurement"
+        },
+        "display": {
+          "type": "string",
+          "description": "Human-readable display string"
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["type", "signatureType"],
+      "properties": {
+        "type": { "const": "signature" },
+        "signatureType": {
+          "type": "string",
+          "enum": ["handwritten", "digital", "electronic", "stamp"],
+          "description": "Type of signature"
+        },
+        "image": {
+          "type": "string",
+          "description": "Path to signature image"
+        },
+        "signer": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Signer's full name"
+            },
+            "title": {
+              "type": "string",
+              "description": "Professional title"
+            },
+            "organization": {
+              "type": "string",
+              "description": "Organization name"
+            },
+            "email": {
+              "type": "string",
+              "description": "Contact email"
+            },
+            "id": {
+              "type": "string",
+              "description": "Unique identifier"
+            }
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp"
+        },
+        "purpose": {
+          "type": "string",
+          "enum": ["certification", "approval", "witness", "acknowledgment", "authorship"],
+          "description": "Purpose of the signature"
+        },
+        "digitalSignatureRef": {
+          "type": "string",
+          "description": "Reference to cryptographic signature"
+        }
+      }
+    },
+    "svg": {
+      "type": "object",
+      "required": ["type", "alt"],
+      "properties": {
+        "type": { "const": "svg" },
+        "src": {
+          "type": "string",
+          "description": "Path to SVG file"
+        },
+        "content": {
+          "type": "string",
+          "description": "Inline SVG content"
+        },
+        "alt": {
+          "type": "string",
+          "description": "Alternative text"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title/caption"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Display width in pixels"
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Display height in pixels"
+        }
+      },
+      "oneOf": [
+        { "required": ["src"] },
+        { "required": ["content"] }
+      ]
+    },
+    "barcode": {
+      "type": "object",
+      "required": ["type", "format", "data", "alt"],
+      "properties": {
+        "type": { "const": "barcode" },
+        "format": {
+          "type": "string",
+          "enum": ["qr", "datamatrix", "code128", "code39", "ean13", "ean8", "upca", "pdf417"],
+          "description": "Barcode format"
+        },
+        "data": {
+          "type": "string",
+          "description": "Encoded content"
+        },
+        "alt": {
+          "type": "string",
+          "description": "Alternative text description"
+        },
+        "errorCorrection": {
+          "type": "string",
+          "enum": ["L", "M", "Q", "H"],
+          "description": "Error correction level (QR/DataMatrix)"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Rendered size in pixels"
+        },
+        "quietZone": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Quiet zone size in modules"
+        }
+      }
+    },
+    "figure": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "figure" },
+        "numbering": {
+          "oneOf": [
+            { "type": "string", "enum": ["auto", "none"] },
+            { "type": "integer", "minimum": 1 }
+          ],
+          "description": "Figure numbering mode"
+        },
+        "children": {
+          "type": "array",
+          "description": "Figure content and optional caption",
+          "minItems": 1,
+          "maxItems": 2
+        }
+      }
+    },
+    "figcaption": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "figcaption" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/textNode" }
+        }
       }
     }
   }

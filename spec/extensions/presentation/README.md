@@ -313,6 +313,8 @@ Common features:
 
 ## 7. Figures and Floats
 
+> **Note:** The `figure` and `figcaption` block types are now part of the core specification (see Content Blocks, Sections 4.20-4.21). This extension provides additional float positioning and advanced numbering capabilities.
+
 ### 7.1 Float Positioning
 
 ```json
@@ -330,7 +332,9 @@ Common features:
 Position options: `top`, `bottom`, `inline`, `page-top`, `page-bottom`
 Span options: `column`, `page`, `spread`
 
-### 7.2 Figure Captions
+### 7.2 Advanced Figure Numbering
+
+The core `figure` block supports basic `numbering` ("auto", "none", or explicit number). This extension adds chapter-based numbering:
 
 ```json
 {
