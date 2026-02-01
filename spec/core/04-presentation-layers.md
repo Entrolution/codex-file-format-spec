@@ -997,7 +997,7 @@ If `matrix` is specified, it overrides all other transform properties.
 
 ## 17. Examples
 
-### 16.1 Minimal Continuous Presentation
+### 17.1 Minimal Continuous Presentation
 
 ```json
 {
@@ -1024,7 +1024,7 @@ If `matrix` is specified, it overrides all other transform properties.
 }
 ```
 
-### 16.2 Print-Ready Paginated Presentation
+### 17.2 Print-Ready Paginated Presentation
 
 ```json
 {

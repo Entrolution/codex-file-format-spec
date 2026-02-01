@@ -108,4 +108,6 @@ When implementing Codex support, consider the following priority order:
   - Minor: New optional features, backward-compatible
   - Major: Breaking changes
 
+**Note:** Most extensions are at version 0.1 (initial draft). The Collaboration extension is at version 0.2 because it underwent breaking changes to its comment threading model during development. This version difference is intentional and reflects actual specification maturity.
+
 See individual extension READMEs for version history and migration notes.

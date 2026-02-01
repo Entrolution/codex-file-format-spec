@@ -32,3 +32,6 @@ jobs:
 
       - name: Validate schemas and examples
         run: npm test
+
+      - name: Check spec-schema sync
+        run: npm run check:sync
