@@ -28,6 +28,46 @@ interface SyncReport {
   synced: string[];
 }
 
+// Patterns for types that appear in spec JSON examples but are NOT block/mark types
+// These are excluded from sync checking as they are:
+// - MIME types (asset types, not content blocks)
+// - Presentation layer types (layout types, not content blocks)
+// - Syntax highlighting token types (code formatting, not blocks)
+// - State/enum values (document states, annotation types, etc.)
+const EXCLUDED_PATTERNS: RegExp[] = [
+  // MIME types (assets, not blocks)
+  /^image\//, /^font\//, /^application\//, /^text\//, /^audio\//, /^video\//,
+  // Presentation layer types (not content blocks)
+  /^(paginated|continuous|responsive|flow|precise)$/,
+  // Syntax highlighting token types (note: 'comment' is NOT excluded as it's also a collaboration annotation type)
+  /^(keyword|function|class|variable|parameter|string|number|boolean|null|docstring|operator|punctuation|delimiter|type|namespace|decorator|plain)$/,
+  // Document state values
+  /^(draft|review|frozen|published)$/,
+  // Collaboration change types (modification action types, not annotation blocks)
+  /^(insert|modify|delete)$/,
+  // Form field types that appear in examples as values (not block types themselves)
+  /^(textInput|checkbox|select|date|number|radio|email)$/,
+  // Dublin Core metadata values (not block types)
+  /^(Text|Image|Sound|Collection|Dataset|Event|InteractiveResource|MovingImage|PhysicalObject|Service|Software|StillImage)$/,
+  // JSON Schema type values
+  /^(object|array|string|integer|number|boolean|null)$/,
+  // Provenance evidence types (enum values)
+  /^(inclusion|exclusion|rfc3161|blockchain|aggregated|reference)$/,
+  // Presentation layout types (not content blocks)
+  /^(columns|grid|spot)$/,
+  // Citation format types (CSL types, not blocks)
+  /^(article-journal|article|book|chapter|paper-conference|thesis|report|webpage|entry-encyclopedia)$/,
+  // HTML/markdown styling (not block types)
+  /^(strong|em|code|sub|sup)$/,
+  // Other enum values that aren't block types
+  /^(attachment|embedded|external|required|optional)$/,
+];
+
+// Check if a type name should be excluded from sync checking
+function isExcludedType(typeName: string): boolean {
+  return EXCLUDED_PATTERNS.some(pattern => pattern.test(typeName));
+}
+
 // Extract block types from spec markdown files
 function extractTypesFromSpec(filePath: string): BlockType[] {
   const types: BlockType[] = [];
@@ -48,7 +88,8 @@ function extractTypesFromSpec(filePath: string): BlockType[] {
     while ((match = typePattern.exec(line)) !== null) {
       const typeName = match[1];
       // Skip "text" as it's always present and not a block type
-      if (typeName !== 'text' && !types.find(t => t.type === typeName)) {
+      // Also skip excluded patterns (MIME types, presentation layer types, etc.)
+      if (typeName !== 'text' && !isExcludedType(typeName) && !types.find(t => t.type === typeName)) {
         types.push({
           type: typeName,
           source: filename,
@@ -60,7 +101,7 @@ function extractTypesFromSpec(filePath: string): BlockType[] {
     // Match inline code references
     while ((match = inlinePattern.exec(line)) !== null) {
       const typeName = match[1];
-      if (typeName !== 'text' && !types.find(t => t.type === typeName)) {
+      if (typeName !== 'text' && !isExcludedType(typeName) && !types.find(t => t.type === typeName)) {
         types.push({
           type: typeName,
           source: filename,
@@ -73,33 +114,58 @@ function extractTypesFromSpec(filePath: string): BlockType[] {
   return types;
 }
 
+// Recursively extract type constants from a schema object
+function extractTypeConstFromObject(obj: unknown, types: string[]): void {
+  if (!obj || typeof obj !== 'object') return;
+
+  const record = obj as Record<string, unknown>;
+
+  // Check if this object has properties.type.const
+  if (record.properties && typeof record.properties === 'object') {
+    const props = record.properties as Record<string, unknown>;
+    if (props.type && typeof props.type === 'object') {
+      const typeProp = props.type as Record<string, unknown>;
+      if (typeProp.const && typeof typeProp.const === 'string') {
+        const typeName = typeProp.const;
+        // Skip 'text' as it's ubiquitous (matches spec extraction behavior)
+        if (typeName !== 'text' && !types.includes(typeName)) {
+          types.push(typeName);
+        }
+      }
+    }
+  }
+
+  // Recurse into allOf, anyOf, oneOf arrays
+  for (const key of ['allOf', 'anyOf', 'oneOf']) {
+    if (Array.isArray(record[key])) {
+      for (const item of record[key] as unknown[]) {
+        extractTypeConstFromObject(item, types);
+      }
+    }
+  }
+
+  // Recurse into if/then/else
+  for (const key of ['if', 'then', 'else']) {
+    if (record[key] && typeof record[key] === 'object') {
+      extractTypeConstFromObject(record[key], types);
+    }
+  }
+}
+
 // Extract block types from JSON schema files
 function extractTypesFromSchema(filePath: string): BlockType[] {
   const types: BlockType[] = [];
   const content = fs.readFileSync(filePath, 'utf8');
   const filename = path.relative(rootDir, filePath);
+  const extractedTypes: string[] = [];
 
   try {
     const schema = JSON.parse(content);
 
     // Look for const types in $defs
     if (schema.$defs) {
-      for (const [defName, defValue] of Object.entries(schema.$defs)) {
-        const def = defValue as Record<string, unknown>;
-
-        // Check for type const in properties
-        if (def.properties && typeof def.properties === 'object') {
-          const props = def.properties as Record<string, unknown>;
-          if (props.type && typeof props.type === 'object') {
-            const typeProp = props.type as Record<string, unknown>;
-            if (typeProp.const && typeof typeProp.const === 'string') {
-              types.push({
-                type: typeProp.const,
-                source: filename
-              });
-            }
-          }
-        }
+      for (const [_defName, defValue] of Object.entries(schema.$defs)) {
+        extractTypeConstFromObject(defValue, extractedTypes);
       }
     }
 
@@ -109,14 +175,20 @@ function extractTypesFromSchema(filePath: string): BlockType[] {
       for (const condition of allOf) {
         if (condition.if?.properties?.type?.const) {
           const typeName = condition.if.properties.type.const as string;
-          if (!types.find(t => t.type === typeName)) {
-            types.push({
-              type: typeName,
-              source: filename
-            });
+          // Skip 'text' as it's ubiquitous (matches spec extraction behavior)
+          if (typeName !== 'text' && !extractedTypes.includes(typeName)) {
+            extractedTypes.push(typeName);
           }
         }
       }
+    }
+
+    // Convert to BlockType objects
+    for (const typeName of extractedTypes) {
+      types.push({
+        type: typeName,
+        source: filename
+      });
     }
   } catch (err) {
     console.error(`Error parsing ${filename}: ${err}`);

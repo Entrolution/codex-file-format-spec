@@ -231,6 +231,25 @@ Suggestion statuses: `pending`, `accepted`, `rejected`
 
 Standard emoji identifiers using Unicode CLDR short names (without colons). Examples: `thumbsup`, `heart`, `thinking`, `rocket`. See the [Unicode CLDR annotations](https://cldr.unicode.org/translation/characters-emoji-symbols/short-names-and-keywords) for the canonical list.
 
+### 4.7 Highlights
+
+```json
+{
+  "id": "highlight-1",
+  "type": "highlight",
+  "anchor": { "blockId": "block-456", "start": 20, "end": 45 },
+  "author": { "name": "Reviewer" },
+  "created": "2025-01-15T14:00:00Z",
+  "color": "#ffeb3b",
+  "note": "Important passage to revisit"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `color` | string | No | Highlight color (CSS color value, defaults to yellow) |
+| `note` | string | No | Optional note attached to the highlight |
+
 ## 5. Change Tracking
 
 ### 5.1 Overview

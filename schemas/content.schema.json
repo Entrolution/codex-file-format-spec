@@ -187,7 +187,8 @@
               { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/theoremRefMark" },
               { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/equationRefMark" },
               { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/algorithmRefMark" },
-              { "$ref": "https://codex.document/schemas/presentation.schema.json#/$defs/indexMark" }
+              { "$ref": "https://codex.document/schemas/presentation.schema.json#/$defs/indexMark" },
+              { "$ref": "https://codex.document/schemas/legal.schema.json#/$defs/legalCiteMark" }
             ]
           }
         }

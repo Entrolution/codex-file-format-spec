@@ -35,7 +35,7 @@ const standaloneSchemas: string[] = [
 const dependentSchemas: DependentSchema[] = [
   { schema: 'annotations.schema.json', refs: ['anchor.schema.json'] },
   { schema: 'collaboration.schema.json', refs: ['anchor.schema.json'] },
-  { schema: 'content.schema.json', refs: ['semantic.schema.json', 'academic.schema.json', 'presentation.schema.json'] },
+  { schema: 'content.schema.json', refs: ['semantic.schema.json', 'academic.schema.json', 'presentation.schema.json', 'legal.schema.json'] },
   { schema: 'phantoms.schema.json', refs: ['anchor.schema.json'] },
   { schema: 'security.schema.json', refs: ['anchor.schema.json'] },
 ];

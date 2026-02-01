@@ -1,0 +1,218 @@
+{
+  "version": "0.1",
+  "blocks": [
+    {
+      "type": "legal:caption",
+      "id": "caption",
+      "court": "United States District Court for the Northern District of California",
+      "caseNumber": "No. 3:24-cv-01234",
+      "parties": {
+        "plaintiff": "Jane Doe",
+        "defendant": "Acme Corporation"
+      },
+      "docket": "Hon. Sarah Johnson"
+    },
+    {
+      "type": "heading",
+      "id": "doc-title",
+      "level": 1,
+      "children": [
+        { "type": "text", "value": "Brief in Support of Motion for Summary Judgment" }
+      ]
+    },
+    {
+      "type": "legal:tableOfAuthorities",
+      "id": "toa",
+      "title": "Table of Authorities",
+      "categories": [
+        { "name": "Cases", "key": "cases", "format": "bluebook" },
+        { "name": "Statutes", "key": "statutes", "format": "bluebook" },
+        { "name": "Regulations", "key": "regulations", "format": "bluebook" }
+      ],
+      "pageReferences": true,
+      "passimThreshold": 5
+    },
+    {
+      "type": "heading",
+      "id": "intro-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "I. Introduction" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "intro-para-1",
+      "children": [
+        { "type": "text", "value": "Plaintiff Jane Doe respectfully submits this brief in support of her Motion for Summary Judgment. As demonstrated below, the undisputed facts establish that Defendant violated " },
+        {
+          "type": "text",
+          "value": "Title VII of the Civil Rights Act of 1964",
+          "marks": [
+            {
+              "type": "legal:cite",
+              "citation": "42 U.S.C. \u00a7 2000e et seq.",
+              "category": "statutes"
+            }
+          ]
+        },
+        { "type": "text", "value": " by terminating Plaintiff's employment based on her gender." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "facts-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "II. Statement of Undisputed Facts" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "facts-para-1",
+      "children": [
+        { "type": "text", "value": "Plaintiff was employed by Defendant from January 2020 until her termination on June 15, 2024. During her employment, Plaintiff received consistently positive performance reviews and was promoted twice." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "argument-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "III. Argument" }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "argument-a-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "A. Standard of Review" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "standard-para-1",
+      "children": [
+        { "type": "text", "value": "Summary judgment is appropriate when there is no genuine dispute as to any material fact and the movant is entitled to judgment as a matter of law. " },
+        {
+          "type": "text",
+          "value": "Celotex Corp. v. Catrett",
+          "marks": [
+            {
+              "type": "legal:cite",
+              "citation": "477 U.S. 317 (1986)",
+              "category": "cases",
+              "shortForm": "Celotex"
+            }
+          ]
+        },
+        { "type": "text", "value": ". The moving party bears the initial burden of demonstrating the absence of a genuine issue of material fact. " },
+        {
+          "type": "text",
+          "value": "Id.",
+          "marks": [
+            {
+              "type": "legal:cite",
+              "citation": "477 U.S. 317 (1986)",
+              "category": "cases",
+              "shortForm": "Celotex",
+              "pinpoint": "at 323"
+            }
+          ]
+        },
+        { "type": "text", "value": "" }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "argument-b-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "B. Plaintiff Has Established a Prima Facie Case of Discrimination" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "prima-facie-para-1",
+      "children": [
+        { "type": "text", "value": "Under the burden-shifting framework established in " },
+        {
+          "type": "text",
+          "value": "McDonnell Douglas Corp. v. Green",
+          "marks": [
+            {
+              "type": "legal:cite",
+              "citation": "411 U.S. 792 (1973)",
+              "category": "cases",
+              "shortForm": "McDonnell Douglas"
+            }
+          ]
+        },
+        { "type": "text", "value": ", a plaintiff establishes a prima facie case of discrimination by showing: (1) membership in a protected class; (2) satisfactory job performance; (3) an adverse employment action; and (4) circumstances giving rise to an inference of discrimination." }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "prima-facie-para-2",
+      "children": [
+        { "type": "text", "value": "The Ninth Circuit has consistently applied this framework. See " },
+        {
+          "type": "text",
+          "value": "Chuang v. Univ. of Cal. Davis",
+          "marks": [
+            {
+              "type": "legal:cite",
+              "citation": "225 F.3d 1115, 1123 (9th Cir. 2000)",
+              "category": "cases",
+              "shortForm": "Chuang"
+            }
+          ]
+        },
+        { "type": "text", "value": ". Furthermore, EEOC regulations provide that employers must maintain records of employment decisions. " },
+        {
+          "type": "text",
+          "value": "29 C.F.R. \u00a7 1602.14",
+          "marks": [
+            {
+              "type": "legal:cite",
+              "citation": "29 C.F.R. \u00a7 1602.14",
+              "category": "regulations"
+            }
+          ]
+        },
+        { "type": "text", "value": "." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "conclusion-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "IV. Conclusion" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "conclusion-para-1",
+      "children": [
+        { "type": "text", "value": "For the foregoing reasons, Plaintiff respectfully requests that this Court grant summary judgment in her favor on her Title VII claim." }
+      ]
+    },
+    {
+      "type": "legal:signatureBlock",
+      "id": "sig-block",
+      "role": "counsel",
+      "signer": {
+        "name": "Jane Smith",
+        "title": "Counsel for Plaintiff",
+        "barNumber": "CA 123456",
+        "firm": "Smith & Associates LLP",
+        "address": "100 Market Street, Suite 500, San Francisco, CA 94105",
+        "telephone": "(415) 555-1234",
+        "email": "jsmith@smithlaw.com"
+      },
+      "date": "2025-01-30"
+    }
+  ]
+}

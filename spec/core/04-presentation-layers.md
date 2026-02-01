@@ -162,7 +162,7 @@ The `writingMode` property controls the direction of text flow and block progres
 
 **Background:**
 - `backgroundColor`
-- `backgroundImage` - URL/path to image (see Section 5.1.2)
+- `backgroundImage` - URL/path to image (see Section 5.4)
 - `backgroundSize` - `cover`, `contain`, or dimensions
 - `backgroundPosition` - Position keywords or values
 - `backgroundRepeat` - `repeat`, `no-repeat`, `repeat-x`, `repeat-y`

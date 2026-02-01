@@ -9,6 +9,7 @@
     "validate:examples": "npx tsx scripts/validate-examples.ts",
     "check:sync": "npx tsx scripts/check-spec-schema-sync.ts",
     "check:refs": "npx tsx scripts/validate-cross-refs.ts",
+    "check:coverage": "npx tsx scripts/check-example-coverage.ts",
     "generate:template": "npx tsx scripts/generate-template.ts"
   },
   "devDependencies": {

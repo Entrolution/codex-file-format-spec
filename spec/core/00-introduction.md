@@ -149,6 +149,8 @@ Codex provides three annotation storage locations, each serving different purpos
 
 All annotation layers are **outside the content hash boundary** — adding annotations never changes the document's identity or invalidates signatures.
 
+**Implementation note**: Core annotations live in `security/annotations.json` because they share the security directory's "outside content hash" semantics. When migrating from core annotations to the collaboration extension, implementations SHOULD convert existing annotations to the collaboration format and remove the core annotations file. The two formats SHOULD NOT coexist in the same document to avoid confusion.
+
 ### 1.6 Specification Organization
 
 This specification is organized into the following sections:
