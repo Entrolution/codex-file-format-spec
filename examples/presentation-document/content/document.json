@@ -1,0 +1,160 @@
+{
+  "version": "0.1",
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "chapter-1",
+      "level": 1,
+      "children": [{ "type": "text", "value": "Chapter 1: Introduction" }]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-intro-1",
+      "children": [
+        { "type": "text", "value": "This document demonstrates the advanced presentation features available in the Codex format. The presentation layer provides fine-grained control over typography, layout, and print output." }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-intro-2",
+      "children": [
+        { "type": "text", "value": "The separation of content from presentation means that the same semantic document can be rendered in multiple ways—as a printed book, a responsive web page, or an accessible screen reader output—while maintaining consistent meaning." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "section-1-1",
+      "level": 2,
+      "children": [{ "type": "text", "value": "1.1 Typography Features" }]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-typo-1",
+      "children": [
+        { "type": "text", "value": "Professional typography includes hyphenation, widow and orphan control, and baseline grid alignment. These features ensure that text flows naturally and pages maintain visual consistency." }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-typo-2",
+      "children": [
+        { "type": "text", "value": "OpenType features like ligatures, small caps, and old-style numerals can be enabled per style. Variable fonts allow fine control over weight, width, and other axes." }
+      ]
+    },
+    {
+      "type": "figure",
+      "id": "fig-layout",
+      "children": [
+        {
+          "type": "image",
+          "src": "assets/images/layout-example.png",
+          "alt": "Diagram showing multi-column layout with flow regions"
+        },
+        {
+          "type": "figcaption",
+          "children": [{ "type": "text", "value": "Figure 1: Multi-column layout with flow regions" }]
+        }
+      ],
+      "numbering": "auto"
+    },
+    {
+      "type": "heading",
+      "id": "section-1-2",
+      "level": 2,
+      "children": [{ "type": "text", "value": "1.2 Page Layout" }]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-layout-1",
+      "children": [
+        { "type": "text", "value": "The presentation extension supports both multi-column and grid layouts. Text can flow through defined regions across multiple pages, enabling complex magazine-style layouts." }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-layout-2",
+      "children": [
+        { "type": "text", "value": "Master pages define reusable templates with margins, headers, footers, and background elements. Rules can automatically apply different masters to chapter openings, full-bleed pages, and default pages." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "chapter-2",
+      "level": 1,
+      "children": [{ "type": "text", "value": "Chapter 2: Print Features" }]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-print-1",
+      "children": [
+        { "type": "text", "value": "For professional printing, the presentation extension supports bleeds, trim marks, registration marks, and spot colors. Documents can be configured for PDF/X compliance." }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-print-2",
+      "children": [
+        { "type": "text", "value": "Running headers and footers can include dynamic content like chapter titles, section names, page numbers, and total page counts. Different templates can be applied to odd and even pages for book-style facing layouts." }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "table-features",
+      "children": [
+        {
+          "type": "tableRow",
+          "header": true,
+          "children": [
+            {
+              "type": "tableCell",
+              "children": [{ "type": "paragraph", "children": [{ "type": "text", "value": "Feature" }] }]
+            },
+            {
+              "type": "tableCell",
+              "children": [{ "type": "paragraph", "children": [{ "type": "text", "value": "Description" }] }]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "children": [
+            {
+              "type": "tableCell",
+              "children": [{ "type": "paragraph", "children": [{ "type": "text", "value": "Master Pages" }] }]
+            },
+            {
+              "type": "tableCell",
+              "children": [{ "type": "paragraph", "children": [{ "type": "text", "value": "Reusable page templates with margins and headers" }] }]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "children": [
+            {
+              "type": "tableCell",
+              "children": [{ "type": "paragraph", "children": [{ "type": "text", "value": "Hyphenation" }] }]
+            },
+            {
+              "type": "tableCell",
+              "children": [{ "type": "paragraph", "children": [{ "type": "text", "value": "Language-aware word breaking" }] }]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "children": [
+            {
+              "type": "tableCell",
+              "children": [{ "type": "paragraph", "children": [{ "type": "text", "value": "Line Numbering" }] }]
+            },
+            {
+              "type": "tableCell",
+              "children": [{ "type": "paragraph", "children": [{ "type": "text", "value": "Margin line numbers for legal/manuscript documents" }] }]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

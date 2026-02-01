@@ -44,6 +44,58 @@
     "pageTemplate": {
       "$ref": "#/$defs/pageTemplate"
     },
+    "layout": {
+      "$ref": "#/$defs/layout"
+    },
+    "flowRegions": {
+      "type": "array",
+      "description": "Flow region definitions for text flow across pages/areas",
+      "items": {
+        "$ref": "#/$defs/flowRegion"
+      }
+    },
+    "print": {
+      "$ref": "#/$defs/printSettings"
+    },
+    "masterPages": {
+      "type": "object",
+      "description": "Master page template definitions",
+      "additionalProperties": {
+        "$ref": "#/$defs/masterPage"
+      }
+    },
+    "masterRules": {
+      "type": "array",
+      "description": "Auto-application rules for master pages",
+      "items": {
+        "$ref": "#/$defs/masterRule"
+      }
+    },
+    "colors": {
+      "type": "object",
+      "description": "Named color definitions including spot colors",
+      "additionalProperties": {
+        "$ref": "#/$defs/colorDefinition"
+      }
+    },
+    "tableOfContents": {
+      "$ref": "#/$defs/tableOfContentsConfig"
+    },
+    "listOfFigures": {
+      "$ref": "#/$defs/listOfConfig"
+    },
+    "listOfTables": {
+      "$ref": "#/$defs/listOfConfig"
+    },
+    "index": {
+      "$ref": "#/$defs/indexConfig"
+    },
+    "footnotes": {
+      "$ref": "#/$defs/footnotesConfig"
+    },
+    "endnotes": {
+      "$ref": "#/$defs/endnotesConfig"
+    },
     "styles": {
       "type": "object",
       "description": "Style definitions",
@@ -267,6 +319,343 @@
         },
         "footer": {
           "$ref": "#/$defs/pageHeaderFooter"
+        },
+        "odd": {
+          "type": "object",
+          "description": "Template for odd pages",
+          "properties": {
+            "header": { "$ref": "#/$defs/pageHeaderFooter" },
+            "footer": { "$ref": "#/$defs/pageHeaderFooter" }
+          }
+        },
+        "even": {
+          "type": "object",
+          "description": "Template for even pages",
+          "properties": {
+            "header": { "$ref": "#/$defs/pageHeaderFooter" },
+            "footer": { "$ref": "#/$defs/pageHeaderFooter" }
+          }
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "description": "Page layout configuration",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["columns", "grid"],
+          "description": "Layout type"
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Number of columns"
+        },
+        "rows": {
+          "oneOf": [
+            { "type": "string", "const": "auto" },
+            { "type": "integer", "minimum": 1 }
+          ],
+          "description": "Number of rows (grid layout)"
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap between columns/cells"
+        },
+        "balance": {
+          "type": "boolean",
+          "description": "Balance column heights"
+        },
+        "rule": {
+          "type": "object",
+          "description": "Column rule (separator line)",
+          "properties": {
+            "width": { "type": "string" },
+            "style": { "type": "string" },
+            "color": { "type": "string" }
+          }
+        },
+        "areas": {
+          "type": "array",
+          "description": "Grid area definitions",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "column": { "type": "string" },
+              "row": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "flowRegion": {
+      "type": "object",
+      "description": "Flow region definition for text flow",
+      "required": ["id", "regions"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Flow region identifier"
+        },
+        "regions": {
+          "type": "array",
+          "description": "Ordered list of regions for text flow",
+          "items": {
+            "type": "object",
+            "properties": {
+              "page": { "type": "integer", "minimum": 1 },
+              "area": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "printSettings": {
+      "type": "object",
+      "description": "Print-specific settings",
+      "properties": {
+        "bleed": {
+          "type": "object",
+          "description": "Bleed area for printing",
+          "properties": {
+            "top": { "type": "string" },
+            "right": { "type": "string" },
+            "bottom": { "type": "string" },
+            "left": { "type": "string" }
+          }
+        },
+        "trim": {
+          "type": "object",
+          "description": "Trim box dimensions",
+          "properties": {
+            "width": { "type": "string" },
+            "height": { "type": "string" }
+          }
+        },
+        "cropMarks": {
+          "type": "boolean",
+          "description": "Include crop marks"
+        },
+        "registrationMarks": {
+          "type": "boolean",
+          "description": "Include registration marks"
+        },
+        "colorBars": {
+          "type": "boolean",
+          "description": "Include color bars"
+        },
+        "standard": {
+          "type": "string",
+          "description": "PDF standard compliance",
+          "enum": ["PDF/X-1a", "PDF/X-3", "PDF/X-4", "PDF/A-1", "PDF/A-2", "PDF/A-3"]
+        },
+        "outputIntent": {
+          "type": "object",
+          "description": "Output intent for color management",
+          "properties": {
+            "profile": { "type": "string" },
+            "condition": { "type": "string" }
+          }
+        }
+      }
+    },
+    "masterPage": {
+      "type": "object",
+      "description": "Master page template definition",
+      "properties": {
+        "basedOn": {
+          "type": "string",
+          "description": "Parent master page name"
+        },
+        "margins": {
+          "type": "object",
+          "properties": {
+            "top": { "type": "string" },
+            "right": { "type": "string" },
+            "bottom": { "type": "string" },
+            "left": { "type": "string" },
+            "inside": { "type": "string" },
+            "outside": { "type": "string" }
+          }
+        },
+        "header": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/pageHeaderFooter" }
+          ]
+        },
+        "footer": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/pageHeaderFooter" }
+          ]
+        }
+      }
+    },
+    "masterRule": {
+      "type": "object",
+      "description": "Auto-application rule for master pages",
+      "required": ["match", "master"],
+      "properties": {
+        "match": {
+          "type": "object",
+          "description": "Match criteria",
+          "properties": {
+            "first": { "type": "boolean" },
+            "last": { "type": "boolean" },
+            "contains": { "type": "string" },
+            "default": { "type": "boolean" }
+          }
+        },
+        "master": {
+          "type": "string",
+          "description": "Master page name to apply"
+        }
+      }
+    },
+    "colorDefinition": {
+      "type": "object",
+      "description": "Color definition including spot colors",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["rgb", "cmyk", "spot"],
+          "description": "Color type"
+        },
+        "name": {
+          "type": "string",
+          "description": "Spot color name (e.g., PANTONE 286 C)"
+        },
+        "fallback": {
+          "type": "string",
+          "description": "Fallback hex color for non-spot rendering"
+        },
+        "value": {
+          "type": "string",
+          "description": "Color value (hex for RGB, CMYK values for CMYK)"
+        }
+      }
+    },
+    "tableOfContentsConfig": {
+      "type": "object",
+      "description": "Table of contents generation settings",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "TOC section title"
+        },
+        "levels": {
+          "type": "array",
+          "description": "Heading levels to include",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          }
+        },
+        "styles": {
+          "type": "object",
+          "description": "Style names for each TOC level",
+          "additionalProperties": { "$ref": "#/$defs/style" }
+        },
+        "pageNumbers": {
+          "type": "boolean",
+          "description": "Include page numbers"
+        },
+        "leaders": {
+          "type": "string",
+          "enum": ["none", "dots", "dashes", "underline"],
+          "description": "Leader style between title and page number"
+        }
+      }
+    },
+    "listOfConfig": {
+      "type": "object",
+      "description": "List of figures/tables configuration",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Section title"
+        },
+        "style": {
+          "type": "string",
+          "description": "Named style to apply"
+        }
+      }
+    },
+    "indexConfig": {
+      "type": "object",
+      "description": "Index generation settings",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Index section title"
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4,
+          "description": "Number of columns for index layout"
+        },
+        "style": {
+          "type": "object",
+          "description": "Styling for index entries",
+          "properties": {
+            "mainEntry": { "$ref": "#/$defs/style" },
+            "subEntry": { "$ref": "#/$defs/style" }
+          }
+        }
+      }
+    },
+    "footnotesConfig": {
+      "type": "object",
+      "description": "Footnote rendering settings",
+      "properties": {
+        "numbering": {
+          "type": "string",
+          "description": "Numbering style",
+          "enum": ["1", "a", "A", "i", "I", "*"]
+        },
+        "position": {
+          "type": "string",
+          "enum": ["page-bottom", "column-bottom", "section-end"],
+          "description": "Footnote position"
+        },
+        "separator": {
+          "type": "object",
+          "description": "Separator line settings",
+          "properties": {
+            "width": { "type": "string" },
+            "style": { "type": "string" },
+            "margin": { "type": "string" }
+          }
+        },
+        "style": {
+          "$ref": "#/$defs/style",
+          "description": "Footnote text styling"
+        }
+      }
+    },
+    "endnotesConfig": {
+      "type": "object",
+      "description": "Endnote rendering settings",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Endnotes section title"
+        },
+        "numbering": {
+          "type": "string",
+          "description": "Numbering style",
+          "enum": ["1", "a", "A", "i", "I"]
+        },
+        "perChapter": {
+          "type": "boolean",
+          "description": "Reset numbering per chapter"
         }
       }
     },
@@ -304,6 +693,10 @@
             "text": {
               "type": "string",
               "description": "Text with optional variables like {pageNumber}"
+            },
+            "variable": {
+              "type": "string",
+              "description": "Dynamic variable name (e.g., 'chapter-title', 'section-title', 'pageNumber')"
             }
           }
         }
@@ -360,6 +753,38 @@
         }
       }
     },
+    "presentationReference": {
+      "type": "object",
+      "description": "Cross-reference block for figure/table/section references",
+      "required": ["type", "target"],
+      "properties": {
+        "type": { "const": "presentation:reference" },
+        "target": {
+          "type": "string",
+          "description": "Content Anchor URI (internal references start with #)"
+        },
+        "format": {
+          "type": "string",
+          "description": "Display format template (e.g., 'Figure #')"
+        }
+      }
+    },
+    "indexMark": {
+      "type": "object",
+      "description": "Index entry mark for document index generation",
+      "required": ["type", "term"],
+      "properties": {
+        "type": { "const": "index" },
+        "term": {
+          "type": "string",
+          "description": "Primary index term"
+        },
+        "subterm": {
+          "type": "string",
+          "description": "Secondary index term"
+        }
+      }
+    },
     "style": {
       "type": "object",
       "properties": {
@@ -382,6 +807,16 @@
         "fontStyle": {
           "type": "string",
           "enum": ["normal", "italic"]
+        },
+        "fontFeatureSettings": {
+          "type": "object",
+          "description": "OpenType feature settings",
+          "additionalProperties": { "type": "boolean" }
+        },
+        "fontVariationSettings": {
+          "type": "object",
+          "description": "Variable font axis settings",
+          "additionalProperties": { "type": "number" }
         },
         "lineHeight": {
           "oneOf": [
@@ -466,9 +901,52 @@
         "pageBreakAfter": {
           "type": "string",
           "enum": ["auto", "always", "avoid"]
+        },
+        "dropCap": {
+          "type": "object",
+          "description": "Drop cap settings for first letter",
+          "properties": {
+            "lines": {
+              "type": "integer",
+              "minimum": 2,
+              "description": "Number of lines to span"
+            },
+            "fontFamily": { "type": "string" },
+            "fontWeight": {
+              "oneOf": [
+                { "type": "integer", "minimum": 100, "maximum": 900 },
+                { "type": "string", "enum": ["normal", "bold", "lighter", "bolder", "inherit"] }
+              ]
+            },
+            "marginRight": { "type": "string" }
+          }
+        },
+        "overprint": {
+          "type": "boolean",
+          "description": "Enable overprint for this element (print only)"
         }
       },
       "additionalProperties": false
+    },
+    "float": {
+      "type": "object",
+      "description": "Float positioning for figures and images",
+      "properties": {
+        "position": {
+          "type": "string",
+          "enum": ["top", "bottom", "inline", "page-top", "page-bottom"],
+          "description": "Float position preference"
+        },
+        "span": {
+          "type": "string",
+          "enum": ["column", "page", "spread"],
+          "description": "Width span of the float"
+        },
+        "clearance": {
+          "type": "string",
+          "description": "Minimum clearance around float"
+        }
+      }
     }
   }
 }

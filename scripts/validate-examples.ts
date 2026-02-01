@@ -42,7 +42,7 @@ function loadJson(filepath: string): unknown {
 
 // Schema dependencies (schemas that need other schemas loaded first)
 const schemaDependencies: Record<string, string[]> = {
-  'content.schema.json': ['semantic.schema.json', 'academic.schema.json'],
+  'content.schema.json': ['semantic.schema.json', 'academic.schema.json', 'presentation.schema.json'],
   'collaboration.schema.json': ['anchor.schema.json'],
   'phantoms.schema.json': ['anchor.schema.json'],
   'security.schema.json': ['anchor.schema.json'],

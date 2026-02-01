@@ -251,6 +251,11 @@
         "required": {
           "type": "boolean",
           "description": "Whether extension is required for correct rendering"
+        },
+        "config": {
+          "type": "object",
+          "description": "Extension-specific configuration paths or inline settings",
+          "additionalProperties": true
         }
       }
     }

@@ -104,6 +104,27 @@ The canonical content EXCLUDES:
 
 > **Note**: The document ID represents the document's semantic identity — what it says, not how it looks. Multiple visual presentations (letter, A4, responsive) of the same content produce the same document ID. For appearance attestation, see Scoped Signatures in the Security Extension.
 
+### 4.1a Hash Boundary Summary
+
+The following table summarizes what is included in and excluded from the document content hash:
+
+| Layer | Inside Hash | Notes |
+|-------|-------------|-------|
+| Content blocks | Yes | Core document identity — all text, structure, and semantic markup |
+| Dublin Core metadata | Partial | Only `title`, `creator`, `subject`, `description`, `language` |
+| Asset hashes | Yes | Asset identity via hash mapping (not asset bytes) |
+| Asset content | No | Actual asset bytes are hashed separately; only references included |
+| Presentation | No | Visual rendering instructions — not part of semantic identity |
+| Precise layouts | No | Coordinate-level positioning — rendering fidelity |
+| Collaboration | No | Comments, suggestions, change tracking |
+| Phantoms | No | Off-page annotations and margin notes |
+| Forms data | No | Fillable field values (mutable even on frozen documents) |
+| Security | No | Signatures reference the hash — not part of it |
+| Timestamps | No | Administrative metadata (`created`, `modified`) |
+| Provenance | No | Lineage tracking and derivation history |
+
+This boundary ensures that the document's identity represents its **semantic content** — what the document says — rather than how it appears or administrative metadata about it.
+
 ### 4.2 Canonical Content Structure
 
 ```json

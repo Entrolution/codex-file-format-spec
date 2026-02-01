@@ -1,0 +1,184 @@
+{
+  "version": "0.1",
+  "type": "paginated",
+  "defaults": {
+    "pageSize": { "width": "6in", "height": "9in" },
+    "margins": { "top": "0.75in", "outside": "0.75in", "bottom": "0.875in", "inside": "1in" }
+  },
+  "masterPages": {
+    "default": {
+      "margins": { "top": "0.75in", "right": "0.75in", "bottom": "0.875in", "left": "1in" },
+      "header": { "height": "0.5in" },
+      "footer": { "height": "0.5in" }
+    },
+    "chapter-start": {
+      "basedOn": "default",
+      "margins": { "top": "2in" },
+      "header": null
+    },
+    "full-bleed": {
+      "margins": { "top": "0", "right": "0", "bottom": "0", "left": "0" }
+    }
+  },
+  "masterRules": [
+    { "match": { "first": true }, "master": "chapter-start" },
+    { "match": { "contains": "full-bleed-image" }, "master": "full-bleed" },
+    { "match": { "default": true }, "master": "default" }
+  ],
+  "pageTemplate": {
+    "odd": {
+      "header": {
+        "height": "0.4in",
+        "content": {
+          "right": { "variable": "section-title" }
+        }
+      },
+      "footer": {
+        "height": "0.4in",
+        "content": {
+          "right": { "text": "{pageNumber}" }
+        }
+      }
+    },
+    "even": {
+      "header": {
+        "height": "0.4in",
+        "content": {
+          "left": { "variable": "chapter-title" }
+        }
+      },
+      "footer": {
+        "height": "0.4in",
+        "content": {
+          "left": { "text": "{pageNumber}" }
+        }
+      }
+    }
+  },
+  "layout": {
+    "type": "columns",
+    "columns": 1,
+    "gap": "0.25in"
+  },
+  "typography": {
+    "hyphenation": {
+      "enabled": true,
+      "language": "en-US",
+      "minWordLength": 6,
+      "minBefore": 3,
+      "minAfter": 2,
+      "maxConsecutive": 2
+    },
+    "widows": 2,
+    "orphans": 2,
+    "baselineGrid": {
+      "enabled": true,
+      "lineHeight": "14pt",
+      "offset": "0pt"
+    },
+    "lineNumbering": {
+      "enabled": false
+    }
+  },
+  "print": {
+    "bleed": {
+      "top": "0.125in",
+      "right": "0.125in",
+      "bottom": "0.125in",
+      "left": "0.125in"
+    },
+    "trim": {
+      "width": "6in",
+      "height": "9in"
+    },
+    "cropMarks": true,
+    "registrationMarks": true,
+    "colorBars": false
+  },
+  "tableOfContents": {
+    "title": "Contents",
+    "levels": [1, 2],
+    "pageNumbers": true,
+    "leaders": "dots"
+  },
+  "footnotes": {
+    "numbering": "1",
+    "position": "page-bottom",
+    "separator": {
+      "width": "2in",
+      "style": "solid",
+      "margin": "0.5em"
+    }
+  },
+  "styles": {
+    "body": {
+      "fontFamily": "Source Serif Pro",
+      "fontSize": "11pt",
+      "lineHeight": 1.4,
+      "textAlign": "justify",
+      "fontFeatureSettings": {
+        "liga": true,
+        "kern": true,
+        "onum": true
+      }
+    },
+    "heading1": {
+      "fontFamily": "Source Sans Pro",
+      "fontSize": "24pt",
+      "fontWeight": 700,
+      "lineHeight": 1.2,
+      "marginTop": "0",
+      "marginBottom": "18pt",
+      "pageBreakBefore": "always"
+    },
+    "heading2": {
+      "fontFamily": "Source Sans Pro",
+      "fontSize": "16pt",
+      "fontWeight": 600,
+      "lineHeight": 1.3,
+      "marginTop": "24pt",
+      "marginBottom": "12pt"
+    },
+    "chapter-first-para": {
+      "extends": "body",
+      "dropCap": {
+        "lines": 3,
+        "fontFamily": "inherit",
+        "fontWeight": "bold",
+        "marginRight": "0.1em"
+      }
+    },
+    "figure": {
+      "marginTop": "1em",
+      "marginBottom": "1em",
+      "textAlign": "center"
+    },
+    "figcaption": {
+      "fontFamily": "Source Sans Pro",
+      "fontSize": "9pt",
+      "fontStyle": "italic",
+      "marginTop": "0.5em"
+    },
+    "table": {
+      "fontSize": "10pt",
+      "marginTop": "1em",
+      "marginBottom": "1em"
+    },
+    "tableCell": {
+      "paddingTop": "4pt",
+      "paddingRight": "8pt",
+      "paddingBottom": "4pt",
+      "paddingLeft": "8pt",
+      "borderWidth": "0.5pt",
+      "borderStyle": "solid",
+      "borderColor": "#cccccc"
+    },
+    "toc1": {
+      "fontWeight": "bold",
+      "marginTop": "1em"
+    },
+    "toc2": {
+      "marginLeft": "1em"
+    }
+  }
+}
