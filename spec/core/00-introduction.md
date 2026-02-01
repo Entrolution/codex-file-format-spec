@@ -54,19 +54,46 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ### 1.4 Terminology
 
-**Block**: A discrete unit of content (paragraph, heading, image, etc.)
+This section defines key terms used throughout the specification.
 
-**Content Layer**: The semantic representation of document content as blocks
+#### Core Concepts
 
-**Presentation Layer**: Instructions for rendering content visually
+**Block**: A discrete unit of content that represents a semantic element of the document (paragraph, heading, image, table, etc.). Blocks form a tree structure where container blocks can have child blocks.
 
-**Document State**: The lifecycle state of a document (draft, review, frozen, published)
+**Text Node**: A leaf node containing actual text content. Text nodes are the only block type that holds text; all other blocks contain children or are void elements.
 
-**Manifest**: The root metadata structure describing a document's contents and properties
+**Mark**: Inline formatting applied to a range of text within a text node. Marks can be simple strings (`"bold"`, `"italic"`) or objects with additional properties (links, citations, math). Marks do not create new blocks — they annotate existing text.
 
-**Asset**: An embedded resource (image, font, file) referenced by content blocks
+**Annotation**: External commentary attached to content but stored outside the content layer. Annotations include comments, suggestions, and phantoms. Annotations are always outside the content hash boundary.
 
-**Lineage**: The version history chain linking a document to its predecessors
+**Element**: A generic term used in specific contexts:
+- In presentation layers: a positioned item on a page (`pageElement`)
+- In DOM/SVG contexts: an XML/HTML element
+- In arrays: an item in a JSON array
+
+#### Layers and Structure
+
+**Content Layer**: The semantic representation of document content as a tree of blocks. This layer captures what the document says, independent of how it looks.
+
+**Presentation Layer**: Instructions for rendering content visually. Presentation layers define styles, layouts, and page structures. Multiple presentation layers can exist for the same content.
+
+**Manifest**: The root metadata structure (`manifest.json`) describing a document's contents, properties, extensions, and file references.
+
+**Asset**: An embedded resource (image, font, embedded file) referenced by content blocks. Assets are stored in the `assets/` directory and indexed in the manifest.
+
+#### Document Lifecycle
+
+**Document State**: The lifecycle state of a document: `draft` (active editing), `review` (under review), `frozen` (locked for signing), or `published` (distributed).
+
+**Lineage**: The version history chain linking a document to its predecessors via content-addressable hashes.
+
+**Document ID**: The content-addressable hash that serves as a document's canonical identifier. Computed from the document's semantic content.
+
+#### Extension Terminology
+
+**Extension**: An optional module that adds capabilities beyond the core specification. Extensions are declared in the manifest and use namespaced block types (e.g., `forms:input`, `academic:theorem`).
+
+**Phantom**: An off-page annotation from the Phantom Extension. Phantoms are anchored to content but rendered in margin clusters outside the main document flow.
 
 ### 1.5 Document Structure Overview
 

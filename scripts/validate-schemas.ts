@@ -23,6 +23,7 @@ const standaloneSchemas: string[] = [
   'asset-index.schema.json',
   'dublin-core.schema.json',
   'forms.schema.json',
+  'legal.schema.json',
   'manifest.schema.json',
   'precise-layout.schema.json',
   'presentation.schema.json',
@@ -34,7 +35,7 @@ const standaloneSchemas: string[] = [
 const dependentSchemas: DependentSchema[] = [
   { schema: 'annotations.schema.json', refs: ['anchor.schema.json'] },
   { schema: 'collaboration.schema.json', refs: ['anchor.schema.json'] },
-  { schema: 'content.schema.json', refs: ['semantic.schema.json', 'academic.schema.json'] },
+  { schema: 'content.schema.json', refs: ['semantic.schema.json', 'academic.schema.json', 'presentation.schema.json'] },
   { schema: 'phantoms.schema.json', refs: ['anchor.schema.json'] },
   { schema: 'security.schema.json', refs: ['anchor.schema.json'] },
 ];

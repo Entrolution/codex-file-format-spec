@@ -309,10 +309,64 @@ Block of source code or preformatted text.
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `language` | string | No | Programming language identifier |
+| `highlighting` | string | No | Highlighting mode: `"none"` or `"tokens"` |
+| `tokens` | array | No | Pre-tokenized highlighting (when `highlighting="tokens"`) |
 
 Children: Single text node (no marks)
 
 Language identifiers SHOULD follow common conventions (e.g., "javascript", "python", "rust").
+
+#### 4.7.1 Syntax Highlighting
+
+For documents requiring stable, portable syntax highlighting, code blocks can include pre-tokenized content:
+
+```json
+{
+  "type": "codeBlock",
+  "language": "python",
+  "highlighting": "tokens",
+  "tokens": [
+    { "type": "keyword", "value": "def " },
+    { "type": "function", "value": "hello" },
+    { "type": "punctuation", "value": "():" },
+    { "type": "plain", "value": "\n    " },
+    { "type": "keyword", "value": "return " },
+    { "type": "string", "value": "\"world\"" }
+  ],
+  "children": [
+    { "type": "text", "value": "def hello():\n    return \"world\"" }
+  ]
+}
+```
+
+**Token Types:**
+
+| Token Type | Description |
+|------------|-------------|
+| `keyword` | Language keywords (if, for, def, class, etc.) |
+| `function` | Function names |
+| `class` | Class names |
+| `variable` | Variable names |
+| `parameter` | Function parameters |
+| `string` | String literals |
+| `number` | Numeric literals |
+| `boolean` | Boolean literals |
+| `null` | Null/nil/None values |
+| `comment` | Code comments |
+| `docstring` | Documentation strings |
+| `operator` | Operators (+, -, *, etc.) |
+| `punctuation` | Punctuation marks |
+| `delimiter` | Delimiters (braces, brackets, etc.) |
+| `type` | Type annotations |
+| `namespace` | Namespace/module identifiers |
+| `decorator` | Decorators/annotations |
+| `plain` | Plain text (default/fallback) |
+
+**Behavior:**
+- If `highlighting` is absent or `"none"`, renderers use the `children` text node (current behavior)
+- If `highlighting` is `"tokens"`, renderers use the `tokens` array for colored output
+- Renderers MAY re-highlight from `children` if they don't support the tokens format
+- The `children` field MUST always contain the complete source code for fallback and accessibility
 
 ### 4.8 Horizontal Rule
 

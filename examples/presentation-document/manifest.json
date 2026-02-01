@@ -1,0 +1,29 @@
+{
+  "codex": "0.1",
+  "id": "pending",
+  "state": "draft",
+  "created": "2025-01-29T10:00:00Z",
+  "modified": "2025-01-29T10:00:00Z",
+  "content": {
+    "path": "content/document.json",
+    "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "presentation": [
+    {
+      "type": "paginated",
+      "path": "presentation/paginated.json",
+      "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "default": true
+    }
+  ],
+  "metadata": {
+    "dublinCore": "metadata/dublin-core.json"
+  },
+  "extensions": [
+    {
+      "id": "codex.presentation",
+      "version": "0.1",
+      "required": false
+    }
+  ]
+}

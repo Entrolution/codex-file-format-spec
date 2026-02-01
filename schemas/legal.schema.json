@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/legal.schema.json",
+  "title": "Codex Legal Extension",
+  "description": "Schema for legal extension blocks and marks in a Codex document",
+  "$defs": {
+    "citationCategory": {
+      "type": "string",
+      "description": "Category for Table of Authorities grouping",
+      "enum": ["cases", "statutes", "regulations", "constitutions", "treatises", "law-reviews", "other"]
+    },
+    "citationFormat": {
+      "type": "string",
+      "description": "Legal citation style",
+      "enum": ["bluebook", "alwd", "mcgill", "oscola"]
+    },
+    "legalCiteMark": {
+      "type": "object",
+      "description": "Legal citation mark for Table of Authorities generation",
+      "required": ["type", "citation", "category"],
+      "properties": {
+        "type": { "const": "legal:cite" },
+        "citation": {
+          "type": "string",
+          "description": "Full citation string"
+        },
+        "category": { "$ref": "#/$defs/citationCategory" },
+        "shortForm": {
+          "type": "string",
+          "description": "Short form for subsequent references"
+        },
+        "pinpoint": {
+          "type": "string",
+          "description": "Specific page, paragraph, or section reference"
+        },
+        "format": { "$ref": "#/$defs/citationFormat" }
+      },
+      "additionalProperties": false
+    },
+    "toaCategoryConfig": {
+      "type": "object",
+      "description": "Table of Authorities category configuration",
+      "required": ["name", "key"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Display name for the category"
+        },
+        "key": { "$ref": "#/$defs/citationCategory" },
+        "format": { "$ref": "#/$defs/citationFormat" }
+      },
+      "additionalProperties": false
+    },
+    "tableOfAuthoritiesBlock": {
+      "type": "object",
+      "description": "Table of Authorities block for auto-generated citation index",
+      "required": ["type"],
+      "properties": {
+        "type": { "const": "legal:tableOfAuthorities" },
+        "id": {
+          "type": "string",
+          "description": "Block identifier"
+        },
+        "title": {
+          "type": "string",
+          "description": "Section title",
+          "default": "Table of Authorities"
+        },
+        "categories": {
+          "type": "array",
+          "description": "Category configuration for grouping",
+          "items": { "$ref": "#/$defs/toaCategoryConfig" }
+        },
+        "pageReferences": {
+          "type": "boolean",
+          "description": "Include page references",
+          "default": true
+        },
+        "passimThreshold": {
+          "type": "integer",
+          "description": "Number of references before showing 'passim'",
+          "minimum": 1,
+          "default": 5
+        }
+      },
+      "additionalProperties": false
+    },
+    "party": {
+      "type": "object",
+      "description": "Party information in a case caption",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Party name"
+        },
+        "role": {
+          "type": "string",
+          "description": "Party role (e.g., Plaintiff, Defendant, Appellant)"
+        }
+      }
+    },
+    "captionBlock": {
+      "type": "object",
+      "description": "Court caption block",
+      "required": ["type", "court"],
+      "properties": {
+        "type": { "const": "legal:caption" },
+        "id": {
+          "type": "string",
+          "description": "Block identifier"
+        },
+        "court": {
+          "type": "string",
+          "description": "Court name"
+        },
+        "caseNumber": {
+          "type": "string",
+          "description": "Case or docket number"
+        },
+        "parties": {
+          "type": "object",
+          "description": "Parties to the case",
+          "properties": {
+            "plaintiff": {
+              "oneOf": [
+                { "type": "string" },
+                { "$ref": "#/$defs/party" }
+              ]
+            },
+            "defendant": {
+              "oneOf": [
+                { "type": "string" },
+                { "$ref": "#/$defs/party" }
+              ]
+            },
+            "appellant": {
+              "oneOf": [
+                { "type": "string" },
+                { "$ref": "#/$defs/party" }
+              ]
+            },
+            "appellee": {
+              "oneOf": [
+                { "type": "string" },
+                { "$ref": "#/$defs/party" }
+              ]
+            },
+            "petitioner": {
+              "oneOf": [
+                { "type": "string" },
+                { "$ref": "#/$defs/party" }
+              ]
+            },
+            "respondent": {
+              "oneOf": [
+                { "type": "string" },
+                { "$ref": "#/$defs/party" }
+              ]
+            }
+          }
+        },
+        "docket": {
+          "type": "string",
+          "description": "Docket or term information"
+        },
+        "judge": {
+          "type": "string",
+          "description": "Assigned judge"
+        }
+      },
+      "additionalProperties": false
+    },
+    "signatureBlockSigner": {
+      "type": "object",
+      "description": "Signer information for legal signature block",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title or role"
+        },
+        "barNumber": {
+          "type": "string",
+          "description": "Bar admission number"
+        },
+        "firm": {
+          "type": "string",
+          "description": "Law firm name"
+        },
+        "address": {
+          "type": "string",
+          "description": "Business address"
+        },
+        "telephone": {
+          "type": "string",
+          "description": "Telephone number"
+        },
+        "fax": {
+          "type": "string",
+          "description": "Fax number"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address"
+        }
+      }
+    },
+    "signatureBlockBlock": {
+      "type": "object",
+      "description": "Legal signature block with attorney information",
+      "required": ["type", "role", "signer"],
+      "properties": {
+        "type": { "const": "legal:signatureBlock" },
+        "id": {
+          "type": "string",
+          "description": "Block identifier"
+        },
+        "role": {
+          "type": "string",
+          "description": "Role of the signatory",
+          "enum": ["counsel", "attorney", "party", "witness", "notary"]
+        },
+        "signer": { "$ref": "#/$defs/signatureBlockSigner" },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of signature"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "description": "Legal extension configuration",
+  "properties": {
+    "citationStyle": {
+      "$ref": "#/$defs/citationFormat",
+      "description": "Default citation style for the document"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "description": "Jurisdiction for citation formatting"
+    }
+  },
+  "additionalProperties": false
+}

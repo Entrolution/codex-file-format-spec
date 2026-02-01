@@ -152,6 +152,10 @@
         "style": {
           "type": "string",
           "description": "Named style to apply"
+        },
+        "semantic": {
+          "$ref": "https://codex.document/schemas/semantic.schema.json#/$defs/jsonLdAnnotation",
+          "description": "JSON-LD semantic annotation for this block"
         }
       }
     },
@@ -182,7 +186,8 @@
               { "$ref": "https://codex.document/schemas/semantic.schema.json#/$defs/glossaryMark" },
               { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/theoremRefMark" },
               { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/equationRefMark" },
-              { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/algorithmRefMark" }
+              { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/algorithmRefMark" },
+              { "$ref": "https://codex.document/schemas/presentation.schema.json#/$defs/indexMark" }
             ]
           }
         }
@@ -314,10 +319,43 @@
           "type": "string",
           "description": "Programming language identifier"
         },
+        "highlighting": {
+          "type": "string",
+          "enum": ["none", "tokens"],
+          "description": "Highlighting mode: 'none' for plain text, 'tokens' for pre-tokenized highlighting"
+        },
+        "tokens": {
+          "type": "array",
+          "description": "Pre-tokenized syntax highlighting tokens (used when highlighting='tokens')",
+          "items": { "$ref": "#/$defs/highlightToken" }
+        },
         "children": {
           "type": "array",
           "items": { "$ref": "#/$defs/textNode" },
           "maxItems": 1
+        }
+      }
+    },
+    "highlightToken": {
+      "type": "object",
+      "description": "A syntax highlighting token",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "keyword", "function", "class", "variable", "parameter",
+            "string", "number", "boolean", "null",
+            "comment", "docstring",
+            "operator", "punctuation", "delimiter",
+            "type", "namespace", "decorator",
+            "plain"
+          ],
+          "description": "Token type for syntax highlighting"
+        },
+        "value": {
+          "type": "string",
+          "description": "Token text content"
         }
       }
     },
