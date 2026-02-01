@@ -25,7 +25,13 @@
             { "type": "string", "minLength": 1 },
             { "type": "array", "items": { "type": "string" }, "minItems": 1 }
           ],
-          "description": "Primary author(s)"
+          "description": "Primary author(s) - simple string names for Dublin Core compatibility"
+        },
+        "creators": {
+          "type": "array",
+          "description": "Structured author data with ORCID and affiliation support",
+          "items": { "$ref": "#/$defs/creatorObject" },
+          "minItems": 1
         },
         "subject": {
           "oneOf": [
@@ -124,6 +130,32 @@
           "type": "string",
           "format": "uri",
           "description": "License URL"
+        }
+      }
+    },
+    "creatorObject": {
+      "type": "object",
+      "description": "Structured creator/author information",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the creator",
+          "minLength": 1
+        },
+        "orcid": {
+          "type": "string",
+          "description": "ORCID identifier (e.g., '0000-0001-2345-6789')",
+          "pattern": "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"
+        },
+        "affiliation": {
+          "type": "string",
+          "description": "Institutional affiliation"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact email address"
         }
       }
     }

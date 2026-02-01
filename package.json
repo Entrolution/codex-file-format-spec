@@ -1,0 +1,21 @@
+{
+  "name": "codex-file-format-spec",
+  "version": "0.1.0",
+  "description": "Specification for the Codex document format",
+  "private": true,
+  "scripts": {
+    "test": "npm run validate:schemas && npm run validate:examples",
+    "validate:schemas": "npx tsx scripts/validate-schemas.ts",
+    "validate:examples": "npx tsx scripts/validate-examples.ts"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.11.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
