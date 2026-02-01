@@ -311,6 +311,79 @@ Common features:
 }
 ```
 
+### 6.7 Line Numbering
+
+Line numbering in margins is common for legal briefs, manuscripts, and code review documents.
+
+```json
+{
+  "typography": {
+    "lineNumbering": {
+      "enabled": true,
+      "start": 1,
+      "interval": 1,
+      "side": "left",
+      "restart": "page"
+    }
+  }
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `enabled` | boolean | Yes | Whether line numbering is active |
+| `start` | integer | No | Starting line number (default: 1) |
+| `interval` | integer | No | Number every N lines (default: 1, every 5 is common) |
+| `side` | string | No | Which margin: `"left"` (default) or `"right"` |
+| `restart` | string | No | When to restart numbering (see below) |
+| `style` | object | No | Number styling (see below) |
+
+#### 6.7.1 Restart Options
+
+| Value | Description |
+|-------|-------------|
+| `page` | Restart numbering on each page |
+| `section` | Restart at section boundaries |
+| `none` | Continuous numbering throughout document |
+
+#### 6.7.2 Line Number Styling
+
+```json
+{
+  "typography": {
+    "lineNumbering": {
+      "enabled": true,
+      "interval": 5,
+      "side": "left",
+      "restart": "page",
+      "style": {
+        "fontSize": "8pt",
+        "color": "#666666",
+        "fontFamily": "monospace",
+        "marginRight": "0.5em"
+      }
+    }
+  }
+}
+```
+
+#### 6.7.3 Selective Line Numbering
+
+For documents where only certain blocks should be numbered (e.g., code blocks only):
+
+```json
+{
+  "typography": {
+    "lineNumbering": {
+      "enabled": true,
+      "scope": ["codeBlock", "blockquote"]
+    }
+  }
+}
+```
+
+When `scope` is specified, only the listed block types receive line numbers. If omitted, all content is numbered.
+
 ## 7. Figures and Floats
 
 > **Note:** The `figure` and `figcaption` block types are now part of the core specification (see Content Blocks, Sections 4.20-4.21). This extension provides additional float positioning and advanced numbering capabilities.

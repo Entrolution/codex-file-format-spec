@@ -4,6 +4,35 @@
   "title": "Codex Academic Extension",
   "description": "Schema for academic extension blocks and marks in a Codex document",
   "$defs": {
+    "abstractBlock": {
+      "type": "object",
+      "description": "Abstract block for papers and reports",
+      "required": ["type"],
+      "properties": {
+        "type": { "const": "academic:abstract" },
+        "children": {
+          "type": "array",
+          "description": "Abstract content (paragraph blocks)"
+        },
+        "keywords": {
+          "type": "array",
+          "description": "List of keywords/key phrases",
+          "items": { "type": "string" }
+        },
+        "sections": {
+          "type": "object",
+          "description": "Structured abstract sections",
+          "additionalProperties": {
+            "type": "array",
+            "description": "Section content (paragraph blocks)"
+          }
+        }
+      },
+      "oneOf": [
+        { "required": ["children"] },
+        { "required": ["sections"] }
+      ]
+    },
     "theoremVariant": {
       "type": "string",
       "description": "Built-in theorem-like environment variants",
