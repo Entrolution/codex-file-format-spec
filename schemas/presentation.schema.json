@@ -89,6 +89,13 @@
           "type": "string",
           "enum": ["visible", "hidden", "flow"],
           "description": "Overflow behavior"
+        },
+        "zIndex": {
+          "type": "integer",
+          "description": "Stacking order (higher values render on top)"
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
         }
       }
     },
@@ -112,6 +119,65 @@
           "type": "string",
           "description": "Height",
           "default": "auto"
+        }
+      }
+    },
+    "transform": {
+      "type": "object",
+      "description": "Transform properties for rotation, scaling, and skewing",
+      "properties": {
+        "rotate": {
+          "type": "string",
+          "description": "Rotation angle (e.g., '90deg', '-45deg', '0.5rad', '0.25turn')"
+        },
+        "scale": {
+          "oneOf": [
+            { "type": "number", "description": "Uniform scale factor" },
+            {
+              "type": "object",
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" }
+              },
+              "required": ["x", "y"]
+            }
+          ]
+        },
+        "skewX": {
+          "type": "string",
+          "description": "Horizontal skew angle"
+        },
+        "skewY": {
+          "type": "string",
+          "description": "Vertical skew angle"
+        },
+        "translateX": {
+          "type": "string",
+          "description": "Horizontal translation"
+        },
+        "translateY": {
+          "type": "string",
+          "description": "Vertical translation"
+        },
+        "matrix": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 6,
+          "maxItems": 6,
+          "description": "Full 2D transform matrix [a, b, c, d, tx, ty]"
+        },
+        "origin": {
+          "oneOf": [
+            { "type": "string", "description": "Transform origin (e.g., 'center', 'top left')" },
+            {
+              "type": "object",
+              "properties": {
+                "x": { "type": "string" },
+                "y": { "type": "string" }
+              },
+              "required": ["x", "y"]
+            }
+          ]
         }
       }
     },
@@ -247,8 +313,36 @@
           "type": "string",
           "enum": ["none", "uppercase", "lowercase", "capitalize"]
         },
+        "writingMode": {
+          "type": "string",
+          "enum": ["horizontal-tb", "vertical-rl", "vertical-lr", "sideways-rl", "sideways-lr"],
+          "description": "Text flow direction"
+        },
         "color": { "type": "string" },
         "backgroundColor": { "type": "string" },
+        "backgroundImage": {
+          "type": "string",
+          "description": "URL/path to background image"
+        },
+        "backgroundSize": {
+          "type": "string",
+          "description": "Background size (cover, contain, or dimensions)"
+        },
+        "backgroundPosition": {
+          "type": "string",
+          "description": "Background position"
+        },
+        "backgroundRepeat": {
+          "type": "string",
+          "enum": ["repeat", "no-repeat", "repeat-x", "repeat-y"],
+          "description": "Background repeat behavior"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Element opacity (0-1)"
+        },
         "marginTop": { "type": "string" },
         "marginRight": { "type": "string" },
         "marginBottom": { "type": "string" },
@@ -260,6 +354,14 @@
         "borderWidth": { "type": "string" },
         "borderStyle": { "type": "string" },
         "borderColor": { "type": "string" },
+        "borderRadius": {
+          "type": "string",
+          "description": "Corner rounding"
+        },
+        "boxShadow": {
+          "type": "string",
+          "description": "Box shadow effect"
+        },
         "width": { "type": "string" },
         "height": { "type": "string" },
         "maxWidth": { "type": "string" },

@@ -113,12 +113,78 @@
           "type": "boolean",
           "description": "True if element is continued from previous page"
         },
+        "zIndex": {
+          "type": "integer",
+          "description": "Stacking order (higher values render on top)"
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
         "lines": {
           "type": "array",
           "description": "Line-level coordinates for legal/court documents",
           "items": {
             "$ref": "#/$defs/linePrecision"
           }
+        }
+      }
+    },
+    "transform": {
+      "type": "object",
+      "description": "Transform properties for rotation, scaling, and skewing",
+      "properties": {
+        "rotate": {
+          "type": "string",
+          "description": "Rotation angle (e.g., '90deg', '-45deg', '0.5rad', '0.25turn')"
+        },
+        "scale": {
+          "oneOf": [
+            { "type": "number", "description": "Uniform scale factor" },
+            {
+              "type": "object",
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" }
+              },
+              "required": ["x", "y"]
+            }
+          ]
+        },
+        "skewX": {
+          "type": "string",
+          "description": "Horizontal skew angle"
+        },
+        "skewY": {
+          "type": "string",
+          "description": "Vertical skew angle"
+        },
+        "translateX": {
+          "type": "string",
+          "description": "Horizontal translation"
+        },
+        "translateY": {
+          "type": "string",
+          "description": "Vertical translation"
+        },
+        "matrix": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 6,
+          "maxItems": 6,
+          "description": "Full 2D transform matrix [a, b, c, d, tx, ty]"
+        },
+        "origin": {
+          "oneOf": [
+            { "type": "string", "description": "Transform origin (e.g., 'center', 'top left')" },
+            {
+              "type": "object",
+              "properties": {
+                "x": { "type": "string" },
+                "y": { "type": "string" }
+              },
+              "required": ["x", "y"]
+            }
+          ]
         }
       }
     },

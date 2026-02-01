@@ -108,7 +108,7 @@ presentation/
 
 Presentation styling uses a subset of CSS properties. This provides familiarity while constraining complexity.
 
-#### 4.1.1 Supported Properties
+#### Supported Properties
 
 **Typography:**
 - `fontFamily` - Font family stack
@@ -121,6 +121,36 @@ Presentation styling uses a subset of CSS properties. This provides familiarity 
 - `textDecoration` - none, underline, line-through
 - `textTransform` - none, uppercase, lowercase, capitalize
 - `color` - Text color
+- `writingMode` - Text flow direction (see Section 5.1.1)
+
+#### 5.1.1 Writing Mode
+
+The `writingMode` property controls the direction of text flow and block progression:
+
+| Value | Description | Use Case |
+|-------|-------------|----------|
+| `horizontal-tb` | Horizontal text, top-to-bottom blocks (default) | Latin, Cyrillic, Greek |
+| `vertical-rl` | Vertical text, right-to-left columns | Traditional CJK (Chinese, Japanese, Korean) |
+| `vertical-lr` | Vertical text, left-to-right columns | Mongolian |
+| `sideways-rl` | Rotated 90° clockwise | Rotated labels |
+| `sideways-lr` | Rotated 90° counter-clockwise | Rotated labels |
+
+```json
+{
+  "styles": {
+    "verticalText": {
+      "writingMode": "vertical-rl",
+      "fontFamily": "Noto Sans JP, sans-serif"
+    },
+    "rotatedLabel": {
+      "writingMode": "sideways-lr",
+      "fontSize": "10pt"
+    }
+  }
+}
+```
+
+**Note:** The `writingMode` style property works in conjunction with the content-level `writingMode` attribute (see Content Blocks spec). When both are present, the presentation style takes precedence for visual rendering.
 
 **Spacing:**
 - `marginTop`, `marginRight`, `marginBottom`, `marginLeft`
@@ -132,6 +162,15 @@ Presentation styling uses a subset of CSS properties. This provides familiarity 
 
 **Background:**
 - `backgroundColor`
+- `backgroundImage` - URL/path to image (see Section 5.1.2)
+- `backgroundSize` - `cover`, `contain`, or dimensions
+- `backgroundPosition` - Position keywords or values
+- `backgroundRepeat` - `repeat`, `no-repeat`, `repeat-x`, `repeat-y`
+
+**Visual Effects:**
+- `opacity` - Transparency from 0.0 (fully transparent) to 1.0 (fully opaque)
+- `borderRadius` - Rounded corners (e.g., `"4px"`, `"0.5em"`)
+- `boxShadow` - Drop shadow (e.g., `"2px 2px 4px rgba(0,0,0,0.1)"`)
 
 **Layout:**
 - `width`, `height`, `maxWidth`, `maxHeight`
@@ -160,6 +199,73 @@ Colors may be specified as:
 - Hex: `"#ff0000"`, `"#f00"`
 - RGB: `"rgb(255, 0, 0)"`
 - RGBA: `"rgba(255, 0, 0, 0.5)"`
+
+### 5.4 Background Images
+
+Background images enable watermarks, decorative elements, and complex backgrounds:
+
+```json
+{
+  "styles": {
+    "watermarked": {
+      "backgroundImage": "assets/images/watermark.png",
+      "backgroundSize": "contain",
+      "backgroundPosition": "center",
+      "backgroundRepeat": "no-repeat",
+      "opacity": 0.3
+    },
+    "certificateBorder": {
+      "backgroundImage": "assets/images/border-pattern.svg",
+      "backgroundSize": "100% 100%",
+      "backgroundRepeat": "no-repeat"
+    }
+  }
+}
+```
+
+| Property | Values | Description |
+|----------|--------|-------------|
+| `backgroundImage` | path or URL | Image source (relative paths for embedded assets) |
+| `backgroundSize` | `cover`, `contain`, or dimensions | How image is sized |
+| `backgroundPosition` | position keywords or values | Where image is positioned |
+| `backgroundRepeat` | `repeat`, `no-repeat`, `repeat-x`, `repeat-y` | Tiling behavior |
+
+**backgroundSize values:**
+- `cover` - Scale to cover entire element (may crop)
+- `contain` - Scale to fit within element (may leave gaps)
+- Dimensions: `"100px 50px"`, `"100% auto"`, etc.
+
+**backgroundPosition values:**
+- Keywords: `center`, `top`, `bottom left`, `right center`, etc.
+- Lengths: `"10px 20px"`, `"50% 25%"`, etc.
+
+### 5.5 Opacity and Visual Effects
+
+```json
+{
+  "styles": {
+    "subtle": {
+      "opacity": 0.7
+    },
+    "card": {
+      "backgroundColor": "#ffffff",
+      "borderRadius": "8px",
+      "boxShadow": "0 2px 8px rgba(0,0,0,0.15)"
+    }
+  }
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `opacity` | number (0.0-1.0) | Element transparency (0 = invisible, 1 = opaque) |
+| `borderRadius` | string | Corner rounding (e.g., `"4px"`, `"0.5em"`, `"50%"`) |
+| `boxShadow` | string | Shadow effect using CSS shadow syntax |
+
+**boxShadow syntax:** `"offset-x offset-y blur-radius spread-radius color"`
+- `"2px 2px 4px rgba(0,0,0,0.1)"` - subtle drop shadow
+- `"0 4px 12px rgba(0,0,0,0.25)"` - elevated card effect
+- `"inset 0 1px 2px rgba(0,0,0,0.1)"` - inset shadow
 
 ## 6. Paginated Presentation
 
@@ -237,6 +343,40 @@ Each page contains positioned elements that reference content blocks:
 | `position` | object | Yes | Position and size |
 | `style` | string | No | Named style to apply |
 | `overflow` | string | No | "visible", "hidden", "flow" |
+| `zIndex` | integer | No | Stacking order (higher values render on top) |
+| `transform` | object | No | Transform properties (see Section 16) |
+
+### 6.3.1 Z-Index and Stacking Order
+
+The `zIndex` property controls the stacking order of overlapping elements:
+
+```json
+{
+  "elements": [
+    {
+      "blockId": "background-image",
+      "position": { "x": "0", "y": "0", "width": "8.5in", "height": "11in" },
+      "zIndex": 0
+    },
+    {
+      "blockId": "signature",
+      "position": { "x": "5in", "y": "9in", "width": "2in", "height": "1in" },
+      "zIndex": 1
+    },
+    {
+      "blockId": "timestamp",
+      "position": { "x": "5.5in", "y": "9.5in", "width": "1in", "height": "0.3in" },
+      "zIndex": 2
+    }
+  ]
+}
+```
+
+**Rules:**
+- Default `zIndex` is 0
+- Higher values render on top of lower values
+- Elements with the same `zIndex` render in document order (later elements on top)
+- Negative values are permitted
 
 ### 6.4 Flow Elements
 
@@ -761,7 +901,101 @@ For text colors, ensure sufficient contrast ratio:
 - Normal text: 4.5:1 minimum
 - Large text (18pt+ or 14pt+ bold): 3:1 minimum
 
-## 16. Examples
+## 16. Transforms
+
+Transforms enable rotation, scaling, skewing, and translation of positioned elements. Transforms are particularly useful for:
+
+- Rotated text (e.g., vertical labels, angled watermarks)
+- Scaled elements
+- Complex layout effects
+
+### 16.1 Transform Properties
+
+Elements in paginated presentations and precise layouts MAY include a `transform` property:
+
+```json
+{
+  "blockId": "hash-text",
+  "position": { "x": "0.3in", "y": "1in", "width": "9in", "height": "0.5in" },
+  "transform": {
+    "rotate": "-90deg",
+    "origin": "top left"
+  }
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `rotate` | string | Rotation angle: `"45deg"`, `"-90deg"`, `"0.5rad"`, `"0.25turn"` |
+| `scale` | number or object | Uniform scale: `1.5`, or per-axis: `{ "x": 1.5, "y": 1.0 }` |
+| `skewX` | string | Horizontal skew angle: `"15deg"` |
+| `skewY` | string | Vertical skew angle: `"15deg"` |
+| `translateX` | string | Horizontal translation: `"10px"`, `"0.5in"` |
+| `translateY` | string | Vertical translation: `"10px"`, `"0.5in"` |
+| `matrix` | array | Full 2D transform matrix: `[a, b, c, d, tx, ty]` |
+| `origin` | string or object | Transform origin point |
+
+### 16.2 Rotation Units
+
+| Unit | Description | Example |
+|------|-------------|---------|
+| `deg` | Degrees (360° = full rotation) | `"90deg"`, `"-45deg"` |
+| `rad` | Radians (2π = full rotation) | `"1.5708rad"` |
+| `turn` | Turns (1 = full rotation) | `"0.25turn"` |
+
+### 16.3 Transform Origin
+
+The `origin` property specifies the point around which transforms are applied:
+
+**Keyword values:**
+- Position keywords: `"top left"`, `"center"`, `"bottom right"`, etc.
+- Single keyword: `"center"` (equivalent to `"center center"`)
+
+**Coordinate values:**
+```json
+{
+  "origin": { "x": "50%", "y": "0" }
+}
+```
+
+Default origin is `"center"` (center of the element's bounding box).
+
+### 16.4 Transform Matrix
+
+For complex transforms, use the matrix property with the standard 2D affine transformation matrix:
+
+```json
+{
+  "transform": {
+    "matrix": [1, 0, 0, 1, 0, 0]
+  }
+}
+```
+
+The matrix `[a, b, c, d, tx, ty]` represents:
+```
+| a  c  tx |
+| b  d  ty |
+| 0  0  1  |
+```
+
+Common matrices:
+- Identity (no transform): `[1, 0, 0, 1, 0, 0]`
+- 90° clockwise: `[0, 1, -1, 0, 0, 0]`
+- Scale 2×: `[2, 0, 0, 2, 0, 0]`
+
+### 16.5 Transform Order
+
+When multiple transform properties are specified, they are applied in this order:
+
+1. `translate` (translateX, translateY)
+2. `rotate`
+3. `scale`
+4. `skew` (skewX, skewY)
+
+If `matrix` is specified, it overrides all other transform properties.
+
+## 17. Examples
 
 ### 16.1 Minimal Continuous Presentation
 
