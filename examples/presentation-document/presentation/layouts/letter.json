@@ -1,0 +1,166 @@
+{
+  "version": "0.1",
+  "presentationType": "precise",
+  "targetFormat": "letter",
+  "pageSize": {
+    "width": "8.5in",
+    "height": "11in"
+  },
+  "contentHash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "generatedAt": "2025-01-30T14:00:00Z",
+  "pageTemplate": {
+    "margins": {
+      "top": "1in",
+      "bottom": "1in",
+      "left": "1in",
+      "right": "1in"
+    },
+    "header": {
+      "content": "Presentation Features Demo",
+      "style": "header",
+      "y": "0.5in"
+    },
+    "footer": {
+      "content": "Page {pageNumber} of {totalPages}",
+      "style": "footer",
+      "y": "10.5in"
+    }
+  },
+  "pages": [
+    {
+      "number": 1,
+      "elements": [
+        {
+          "blockId": "chapter-1",
+          "x": "1in",
+          "y": "1in",
+          "width": "6.5in",
+          "height": "0.5in"
+        },
+        {
+          "blockId": "p-intro-1",
+          "x": "1in",
+          "y": "1.75in",
+          "width": "6.5in",
+          "height": "0.8in"
+        },
+        {
+          "blockId": "p-intro-2",
+          "x": "1in",
+          "y": "2.75in",
+          "width": "6.5in",
+          "height": "0.9in"
+        },
+        {
+          "blockId": "section-1-1",
+          "x": "1in",
+          "y": "3.85in",
+          "width": "6.5in",
+          "height": "0.4in"
+        },
+        {
+          "blockId": "p-typo-1",
+          "x": "1in",
+          "y": "4.45in",
+          "width": "6.5in",
+          "height": "0.8in"
+        },
+        {
+          "blockId": "p-typo-2",
+          "x": "1in",
+          "y": "5.45in",
+          "width": "6.5in",
+          "height": "0.8in"
+        },
+        {
+          "blockId": "fig-layout",
+          "x": "1in",
+          "y": "6.45in",
+          "width": "6.5in",
+          "height": "2.5in",
+          "continues": true
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "elements": [
+        {
+          "blockId": "fig-layout",
+          "x": "1in",
+          "y": "1in",
+          "width": "6.5in",
+          "height": "0.5in",
+          "continuation": true
+        },
+        {
+          "blockId": "section-1-2",
+          "x": "1in",
+          "y": "1.75in",
+          "width": "6.5in",
+          "height": "0.4in"
+        },
+        {
+          "blockId": "p-layout-1",
+          "x": "1in",
+          "y": "2.35in",
+          "width": "6.5in",
+          "height": "0.8in"
+        },
+        {
+          "blockId": "p-layout-2",
+          "x": "1in",
+          "y": "3.35in",
+          "width": "6.5in",
+          "height": "0.9in"
+        },
+        {
+          "blockId": "chapter-2",
+          "x": "1in",
+          "y": "4.5in",
+          "width": "6.5in",
+          "height": "0.5in"
+        },
+        {
+          "blockId": "p-print-1",
+          "x": "1in",
+          "y": "5.25in",
+          "width": "6.5in",
+          "height": "0.8in"
+        },
+        {
+          "blockId": "p-print-2",
+          "x": "1in",
+          "y": "6.25in",
+          "width": "6.5in",
+          "height": "0.9in"
+        },
+        {
+          "blockId": "table-features",
+          "x": "1in",
+          "y": "7.35in",
+          "width": "6.5in",
+          "height": "2in"
+        }
+      ]
+    }
+  ],
+  "fonts": {
+    "heading": {
+      "family": "Helvetica",
+      "style": "normal",
+      "weight": 700,
+      "unitsPerEm": 1000,
+      "ascender": 718,
+      "descender": -207
+    },
+    "body": {
+      "family": "Times New Roman",
+      "style": "normal",
+      "weight": 400,
+      "unitsPerEm": 2048,
+      "ascender": 1825,
+      "descender": -443
+    }
+  }
+}
