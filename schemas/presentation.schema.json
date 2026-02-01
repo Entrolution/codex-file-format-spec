@@ -50,6 +50,44 @@
       "additionalProperties": {
         "$ref": "#/$defs/style"
       }
+    },
+    "typography": {
+      "type": "object",
+      "description": "Document-level typography settings",
+      "properties": {
+        "hyphenation": {
+          "type": "object",
+          "description": "Hyphenation settings",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "language": { "type": "string" },
+            "minWordLength": { "type": "integer", "minimum": 1 },
+            "minBefore": { "type": "integer", "minimum": 1 },
+            "minAfter": { "type": "integer", "minimum": 1 },
+            "maxConsecutive": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "widows": {
+          "type": "integer",
+          "description": "Minimum lines at top of page",
+          "minimum": 1
+        },
+        "orphans": {
+          "type": "integer",
+          "description": "Minimum lines at bottom of page",
+          "minimum": 1
+        },
+        "baselineGrid": {
+          "type": "object",
+          "description": "Baseline grid settings",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "lineHeight": { "type": "string" },
+            "offset": { "type": "string" }
+          }
+        },
+        "lineNumbering": { "$ref": "#/$defs/lineNumbering" }
+      }
     }
   },
   "$defs": {
@@ -270,6 +308,57 @@
           }
         }
       ]
+    },
+    "lineNumbering": {
+      "type": "object",
+      "description": "Line numbering configuration for margins",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether line numbering is active"
+        },
+        "start": {
+          "type": "integer",
+          "description": "Starting line number",
+          "minimum": 1,
+          "default": 1
+        },
+        "interval": {
+          "type": "integer",
+          "description": "Number every N lines (1 = every line, 5 = every 5th line)",
+          "minimum": 1,
+          "default": 1
+        },
+        "side": {
+          "type": "string",
+          "description": "Which margin to display numbers",
+          "enum": ["left", "right"],
+          "default": "left"
+        },
+        "restart": {
+          "type": "string",
+          "description": "When to restart numbering",
+          "enum": ["page", "section", "none"],
+          "default": "page"
+        },
+        "scope": {
+          "type": "array",
+          "description": "Block types to number (if omitted, all content is numbered)",
+          "items": { "type": "string" }
+        },
+        "style": {
+          "type": "object",
+          "description": "Styling for line numbers",
+          "properties": {
+            "fontSize": { "type": "string" },
+            "color": { "type": "string" },
+            "fontFamily": { "type": "string" },
+            "marginRight": { "type": "string" },
+            "marginLeft": { "type": "string" }
+          }
+        }
+      }
     },
     "style": {
       "type": "object",

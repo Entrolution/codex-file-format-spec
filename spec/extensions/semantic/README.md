@@ -216,8 +216,46 @@ Use a footnote mark on text to create a footnote reference:
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `type` | string | Yes | Always `"footnote"` |
-| `number` | integer | Yes | Sequential footnote number |
+| `number` | integer | No | Sequential footnote number (required if `symbol` not used) |
+| `symbol` | string | No | Symbol-based footnote marker (required if `number` not used) |
 | `id` | string | No | Unique footnote identifier for cross-referencing |
+
+Either `number` or `symbol` MUST be provided, but not both.
+
+#### 4.5.1a Symbol Footnotes
+
+For author footnotes on title pages and special contexts, symbol-based footnotes provide a non-numeric sequence:
+
+```json
+{
+  "type": "text",
+  "value": "Corresponding author",
+  "marks": [
+    {
+      "type": "footnote",
+      "symbol": "dagger",
+      "id": "fn-corresponding"
+    }
+  ]
+}
+```
+
+| Symbol Value | Display | Typical Use |
+|--------------|---------|-------------|
+| `asterisk` | * | First author note |
+| `dagger` | † | Corresponding author, second note |
+| `ddagger` | ‡ | Third note |
+| `section` | § | Fourth note |
+| `parallel` | ‖ | Fifth note |
+| `paragraph` | ¶ | Sixth note |
+
+Symbol footnotes are commonly used for:
+- Author affiliations and correspondence information
+- Acknowledgments and funding sources
+- Equal contribution statements
+- Disclaimers and conflicts of interest
+
+For documents requiring more than six symbol footnotes, the sequence typically doubles (**, ††, ‡‡, etc.). Implementations MAY support this extended sequence.
 
 #### 4.5.2 Footnote Block
 

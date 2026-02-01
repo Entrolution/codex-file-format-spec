@@ -124,6 +124,10 @@
         {
           "if": { "properties": { "type": { "const": "break" } } },
           "then": { "$ref": "#/$defs/break" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "admonition" } } },
+          "then": { "$ref": "#/$defs/admonition" }
         }
       ]
     },
@@ -647,7 +651,7 @@
     },
     "figure": {
       "type": "object",
-      "required": ["type", "children"],
+      "required": ["type"],
       "properties": {
         "type": { "const": "figure" },
         "numbering": {
@@ -662,6 +666,59 @@
           "description": "Figure content and optional caption",
           "minItems": 1,
           "maxItems": 2
+        },
+        "subfigures": {
+          "type": "array",
+          "description": "Array of subfigure objects for multi-panel figures",
+          "items": { "$ref": "#/$defs/subfigure" },
+          "minItems": 1
+        },
+        "caption": {
+          "oneOf": [
+            { "type": "string", "description": "Simple caption text" },
+            {
+              "type": "array",
+              "description": "Rich caption with text nodes",
+              "items": { "$ref": "#/$defs/textNode" }
+            }
+          ],
+          "description": "Overall figure caption (used with subfigures)"
+        }
+      },
+      "oneOf": [
+        { "required": ["children"] },
+        { "required": ["subfigures"] }
+      ]
+    },
+    "subfigure": {
+      "type": "object",
+      "description": "A subfigure within a multi-panel figure",
+      "required": ["children"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique subfigure identifier for cross-referencing"
+        },
+        "label": {
+          "type": "string",
+          "description": "Subfigure label (e.g., 'a', 'b', 'i', 'ii')"
+        },
+        "children": {
+          "type": "array",
+          "description": "Content block(s) for this subfigure",
+          "items": { "$ref": "#/$defs/block" },
+          "minItems": 1
+        },
+        "caption": {
+          "oneOf": [
+            { "type": "string", "description": "Simple caption text" },
+            {
+              "type": "array",
+              "description": "Rich caption with text nodes",
+              "items": { "$ref": "#/$defs/textNode" }
+            }
+          ],
+          "description": "Subfigure-specific caption"
         }
       }
     },
@@ -673,6 +730,28 @@
         "children": {
           "type": "array",
           "items": { "$ref": "#/$defs/textNode" }
+        }
+      }
+    },
+    "admonition": {
+      "type": "object",
+      "description": "Callout box for notes, warnings, tips, and other highlighted content",
+      "required": ["type", "variant", "children"],
+      "properties": {
+        "type": { "const": "admonition" },
+        "variant": {
+          "type": "string",
+          "description": "Admonition type",
+          "enum": ["note", "tip", "info", "warning", "caution", "danger", "important", "example"]
+        },
+        "title": {
+          "type": "string",
+          "description": "Custom title (defaults to variant label)"
+        },
+        "children": {
+          "type": "array",
+          "description": "Block-level content (typically paragraph blocks)",
+          "items": { "$ref": "#/$defs/block" }
         }
       }
     }

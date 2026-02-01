@@ -42,7 +42,7 @@
     "footnoteMark": {
       "type": "object",
       "description": "Footnote mark for referencing footnote content",
-      "required": ["type", "number"],
+      "required": ["type"],
       "properties": {
         "type": { "const": "footnote" },
         "number": {
@@ -50,11 +50,20 @@
           "description": "Sequential footnote number",
           "minimum": 1
         },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol-based footnote marker for author notes",
+          "enum": ["asterisk", "dagger", "ddagger", "section", "parallel", "paragraph"]
+        },
         "id": {
           "type": "string",
           "description": "Unique footnote identifier for cross-referencing"
         }
-      }
+      },
+      "oneOf": [
+        { "required": ["number"] },
+        { "required": ["symbol"] }
+      ]
     },
     "entityMark": {
       "type": "object",
@@ -93,13 +102,18 @@
     "footnoteBlock": {
       "type": "object",
       "description": "Footnote content block",
-      "required": ["type", "number"],
+      "required": ["type"],
       "properties": {
         "type": { "const": "semantic:footnote" },
         "number": {
           "type": "integer",
           "description": "Footnote number (must match corresponding mark)",
           "minimum": 1
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol-based footnote marker (must match corresponding mark)",
+          "enum": ["asterisk", "dagger", "ddagger", "section", "parallel", "paragraph"]
         },
         "id": {
           "type": "string",
@@ -114,9 +128,19 @@
           "description": "Simple text content (alternative to children)"
         }
       },
-      "oneOf": [
-        { "required": ["children"] },
-        { "required": ["content"] }
+      "allOf": [
+        {
+          "oneOf": [
+            { "required": ["number"] },
+            { "required": ["symbol"] }
+          ]
+        },
+        {
+          "oneOf": [
+            { "required": ["children"] },
+            { "required": ["content"] }
+          ]
+        }
       ]
     },
     "bibliographyEntry": {

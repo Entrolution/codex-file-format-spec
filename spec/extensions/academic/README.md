@@ -34,9 +34,72 @@ The Academic Extension provides structured support for academic and scientific d
 }
 ```
 
-## 3. Theorem-Like Blocks
+## 3. Abstract Block
 
-### 3.1 academic:theorem
+### 3.1 academic:abstract
+
+The abstract block provides semantic structure for paper/report abstracts with optional keywords and structured sections.
+
+```json
+{
+  "type": "academic:abstract",
+  "children": [
+    {
+      "type": "paragraph",
+      "children": [
+        { "type": "text", "value": "This paper presents a novel approach to..." }
+      ]
+    }
+  ],
+  "keywords": ["machine learning", "document formats", "semantic web"]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"academic:abstract"` |
+| `children` | array | Yes | Abstract content (paragraph blocks) |
+| `keywords` | array | No | List of keywords/key phrases |
+| `sections` | object | No | Structured abstract sections (see below) |
+
+#### 3.1.1 Structured Abstracts
+
+For journals requiring structured abstracts (common in medical and scientific publishing):
+
+```json
+{
+  "type": "academic:abstract",
+  "sections": {
+    "background": [
+      { "type": "paragraph", "children": [{ "type": "text", "value": "..." }] }
+    ],
+    "methods": [
+      { "type": "paragraph", "children": [{ "type": "text", "value": "..." }] }
+    ],
+    "results": [
+      { "type": "paragraph", "children": [{ "type": "text", "value": "..." }] }
+    ],
+    "conclusions": [
+      { "type": "paragraph", "children": [{ "type": "text", "value": "..." }] }
+    ]
+  },
+  "keywords": ["clinical trial", "randomized controlled"]
+}
+```
+
+Common structured abstract sections:
+- `background` / `introduction` / `context`
+- `objective` / `purpose` / `aim`
+- `methods` / `materials`
+- `results` / `findings`
+- `conclusions` / `discussion`
+- `significance` / `implications`
+
+When `sections` is provided, `children` SHOULD be omitted. Implementations render structured sections with their labels (e.g., "**Background:** ...").
+
+## 4. Theorem-Like Blocks
+
+### 4.1 academic:theorem
 
 Covers built-in variants: theorem, lemma, proposition, corollary, definition, conjecture, remark, example.
 
@@ -68,7 +131,7 @@ Covers built-in variants: theorem, lemma, proposition, corollary, definition, co
 | `restate` | boolean | No | If `true`, this is a restatement of a previously stated theorem |
 | `children` | array | Yes | Content blocks |
 
-### 3.2 Built-in Variants
+### 4.2 Built-in Variants
 
 | Variant | Typical Use |
 |---------|-------------|
@@ -81,7 +144,7 @@ Covers built-in variants: theorem, lemma, proposition, corollary, definition, co
 | `remark` | Observations and notes |
 | `example` | Illustrative examples |
 
-### 3.3 Custom Variants
+### 4.3 Custom Variants
 
 Define custom theorem-like environments in the numbering configuration:
 
@@ -113,9 +176,9 @@ Define custom theorem-like environments in the numbering configuration:
 | `label` | string | Yes | Display label for the variant |
 | `sharesWith` | string\|null | No | Share counter with this variant, or `null` for independent counter |
 
-## 4. Proof Blocks
+## 5. Proof Blocks
 
-### 4.1 academic:proof
+### 5.1 academic:proof
 
 ```json
 {
@@ -139,7 +202,7 @@ Define custom theorem-like environments in the numbering configuration:
 | `qed` | string | No | QED style: `"symbol"` (default), `"text"`, `"none"` |
 | `children` | array | Yes | Proof content |
 
-### 4.2 Proof Methods
+### 5.2 Proof Methods
 
 | Method | Description |
 |--------|-------------|
@@ -154,9 +217,9 @@ Define custom theorem-like environments in the numbering configuration:
 | `counting` | Combinatorial/counting argument |
 | `probabilistic` | Probabilistic method |
 
-## 5. Exercises
+## 6. Exercises
 
-### 5.1 academic:exercise
+### 6.1 academic:exercise
 
 ```json
 {
@@ -200,7 +263,7 @@ Define custom theorem-like environments in the numbering configuration:
 | `hints` | array | No | Hint paragraphs (applies to whole exercise) |
 | `solution` | object | No | Solution with visibility control |
 
-### 5.2 Exercise Parts
+### 6.2 Exercise Parts
 
 Each part in the `parts` array:
 
@@ -211,7 +274,7 @@ Each part in the `parts` array:
 | `hints` | array | No | Part-specific hints |
 | `solution` | object | No | Part-specific solution |
 
-### 5.3 Solution Visibility
+### 6.3 Solution Visibility
 
 ```json
 {
@@ -237,7 +300,7 @@ Optional date-based reveal:
 }
 ```
 
-### 5.4 Exercise Sets
+### 6.4 Exercise Sets
 
 Group related exercises with shared context:
 
@@ -268,9 +331,9 @@ Group related exercises with shared context:
 | `preamble` | array | No | Shared context/instructions for all exercises |
 | `exercises` | array | Yes | Array of `academic:exercise` blocks |
 
-## 6. Multi-Line Equations
+## 7. Multi-Line Equations
 
-### 6.1 academic:equation-group
+### 7.1 academic:equation-group
 
 ```json
 {
@@ -303,7 +366,7 @@ Group related exercises with shared context:
 | `id` | string | No | Group identifier |
 | `lines` | array | Yes | Array of equation lines |
 
-### 6.2 Equation Lines
+### 7.2 Equation Lines
 
 Each line in the `lines` array:
 
@@ -316,9 +379,85 @@ Each line in the `lines` array:
 
 **Note:** Use either `number` or `tag`, not both. If `tag` is present, it takes precedence.
 
-## 7. Algorithm Blocks
+## 7.3 Chemical Formulas (mhchem)
 
-### 7.1 academic:algorithm
+For chemical formulas and reaction equations, use the core `math` block with the mhchem LaTeX package notation. The mhchem package provides intuitive syntax for molecular formulas and chemical reactions.
+
+### 7.3.1 Basic Chemical Formulas
+
+```json
+{
+  "type": "math",
+  "display": true,
+  "format": "latex",
+  "value": "\\ce{H2SO4}"
+}
+```
+
+This renders as: H₂SO₄
+
+### 7.3.2 Chemical Reactions
+
+```json
+{
+  "type": "math",
+  "display": true,
+  "format": "latex",
+  "value": "\\ce{2H2 + O2 -> 2H2O}"
+}
+```
+
+### 7.3.3 mhchem Syntax Reference
+
+| Syntax | Description | Example | Result |
+|--------|-------------|---------|--------|
+| `\\ce{H2O}` | Molecular formula | `\\ce{H2O}` | H₂O |
+| `->` | Reaction arrow | `\\ce{A -> B}` | A → B |
+| `<->` | Equilibrium | `\\ce{A <-> B}` | A ⇌ B |
+| `<=>>` | Equilibrium (shifted right) | `\\ce{A <=>> B}` | A ⇄ B |
+| `^{2+}` | Charge | `\\ce{Ca^{2+}}` | Ca²⁺ |
+| `v` | Precipitate | `\\ce{AgCl v}` | AgCl↓ |
+| `^` | Gas evolution | `\\ce{CO2 ^}` | CO₂↑ |
+| `[aq]` | State symbols | `\\ce{NaCl[aq]}` | NaCl(aq) |
+| `+` | Reactant separator | `\\ce{A + B}` | A + B |
+
+### 7.3.4 Complex Examples
+
+**Acid-base reaction:**
+```json
+{
+  "type": "math",
+  "display": true,
+  "format": "latex",
+  "value": "\\ce{H2SO4 + 2NaOH -> Na2SO4 + 2H2O}"
+}
+```
+
+**Redox reaction with states:**
+```json
+{
+  "type": "math",
+  "display": true,
+  "format": "latex",
+  "value": "\\ce{Fe^{2+}[aq] + Ce^{4+}[aq] -> Fe^{3+}[aq] + Ce^{3+}[aq]}"
+}
+```
+
+**Organic chemistry:**
+```json
+{
+  "type": "math",
+  "display": true,
+  "format": "latex",
+  "value": "\\ce{CH3CH2OH ->[\\text{oxidation}] CH3CHO ->[\\text{oxidation}] CH3COOH}"
+}
+```
+
+**Note:** Implementations rendering math blocks SHOULD support the mhchem package syntax. For maximum compatibility, documents MAY include pre-rendered display text in accompanying elements.
+
+## 8. Algorithm Blocks
+
+### 8.1 academic:algorithm
 
 ```json
 {
@@ -362,7 +501,7 @@ Each line in the `lines` array:
 | `inputs` | array | No | Input parameters |
 | `outputs` | array | No | Output description |
 
-### 7.2 Algorithm Lines
+### 8.2 Algorithm Lines
 
 Each line in the `lines` array:
 
@@ -373,7 +512,7 @@ Each line in the `lines` array:
 | `label` | string | No | Label for line references |
 | `comment` | string | No | Inline comment |
 
-### 7.3 Algorithm Input/Output
+### 8.3 Algorithm Input/Output
 
 ```json
 {
@@ -387,9 +526,9 @@ Each line in the `lines` array:
 | `name` | string | Yes | Parameter name |
 | `description` | string | No | Parameter description |
 
-## 8. Cross-References
+## 9. Cross-References
 
-### 8.1 theorem-ref Mark
+### 9.1 theorem-ref Mark
 
 Reference a theorem-like block:
 
@@ -418,7 +557,7 @@ Format placeholders:
 - `{number}` - Theorem number
 - `{title}` - Theorem title (if present)
 
-### 8.2 equation-ref Mark
+### 9.2 equation-ref Mark
 
 Reference a numbered equation:
 
@@ -442,7 +581,7 @@ Reference a numbered equation:
 | `target` | string | Yes | Content Anchor URI to the equation |
 | `format` | string | No | Display format (default: `"({number})"`) |
 
-### 8.3 algorithm-ref Mark
+### 9.3 algorithm-ref Mark
 
 Reference an algorithm or algorithm line:
 
@@ -484,7 +623,7 @@ For line references:
 | `line` | string | No | Line label for line-specific references |
 | `format` | string | No | Display format |
 
-## 9. Numbering Configuration
+## 10. Numbering Configuration
 
 Location: `academic/numbering.json`
 
@@ -528,7 +667,7 @@ Location: `academic/numbering.json`
 }
 ```
 
-### 9.1 Numbering Styles
+### 10.1 Numbering Styles
 
 | Style | Example | Description |
 |-------|---------|-------------|
@@ -537,7 +676,7 @@ Location: `academic/numbering.json`
 | `chapter.section.number` | 2.3.1, 2.3.2 | Full hierarchical |
 | `section.number` | 3.1, 3.2 | Section-prefixed |
 
-### 9.2 Counter Sharing
+### 10.2 Counter Sharing
 
 Theorem-like environments can share counters. When counters are shared, all variants in the group increment the same counter:
 
@@ -549,7 +688,7 @@ Theorem-like environments can share counters. When counters are shared, all vari
 
 This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
 
-### 9.3 Reset Triggers
+### 10.3 Reset Triggers
 
 | Reset On | Description |
 |----------|-------------|
@@ -557,9 +696,9 @@ This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
 | `section` | Reset at each section |
 | `none` | Never reset (document-wide numbering) |
 
-## 10. Examples
+## 11. Examples
 
-### 10.1 Complete Theorem with Proof
+### 11.1 Complete Theorem with Proof
 
 ```json
 [
@@ -624,7 +763,7 @@ This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
 ]
 ```
 
-### 10.2 Multi-Part Exercise with Solution
+### 11.2 Multi-Part Exercise with Solution
 
 ```json
 {
@@ -707,7 +846,7 @@ This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
 }
 ```
 
-### 10.3 Algorithm with References
+### 11.3 Algorithm with References
 
 ```json
 [
@@ -763,7 +902,7 @@ This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
 ]
 ```
 
-### 10.4 Equation Group with Custom Tags
+### 11.4 Equation Group with Custom Tags
 
 ```json
 {
@@ -799,7 +938,7 @@ This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
 }
 ```
 
-### 10.5 Exercise Set with Shared Context
+### 11.5 Exercise Set with Shared Context
 
 ```json
 {
@@ -858,7 +997,7 @@ This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
 }
 ```
 
-### 10.6 Restated Theorem Before Proof
+### 11.6 Restated Theorem Before Proof
 
 ```json
 [
@@ -898,11 +1037,11 @@ This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
 ]
 ```
 
-## 11. Author Identification
+## 12. Author Identification
 
 For scholarly documents, author identification is critical for attribution and citation. The Codex specification uses a base `person` object defined in `anchor.schema.json` that includes an `identifier` field for persistent identifiers.
 
-### 11.1 ORCID Recommendation
+### 12.1 ORCID Recommendation
 
 For academic documents, the `identifier` field SHOULD use ORCID (Open Researcher and Contributor ID) format:
 
@@ -920,7 +1059,7 @@ ORCID provides:
 - Links to affiliations, grants, and publications
 - Integration with major publishers and funding agencies
 
-### 11.2 Other Identifier Formats
+### 12.2 Other Identifier Formats
 
 The `identifier` field also supports:
 
@@ -931,7 +1070,7 @@ The `identifier` field also supports:
 | DID | `did:web:example.com:jane` | Decentralized identity |
 | Institutional | `https://university.edu/faculty/jdoe` | University profiles |
 
-### 11.3 Dublin Core Integration
+### 12.3 Dublin Core Integration
 
 Author identifiers should also be included in Dublin Core metadata (`metadata/dublin-core.json`) for discoverability:
 

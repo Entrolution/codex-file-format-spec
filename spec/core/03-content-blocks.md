@@ -799,6 +799,7 @@ Container for figures with optional captions. Figures group visual content (imag
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `numbering` | string or integer | No | Figure numbering mode |
+| `subfigures` | array | No | Array of subfigure objects (alternative to children) |
 
 #### 4.20.1 Numbering Values
 
@@ -808,11 +809,65 @@ Container for figures with optional captions. Figures group visual content (imag
 | `none` | No numbering |
 | (integer) | Explicit figure number |
 
-**Children:** The figure block MAY contain:
-- Exactly one content block: `image`, `svg`, `table`, `math`, or `barcode`
-- Zero or one `figcaption` block
+**Children:** The figure block MAY contain either:
+1. **Standard figure content:**
+   - Exactly one content block: `image`, `svg`, `table`, `math`, or `barcode`
+   - Zero or one `figcaption` block
+2. **Subfigures array** (for multi-panel figures)
 
 The `figcaption` block MAY appear before or after the content block.
+
+#### 4.20.2 Subfigures
+
+For multi-panel figures with individual sub-images and captions, use the `subfigures` array:
+
+```json
+{
+  "type": "figure",
+  "id": "fig-comparison",
+  "subfigures": [
+    {
+      "id": "fig-comparison-a",
+      "label": "a",
+      "children": [
+        {
+          "type": "image",
+          "src": "assets/images/before.png",
+          "alt": "Tissue sample before treatment"
+        }
+      ],
+      "caption": "Before treatment"
+    },
+    {
+      "id": "fig-comparison-b",
+      "label": "b",
+      "children": [
+        {
+          "type": "image",
+          "src": "assets/images/after.png",
+          "alt": "Tissue sample after treatment"
+        }
+      ],
+      "caption": "After treatment"
+    }
+  ],
+  "caption": [
+    { "type": "text", "value": "Comparison of tissue samples showing treatment effects" }
+  ],
+  "numbering": "auto"
+}
+```
+
+| Subfigure Field | Type | Required | Description |
+|-----------------|------|----------|-------------|
+| `id` | string | No | Unique subfigure identifier for cross-referencing |
+| `label` | string | No | Subfigure label (e.g., "a", "b", "i", "ii") |
+| `children` | array | Yes | Content block(s) for this subfigure |
+| `caption` | string or array | No | Subfigure-specific caption |
+
+When using `subfigures`, the top-level `caption` field (instead of a `figcaption` child) provides the overall figure caption. This can be a simple string or an array of text nodes for rich formatting.
+
+**Rendering:** Subfigure labels are typically rendered in parentheses (e.g., "(a)", "(b)") adjacent to or below each sub-image. The overall caption references subfigures by their labels (e.g., "Figure 1: (a) Before treatment. (b) After treatment.").
 
 ### 4.21 Figure Caption
 
@@ -828,6 +883,48 @@ Caption for a figure. Only valid as a child of `figure`.
 ```
 
 Children: Text nodes or inline content (including links, marks)
+
+### 4.22 Admonition
+
+Callout boxes for notes, warnings, tips, and other highlighted content commonly used in technical documentation, textbooks, and tutorials.
+
+```json
+{
+  "type": "admonition",
+  "variant": "warning",
+  "title": "Caution",
+  "children": [
+    {
+      "type": "paragraph",
+      "children": [
+        { "type": "text", "value": "High voltage. Disconnect power before servicing." }
+      ]
+    }
+  ]
+}
+```
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `variant` | string | Yes | Admonition type (see below) |
+| `title` | string | No | Custom title (defaults to variant label) |
+
+#### 4.22.1 Admonition Variants
+
+| Variant | Typical Use |
+|---------|-------------|
+| `note` | General information or supplementary content |
+| `tip` | Helpful suggestions or best practices |
+| `info` | Additional context or background information |
+| `warning` | Potential issues or important considerations |
+| `caution` | Actions that may cause problems |
+| `danger` | Critical warnings about harmful actions |
+| `important` | Key information that should not be missed |
+| `example` | Illustrative examples or demonstrations |
+
+Children: Block-level content (typically paragraph blocks)
+
+The `title` field is OPTIONAL. When omitted, implementations SHOULD use a localized label based on the `variant` (e.g., "Note", "Warning", "Tip").
 
 ## 5. Extension Block Types
 
@@ -928,8 +1025,9 @@ All text content MUST be valid Unicode (UTF-8 encoded in JSON). Implementations 
 6. TableCell children MUST be block-level content (typically paragraph blocks)
 7. DefinitionList children MUST be definitionItem blocks
 8. DefinitionItem children MUST include at least one definitionTerm and one definitionDescription
-9. Figure children MUST include exactly one content block and zero or one figcaption
-10. Figcaption is only valid as a child of figure
+9. Figure children MUST include exactly one content block and zero or one figcaption (or use subfigures array)
+10. Figcaption is only valid as a child of figure or subfigure
+11. Admonition children MUST be block-level content (typically paragraph blocks)
 
 ### 7.3 Cross-References
 

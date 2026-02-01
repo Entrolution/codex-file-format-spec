@@ -744,6 +744,131 @@
     },
     {
       "type": "heading",
+      "id": "admonition-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Admonitions" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "admonition-intro",
+      "children": [
+        { "type": "text", "value": "Admonition blocks highlight important information with visual callouts:" }
+      ]
+    },
+    {
+      "type": "admonition",
+      "id": "admonition-note",
+      "variant": "note",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "This is a note admonition. Use it for supplementary information that readers may find helpful." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "admonition",
+      "id": "admonition-warning",
+      "variant": "warning",
+      "title": "Caution Required",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Warning admonitions highlight potential issues or important considerations." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "admonition",
+      "id": "admonition-tip",
+      "variant": "tip",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Tip admonitions provide helpful suggestions and best practices." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "admonition",
+      "id": "admonition-danger",
+      "variant": "danger",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Danger admonitions warn about critical issues that could cause serious problems." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-admonition"
+    },
+    {
+      "type": "heading",
+      "id": "subfigure-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Subfigures" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "subfigure-intro",
+      "children": [
+        { "type": "text", "value": "Multi-panel figures with individual sub-captions:" }
+      ]
+    },
+    {
+      "type": "figure",
+      "id": "fig-comparison",
+      "subfigures": [
+        {
+          "id": "fig-comparison-a",
+          "label": "a",
+          "children": [
+            {
+              "type": "image",
+              "src": "assets/images/before.png",
+              "alt": "Sample before processing"
+            }
+          ],
+          "caption": "Before processing"
+        },
+        {
+          "id": "fig-comparison-b",
+          "label": "b",
+          "children": [
+            {
+              "type": "image",
+              "src": "assets/images/after.png",
+              "alt": "Sample after processing"
+            }
+          ],
+          "caption": "After processing"
+        }
+      ],
+      "caption": [
+        { "type": "text", "value": "Comparison of sample images showing the effects of processing. (a) Original sample. (b) Processed sample with enhanced contrast." }
+      ],
+      "numbering": "auto"
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-subfigure"
+    },
+    {
+      "type": "heading",
       "id": "i18n-heading",
       "level": 2,
       "children": [
