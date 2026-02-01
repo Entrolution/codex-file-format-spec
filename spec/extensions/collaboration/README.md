@@ -96,18 +96,85 @@ Compatible with:
 - **Automerge** - JSON-based CRDT
 - **Diamond Types** - High-performance text CRDT
 
-### 3.6 Synchronization
+### 3.6 CRDT Format Declaration
 
-Documents can include sync metadata:
+Documents using CRDT-based collaboration MUST declare the CRDT format in their collaboration metadata. This enables implementations to correctly interpret CRDT state and determines compatibility for synchronization.
+
+```json
+{
+  "crdtFormat": "yjs",
+  "crdtVersion": "13.6"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `crdtFormat` | string | Yes | CRDT implementation identifier |
+| `crdtVersion` | string | No | Version of the CRDT library used |
+
+**Recognized `crdtFormat` values:**
+
+| Value | Description |
+|-------|-------------|
+| `yjs` | [Yjs](https://yjs.dev/) CRDT library |
+| `automerge` | [Automerge](https://automerge.org/) JSON CRDT |
+| `diamond-types` | [Diamond Types](https://github.com/josephg/diamond-types) text CRDT |
+
+Implementations MAY define additional `crdtFormat` values for other CRDT libraries. Unrecognized values SHOULD be treated as opaque—implementations that do not support the format can still read static content but cannot participate in CRDT synchronization.
+
+### 3.7 Synchronization Metadata
+
+Documents can include sync metadata for tracking collaboration state:
 
 ```json
 {
   "collaboration": {
+    "crdtFormat": "yjs",
+    "crdtVersion": "13.6",
     "syncVersion": 1234,
     "lastSync": "2025-01-15T10:00:00Z",
     "peers": [
       { "id": "peer1", "lastSeen": "2025-01-15T09:55:00Z" }
     ]
+  }
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `syncVersion` | integer | No | Logical clock or sequence number for sync state |
+| `lastSync` | string | No | ISO 8601 timestamp of last synchronization |
+| `peers` | array | No | Known collaboration peers |
+
+### 3.8 Document Materialization
+
+When exchanging documents between implementations using different CRDT formats, or when exporting for tools that do not support CRDTs, documents MUST be materialized to static content.
+
+**Materialization process:**
+
+1. **Resolve CRDT state** — Flatten all CRDT operations to produce final content values
+2. **Preserve content** — All text, blocks, and structure MUST be preserved exactly
+3. **Preserve collaboration data** — Comments, suggestions, change history, and revision history MUST be preserved
+4. **Strip or reset CRDT metadata** — The `crdt` field on blocks MAY be removed; alternatively, importing implementations MAY initialize fresh CRDT state from the static content
+5. **Update provenance** — The document's provenance chain SHOULD record the materialization event
+
+**Interoperability rules:**
+
+- When a document with `crdtFormat: "yjs"` is opened by a tool using Automerge, the tool SHOULD materialize the content and MAY initialize new Automerge CRDT state
+- The original `crdtFormat` SHOULD be replaced with the new format
+- Real-time synchronization between different CRDT formats is NOT supported—implementations MUST materialize before cross-format exchange
+
+**Example materialization provenance entry:**
+
+```json
+{
+  "action": "materialized",
+  "timestamp": "2025-01-15T12:00:00Z",
+  "agent": "codex-tool/2.0",
+  "details": {
+    "fromCrdtFormat": "yjs",
+    "toCrdtFormat": "automerge",
+    "reason": "cross-tool-exchange"
   }
 }
 ```
@@ -130,6 +197,7 @@ Location: `collaboration/comments.json`
 ```json
 {
   "version": "0.2",
+  "crdtFormat": "yjs",
   "comments": [
     {
       "id": "comment-1",
@@ -374,33 +442,39 @@ To show differences between versions:
 3. Generate change list
 4. Display inline or side-by-side
 
-## 8. Collaboration Protocol
+## 8. Collaboration Patterns
 
-### 8.1 Real-Time Sync
+> **Note**: This section is *informative*, not normative. Real-time synchronization protocols are implementation-defined. Implementations SHOULD use established CRDT sync protocols (e.g., [yjs-websocket](https://github.com/yjs/y-websocket), [y-webrtc](https://github.com/yjs/y-webrtc), [automerge-repo](https://github.com/automerge/automerge-repo)) rather than defining custom wire protocols.
 
-For real-time collaboration, implementations can use:
+### 8.1 Transport Options
 
-- WebSocket connections
-- WebRTC data channels
-- Server-sent events
+For real-time collaboration, common transport mechanisms include:
 
-### 8.2 Message Types
+- **WebSocket connections** — Persistent bidirectional communication
+- **WebRTC data channels** — Peer-to-peer with NAT traversal
+- **Server-sent events** — Server-push for read-heavy scenarios
 
-| Message | Direction | Description |
+The choice of transport is orthogonal to the CRDT format. Implementations SHOULD leverage the sync infrastructure provided by their chosen CRDT library.
+
+### 8.2 Common Message Patterns
+
+The following message types represent common patterns in CRDT sync protocols. These are illustrative—actual wire formats depend on the CRDT library used.
+
+| Pattern | Direction | Description |
 |---------|-----------|-------------|
-| `sync-request` | Client → Server | Request current state |
-| `sync-response` | Server → Client | Full state snapshot |
-| `update` | Bidirectional | Incremental change |
-| `presence` | Bidirectional | Presence update |
-| `awareness` | Bidirectional | User awareness info |
+| `sync-request` | Client → Server | Request current state or missing updates |
+| `sync-response` | Server → Client | State snapshot or update batch |
+| `update` | Bidirectional | Incremental CRDT operation(s) |
+| `presence` | Bidirectional | User presence update |
+| `awareness` | Bidirectional | Cursor position, selection, user info |
 
 ### 8.3 Conflict Resolution
 
-When conflicts occur:
+CRDT-based collaboration handles conflicts automatically:
 
-1. CRDT operations merge automatically
-2. Last-write-wins for non-CRDT data
-3. User notification for unresolvable conflicts
+1. **CRDT operations** — Merge deterministically without coordination
+2. **Non-CRDT metadata** — Last-write-wins or implementation-defined merge
+3. **Unresolvable conflicts** — User notification (rare with CRDTs)
 
 ## 9. Examples
 
