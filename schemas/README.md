@@ -17,6 +17,13 @@ This directory contains JSON Schema definitions for validating Codex document co
 | `annotations.schema.json` | Core annotations | `security/annotations.json` |
 | `phantoms.schema.json` | Phantom clusters | `phantoms/clusters.json` |
 
+### Extension Schemas
+
+| Schema | Purpose | Validates |
+|--------|---------|-----------|
+| `semantic.schema.json` | Semantic extension | `semantic:*` blocks and marks |
+| `academic.schema.json` | Academic extension | `academic:*` blocks and marks |
+
 ## Schema Dependencies
 
 Some schemas reference definitions from other schema files:
