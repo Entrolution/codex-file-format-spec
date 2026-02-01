@@ -1,0 +1,191 @@
+{
+  "version": "0.1",
+  "clusters": [
+    {
+      "id": "cluster-architecture-notes",
+      "anchor": { "blockId": "para-components" },
+      "label": "Architecture Notes",
+      "scope": "shared",
+      "author": {
+        "name": "Sarah Johnson",
+        "email": "sarah@example.com",
+        "identifier": "https://orcid.org/0000-0002-1234-5678"
+      },
+      "created": "2025-01-28T09:00:00Z",
+      "metadata": {
+        "color": "#4a90d9",
+        "collapsed": false
+      },
+      "phantoms": [
+        {
+          "id": "phantom-1",
+          "position": { "x": 0, "y": 0 },
+          "size": { "width": 200, "height": 100 },
+          "content": {
+            "blocks": [
+              {
+                "type": "paragraph",
+                "children": [
+                  { "type": "text", "value": "Consider adding a message queue between API Gateway and App Server for async processing." }
+                ]
+              }
+            ]
+          },
+          "created": "2025-01-28T09:15:00Z",
+          "author": {
+            "name": "Sarah Johnson",
+            "email": "sarah@example.com"
+          }
+        },
+        {
+          "id": "phantom-2",
+          "position": { "x": 250, "y": 0 },
+          "size": { "width": 180, "height": 80 },
+          "content": {
+            "blocks": [
+              {
+                "type": "paragraph",
+                "children": [
+                  { "type": "text", "value": "RabbitMQ or Kafka?" }
+                ]
+              }
+            ]
+          },
+          "connections": [
+            { "target": "phantom-1", "style": "arrow", "label": "relates to" }
+          ],
+          "created": "2025-01-28T09:20:00Z",
+          "author": {
+            "name": "Mike Chen",
+            "email": "mike@example.com"
+          }
+        },
+        {
+          "id": "phantom-3",
+          "position": { "x": 125, "y": 130 },
+          "size": { "width": 200, "height": 60 },
+          "content": {
+            "blocks": [
+              {
+                "type": "paragraph",
+                "children": [
+                  { "type": "text", "value": "Kafka for high throughput, RabbitMQ for simpler setup" }
+                ]
+              }
+            ]
+          },
+          "connections": [
+            { "target": "phantom-2", "style": "dashed" }
+          ],
+          "created": "2025-01-28T09:25:00Z",
+          "author": {
+            "name": "Sarah Johnson",
+            "email": "sarah@example.com"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cluster-security-review",
+      "anchor": { "blockId": "para-api" },
+      "label": "Security Review",
+      "scope": "role:security-team",
+      "author": {
+        "name": "Alex Security",
+        "email": "alex.sec@example.com"
+      },
+      "created": "2025-01-28T10:00:00Z",
+      "metadata": {
+        "color": "#e74c3c",
+        "collapsed": true
+      },
+      "phantoms": [
+        {
+          "id": "phantom-sec-1",
+          "position": { "x": 0, "y": 0 },
+          "size": { "width": 250, "height": 120 },
+          "content": {
+            "blocks": [
+              {
+                "type": "heading",
+                "level": 3,
+                "children": [
+                  { "type": "text", "value": "Security Checklist" }
+                ]
+              },
+              {
+                "type": "list",
+                "ordered": false,
+                "children": [
+                  {
+                    "type": "listItem",
+                    "checked": true,
+                    "children": [
+                      { "type": "paragraph", "children": [{ "type": "text", "value": "OAuth 2.0 implementation" }] }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "checked": true,
+                    "children": [
+                      { "type": "paragraph", "children": [{ "type": "text", "value": "Rate limiting configured" }] }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "checked": false,
+                    "children": [
+                      { "type": "paragraph", "children": [{ "type": "text", "value": "WAF rules reviewed" }] }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "created": "2025-01-28T10:05:00Z",
+          "author": {
+            "name": "Alex Security",
+            "email": "alex.sec@example.com"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cluster-personal-notes",
+      "anchor": { "blockId": "para-db" },
+      "label": "My Notes",
+      "scope": "private",
+      "author": {
+        "name": "Developer",
+        "email": "dev@example.com"
+      },
+      "created": "2025-01-28T11:00:00Z",
+      "metadata": {
+        "color": "#9b59b6",
+        "collapsed": false
+      },
+      "phantoms": [
+        {
+          "id": "phantom-private-1",
+          "position": { "x": 0, "y": 0 },
+          "size": { "width": 180, "height": 80 },
+          "content": {
+            "blocks": [
+              {
+                "type": "paragraph",
+                "children": [
+                  { "type": "text", "value": "TODO: Research TimescaleDB for time-series data" }
+                ]
+              }
+            ]
+          },
+          "created": "2025-01-28T11:05:00Z",
+          "author": {
+            "name": "Developer",
+            "email": "dev@example.com"
+          }
+        }
+      ]
+    }
+  ]
+}

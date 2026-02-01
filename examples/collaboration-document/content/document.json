@@ -1,0 +1,121 @@
+{
+  "version": "0.1",
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "title",
+      "level": 1,
+      "children": [
+        { "type": "text", "value": "Project Proposal: Document Management System" }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "exec-summary",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Executive Summary" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "para-1",
+      "children": [
+        { "type": "text", "value": "This proposal outlines a new document management system designed to improve organizational efficiency and collaboration. The system will provide version control, access management, and real-time collaboration features." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "objectives",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Project Objectives" }
+      ]
+    },
+    {
+      "type": "list",
+      "id": "obj-list",
+      "ordered": true,
+      "children": [
+        {
+          "type": "listItem",
+          "id": "obj-1",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Implement secure document storage with encryption" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "id": "obj-2",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Enable real-time collaborative editing" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "id": "obj-3",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Provide comprehensive audit trails" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "id": "obj-4",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Support integration with existing enterprise systems" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "timeline",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Timeline and Budget" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "para-timeline",
+      "children": [
+        { "type": "text", "value": "The project is estimated to require 6 months for initial deployment, with an estimated budget of $150,000. Phase 1 will focus on core functionality, with subsequent phases adding advanced features." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "conclusion",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Conclusion" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "para-conclusion",
+      "children": [
+        { "type": "text", "value": "We believe this system will significantly improve document workflow and reduce operational costs. We recommend proceeding with Phase 1 immediately." }
+      ]
+    }
+  ]
+}

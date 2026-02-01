@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/security.schema.json",
+  "title": "Codex Security Extension",
+  "description": "Schema for security extension files in a Codex document",
+  "$defs": {
+    "signatureAlgorithm": {
+      "type": "string",
+      "description": "Supported signature algorithms",
+      "enum": ["ES256", "ES384", "EdDSA", "PS256", "ML-DSA-65"]
+    },
+    "algorithmStatus": {
+      "type": "object",
+      "description": "Algorithm status metadata for implementation guidance",
+      "properties": {
+        "ES256": {
+          "type": "object",
+          "properties": {
+            "status": { "const": "required" },
+            "description": { "type": "string" }
+          }
+        },
+        "ES384": {
+          "type": "object",
+          "properties": {
+            "status": { "const": "recommended" },
+            "description": { "type": "string" }
+          }
+        },
+        "EdDSA": {
+          "type": "object",
+          "properties": {
+            "status": { "const": "recommended" },
+            "description": { "type": "string" }
+          }
+        },
+        "PS256": {
+          "type": "object",
+          "properties": {
+            "status": { "const": "optional" },
+            "description": { "type": "string" }
+          }
+        },
+        "ML-DSA-65": {
+          "type": "object",
+          "properties": {
+            "status": { "const": "experimental" },
+            "note": { "type": "string" },
+            "description": { "type": "string" }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "contentEncryptionAlgorithm": {
+      "type": "string",
+      "description": "Content encryption algorithms",
+      "enum": ["A256GCM", "C20P"]
+    },
+    "keyManagementAlgorithm": {
+      "type": "string",
+      "description": "Key wrapping/management algorithms",
+      "enum": ["ECDH-ES+A256KW", "RSA-OAEP-256", "PBES2-HS256+A256KW"]
+    },
+    "signatureState": {
+      "type": "string",
+      "description": "Signature verification state",
+      "enum": ["valid", "invalid", "expired", "revoked", "untrusted", "unknown"]
+    },
+    "signer": {
+      "description": "Signer identity information extending base person",
+      "allOf": [
+        { "$ref": "https://codex.document/schemas/anchor.schema.json#/$defs/person" },
+        {
+          "type": "object",
+          "properties": {
+            "organization": {
+              "type": "string",
+              "description": "Signer's organization"
+            },
+            "certificate": {
+              "type": "string",
+              "description": "X.509 certificate in PEM format"
+            },
+            "keyId": {
+              "type": "string",
+              "description": "Key identifier (DID, URL, or other identifier)"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "trustedTimestamp": {
+      "type": "object",
+      "description": "Trusted timestamp from a timestamping authority",
+      "required": ["authority", "time", "token"],
+      "properties": {
+        "authority": {
+          "type": "string",
+          "format": "uri",
+          "description": "Timestamp authority URL"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp from the authority"
+        },
+        "token": {
+          "type": "string",
+          "description": "Base64-encoded timestamp token"
+        },
+        "algorithm": {
+          "type": "string",
+          "description": "Hash algorithm used for timestamping",
+          "enum": ["SHA256", "SHA384", "SHA512"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "signatureScope": {
+      "type": "object",
+      "description": "Scoped signature covering content and optional layouts",
+      "required": ["documentId"],
+      "properties": {
+        "documentId": {
+          "type": "string",
+          "description": "Content hash (must match top-level documentId)",
+          "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+        },
+        "layouts": {
+          "type": "object",
+          "description": "Map of layout path to layout file hash for visual attestation",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "webauthnSignature": {
+      "type": "object",
+      "description": "WebAuthn/FIDO2 signature data",
+      "required": ["credentialId", "authenticatorData", "clientDataJSON", "signature"],
+      "properties": {
+        "credentialId": {
+          "type": "string",
+          "description": "Base64-encoded credential ID"
+        },
+        "authenticatorData": {
+          "type": "string",
+          "description": "Base64-encoded authenticator data"
+        },
+        "clientDataJSON": {
+          "type": "string",
+          "description": "Base64-encoded client data JSON"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Base64-encoded signature"
+        }
+      },
+      "additionalProperties": false
+    },
+    "signature": {
+      "type": "object",
+      "description": "A digital signature entry",
+      "required": ["id", "algorithm", "signedAt", "signer", "value"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique signature identifier"
+        },
+        "algorithm": {
+          "$ref": "#/$defs/signatureAlgorithm"
+        },
+        "signedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 signing timestamp"
+        },
+        "signer": {
+          "$ref": "#/$defs/signer"
+        },
+        "value": {
+          "type": "string",
+          "description": "Base64-encoded signature value"
+        },
+        "certificateChain": {
+          "type": "array",
+          "description": "Certificate chain for validation",
+          "items": {
+            "type": "string",
+            "description": "X.509 certificate in PEM format"
+          }
+        },
+        "timestamp": {
+          "$ref": "#/$defs/trustedTimestamp"
+        },
+        "scope": {
+          "$ref": "#/$defs/signatureScope",
+          "description": "Scoped signature attestation (content + layout)"
+        },
+        "webauthn": {
+          "$ref": "#/$defs/webauthnSignature",
+          "description": "WebAuthn signature data (alternative to value)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "signaturesFile": {
+      "type": "object",
+      "description": "Schema for security/signatures.json",
+      "required": ["version", "documentId", "signatures"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Security extension version",
+          "pattern": "^\\d+\\.\\d+$"
+        },
+        "documentId": {
+          "type": "string",
+          "description": "Document content hash being signed",
+          "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+        },
+        "signatures": {
+          "type": "array",
+          "description": "Array of signatures",
+          "items": {
+            "$ref": "#/$defs/signature"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "encryptionRecipient": {
+      "type": "object",
+      "description": "Encryption recipient with wrapped key",
+      "required": ["id", "encryptedKey"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Recipient identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Recipient display name"
+        },
+        "keyId": {
+          "type": "string",
+          "description": "Recipient's public key identifier"
+        },
+        "encryptedKey": {
+          "type": "string",
+          "description": "Base64-encoded encrypted content encryption key"
+        },
+        "ephemeralPublicKey": {
+          "type": "string",
+          "description": "Base64-encoded ephemeral public key (for ECDH)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "encryptedContent": {
+      "type": "object",
+      "description": "Encrypted content reference",
+      "required": ["iv", "tag", "path"],
+      "properties": {
+        "iv": {
+          "type": "string",
+          "description": "Base64-encoded initialization vector"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Base64-encoded authentication tag"
+        },
+        "path": {
+          "type": "string",
+          "description": "Path to encrypted file (typically with .enc suffix)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "encryptionFile": {
+      "type": "object",
+      "description": "Schema for security/encryption.json",
+      "required": ["version", "algorithm", "keyManagement", "recipients", "encryptedContent"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Security extension version",
+          "pattern": "^\\d+\\.\\d+$"
+        },
+        "algorithm": {
+          "$ref": "#/$defs/contentEncryptionAlgorithm"
+        },
+        "keyManagement": {
+          "$ref": "#/$defs/keyManagementAlgorithm"
+        },
+        "recipients": {
+          "type": "array",
+          "description": "Array of recipients who can decrypt",
+          "items": {
+            "$ref": "#/$defs/encryptionRecipient"
+          },
+          "minItems": 1
+        },
+        "encryptedContent": {
+          "$ref": "#/$defs/encryptedContent"
+        }
+      },
+      "additionalProperties": false
+    },
+    "permission": {
+      "type": "object",
+      "description": "Permission grants",
+      "properties": {
+        "view": {
+          "type": "boolean",
+          "description": "Can view document content"
+        },
+        "print": {
+          "type": "boolean",
+          "description": "Can print document"
+        },
+        "copy": {
+          "type": "boolean",
+          "description": "Can copy text to clipboard"
+        },
+        "annotate": {
+          "type": "boolean",
+          "description": "Can add comments/annotations"
+        },
+        "edit": {
+          "type": "boolean",
+          "description": "Can edit content (draft only)"
+        },
+        "sign": {
+          "type": "boolean",
+          "description": "Can add signatures"
+        },
+        "decrypt": {
+          "type": "boolean",
+          "description": "Can decrypt if encrypted"
+        }
+      },
+      "additionalProperties": false
+    },
+    "principalPermission": {
+      "type": "object",
+      "description": "Permission assignment to a principal",
+      "required": ["principal", "grants"],
+      "properties": {
+        "principal": {
+          "type": "string",
+          "description": "Principal identifier (user:email, group:name, role:name, or *)",
+          "pattern": "^(user:[^:]+|group:[^:]+|role:[^:]+|\\*)$"
+        },
+        "grants": {
+          "$ref": "#/$defs/permission"
+        }
+      },
+      "additionalProperties": false
+    },
+    "accessControl": {
+      "type": "object",
+      "description": "Access control configuration",
+      "properties": {
+        "default": {
+          "$ref": "#/$defs/permission",
+          "description": "Default permissions for unauthenticated users"
+        },
+        "permissions": {
+          "type": "array",
+          "description": "Permission assignments to principals",
+          "items": {
+            "$ref": "#/$defs/principalPermission"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/signaturesFile" },
+    { "$ref": "#/$defs/encryptionFile" }
+  ]
+}

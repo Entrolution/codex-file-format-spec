@@ -40,20 +40,42 @@ function loadJson(filepath: string): unknown {
   return JSON.parse(content);
 }
 
+// Schema dependencies (schemas that need other schemas loaded first)
+const schemaDependencies: Record<string, string[]> = {
+  'content.schema.json': ['semantic.schema.json', 'academic.schema.json'],
+  'collaboration.schema.json': ['anchor.schema.json'],
+  'phantoms.schema.json': ['anchor.schema.json'],
+  'security.schema.json': ['anchor.schema.json'],
+};
+
 function getValidator(schemaName: string): ValidateFunction {
   if (!validators[schemaName]) {
     const ajv = createAjv();
+    // Load dependency schemas first
+    const deps = schemaDependencies[schemaName] || [];
+    for (const dep of deps) {
+      const depSchema = loadSchema(dep);
+      ajv.addSchema(depSchema);
+    }
     const schema = loadSchema(schemaName);
     validators[schemaName] = ajv.compile(schema);
   }
   return validators[schemaName];
 }
 
-// Document validations to perform
+// Document validations to perform (common files)
 const validations: Validation[] = [
   { schema: 'manifest.schema.json', file: 'manifest.json' },
   { schema: 'content.schema.json', file: 'content/document.json' },
   { schema: 'dublin-core.schema.json', file: 'metadata/dublin-core.json' },
+];
+
+// Extension-specific validations (only if files exist)
+const extensionValidations: Validation[] = [
+  { schema: 'collaboration.schema.json', file: 'collaboration/comments.json' },
+  { schema: 'collaboration.schema.json', file: 'collaboration/changes.json' },
+  { schema: 'forms.schema.json', file: 'forms/data.json' },
+  { schema: 'phantoms.schema.json', file: 'phantoms/clusters.json' },
 ];
 
 let hasErrors = false;
@@ -69,11 +91,41 @@ for (const exampleName of exampleDirs) {
   console.log(`${exampleName}/`);
   const examplePath = path.join(examplesDir, exampleName);
 
+  // Validate common files
   for (const { schema, file } of validations) {
     const filepath = path.join(examplePath, file);
 
     if (!fs.existsSync(filepath)) {
       console.log(`  - ${file} (not found, skipping)`);
+      continue;
+    }
+
+    try {
+      const validate = getValidator(schema);
+      const data = loadJson(filepath);
+      const valid = validate(data);
+
+      if (valid) {
+        console.log(`  ✓ ${file}`);
+      } else {
+        console.log(`  ✗ ${file}`);
+        for (const err of validate.errors ?? []) {
+          console.log(`    - ${err.instancePath || '/'}: ${err.message}`);
+        }
+        hasErrors = true;
+      }
+    } catch (err) {
+      console.log(`  ✗ ${file}`);
+      console.log(`    Error: ${err instanceof Error ? err.message : String(err)}`);
+      hasErrors = true;
+    }
+  }
+
+  // Validate extension-specific files (silently skip if not present)
+  for (const { schema, file } of extensionValidations) {
+    const filepath = path.join(examplePath, file);
+
+    if (!fs.existsSync(filepath)) {
       continue;
     }
 

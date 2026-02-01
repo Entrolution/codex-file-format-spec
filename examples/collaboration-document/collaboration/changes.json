@@ -1,0 +1,80 @@
+{
+  "version": "0.2",
+  "baseVersion": "sha256:abc123def456789012345678901234567890123456789012345678901234",
+  "crdtFormat": "yjs",
+  "changes": [
+    {
+      "id": "change-1",
+      "type": "insert",
+      "anchor": { "blockId": "obj-4" },
+      "position": { "after": "obj-3" },
+      "author": {
+        "name": "Bob Martinez",
+        "email": "bob@example.com",
+        "userId": "user-002",
+        "color": "#4ecdc4"
+      },
+      "timestamp": "2025-01-28T09:00:00Z",
+      "status": "accepted"
+    },
+    {
+      "id": "change-2",
+      "type": "modify",
+      "anchor": { "blockId": "para-timeline" },
+      "before": {
+        "type": "paragraph",
+        "children": [
+          { "type": "text", "value": "The project is estimated to require 6 months for initial deployment, with an estimated budget of $100,000." }
+        ]
+      },
+      "after": {
+        "type": "paragraph",
+        "children": [
+          { "type": "text", "value": "The project is estimated to require 6 months for initial deployment, with an estimated budget of $150,000. Phase 1 will focus on core functionality, with subsequent phases adding advanced features." }
+        ]
+      },
+      "author": {
+        "name": "David Lee",
+        "email": "david@example.com",
+        "userId": "user-004",
+        "color": "#dda0dd"
+      },
+      "timestamp": "2025-01-28T11:00:00Z",
+      "status": "accepted"
+    },
+    {
+      "id": "change-3",
+      "type": "format",
+      "anchor": { "blockId": "title" },
+      "before": { "level": 2 },
+      "after": { "level": 1 },
+      "author": {
+        "name": "Alice Chen",
+        "email": "alice@example.com",
+        "userId": "user-001",
+        "color": "#ff6b6b"
+      },
+      "timestamp": "2025-01-28T09:30:00Z",
+      "status": "accepted"
+    },
+    {
+      "id": "change-4",
+      "type": "delete",
+      "anchor": { "blockId": "removed-section" },
+      "before": {
+        "type": "paragraph",
+        "children": [
+          { "type": "text", "value": "This section was removed during editing." }
+        ]
+      },
+      "author": {
+        "name": "Carol Davis",
+        "email": "carol@example.com",
+        "userId": "user-003",
+        "color": "#95e1d3"
+      },
+      "timestamp": "2025-01-28T10:00:00Z",
+      "status": "pending"
+    }
+  ]
+}

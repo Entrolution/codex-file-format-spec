@@ -1,0 +1,25 @@
+{
+  "codex": "0.1",
+  "id": "pending",
+  "state": "draft",
+  "created": "2025-01-28T14:00:00Z",
+  "modified": "2025-01-28T14:00:00Z",
+  "extensions": [
+    {
+      "id": "codex.collaboration",
+      "version": "0.2",
+      "required": false
+    }
+  ],
+  "content": {
+    "path": "content/document.json",
+    "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "metadata": {
+    "dublinCore": "metadata/dublin-core.json"
+  },
+  "collaboration": {
+    "comments": "collaboration/comments.json",
+    "changes": "collaboration/changes.json"
+  }
+}

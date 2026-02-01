@@ -1,0 +1,114 @@
+{
+  "version": "0.2",
+  "crdtFormat": "yjs",
+  "comments": [
+    {
+      "id": "comment-1",
+      "type": "comment",
+      "anchor": { "blockId": "para-1", "start": 78, "end": 100 },
+      "author": {
+        "name": "Alice Chen",
+        "email": "alice@example.com",
+        "userId": "user-001",
+        "color": "#ff6b6b"
+      },
+      "created": "2025-01-28T10:15:00Z",
+      "content": "Can we be more specific about what 'organizational efficiency' means in this context?",
+      "resolved": false,
+      "replies": [
+        {
+          "id": "reply-1-1",
+          "author": {
+            "name": "Bob Martinez",
+            "email": "bob@example.com",
+            "userId": "user-002",
+            "color": "#4ecdc4"
+          },
+          "created": "2025-01-28T10:30:00Z",
+          "content": "Good point. I'll add some metrics in the next revision."
+        },
+        {
+          "id": "reply-1-2",
+          "author": {
+            "name": "Alice Chen",
+            "email": "alice@example.com",
+            "userId": "user-001",
+            "color": "#ff6b6b"
+          },
+          "created": "2025-01-28T10:45:00Z",
+          "content": "Thanks! Consider including time savings and error reduction rates."
+        }
+      ]
+    },
+    {
+      "id": "comment-2",
+      "type": "highlight",
+      "anchor": { "blockId": "obj-2" },
+      "author": {
+        "name": "Carol Davis",
+        "email": "carol@example.com",
+        "userId": "user-003",
+        "color": "#95e1d3"
+      },
+      "created": "2025-01-28T11:00:00Z",
+      "content": "This is a key differentiator from our current system.",
+      "resolved": false
+    },
+    {
+      "id": "suggestion-1",
+      "type": "suggestion",
+      "anchor": { "blockId": "para-timeline", "start": 47, "end": 56 },
+      "author": {
+        "name": "David Lee",
+        "email": "david@example.com",
+        "userId": "user-004",
+        "color": "#dda0dd"
+      },
+      "created": "2025-01-28T11:30:00Z",
+      "originalText": "6 months",
+      "suggestedText": "8 months",
+      "status": "pending"
+    },
+    {
+      "id": "suggestion-2",
+      "type": "suggestion",
+      "anchor": { "blockId": "para-timeline", "start": 106, "end": 114 },
+      "author": {
+        "name": "David Lee",
+        "email": "david@example.com",
+        "userId": "user-004",
+        "color": "#dda0dd"
+      },
+      "created": "2025-01-28T11:32:00Z",
+      "originalText": "$150,000",
+      "suggestedText": "$200,000",
+      "status": "accepted"
+    },
+    {
+      "id": "reaction-1",
+      "type": "reaction",
+      "anchor": { "blockId": "para-conclusion" },
+      "author": {
+        "name": "Eve Wilson",
+        "email": "eve@example.com",
+        "userId": "user-005",
+        "color": "#ffd93d"
+      },
+      "created": "2025-01-28T12:00:00Z",
+      "emoji": "thumbsup"
+    },
+    {
+      "id": "reaction-2",
+      "type": "reaction",
+      "anchor": { "blockId": "para-conclusion" },
+      "author": {
+        "name": "Frank Brown",
+        "email": "frank@example.com",
+        "userId": "user-006",
+        "color": "#6c5ce7"
+      },
+      "created": "2025-01-28T12:05:00Z",
+      "emoji": "rocket"
+    }
+  ]
+}

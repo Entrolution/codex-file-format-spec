@@ -1,0 +1,251 @@
+{
+  "version": "0.1",
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "title",
+      "level": 1,
+      "children": [
+        { "type": "text", "value": "Conference Registration Form" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "intro",
+      "children": [
+        { "type": "text", "value": "Please complete the following form to register for the Annual Technology Conference 2025." }
+      ]
+    },
+    {
+      "type": "forms:form",
+      "id": "registration-form",
+      "children": [
+        {
+          "type": "heading",
+          "id": "personal-info",
+          "level": 2,
+          "children": [
+            { "type": "text", "value": "Personal Information" }
+          ]
+        },
+        {
+          "type": "forms:textInput",
+          "id": "field-name",
+          "name": "fullName",
+          "label": "Full Name",
+          "placeholder": "Enter your full name",
+          "required": true,
+          "validation": {
+            "minLength": 2,
+            "maxLength": 100,
+            "message": "Please enter your full name (2-100 characters)"
+          },
+          "fallback": {
+            "type": "paragraph",
+            "children": [
+              { "type": "text", "value": "Full Name: _________________________________" }
+            ]
+          }
+        },
+        {
+          "type": "forms:textInput",
+          "id": "field-email",
+          "name": "email",
+          "label": "Email Address",
+          "placeholder": "you@example.com",
+          "required": true,
+          "inputType": "email",
+          "validation": {
+            "email": true,
+            "message": "Please enter a valid email address"
+          }
+        },
+        {
+          "type": "forms:textInput",
+          "id": "field-phone",
+          "name": "phone",
+          "label": "Phone Number",
+          "placeholder": "+1 (555) 123-4567",
+          "inputType": "tel",
+          "validation": {
+            "pattern": "^\\+?[0-9\\s\\-\\(\\)]+$",
+            "message": "Please enter a valid phone number"
+          }
+        },
+        {
+          "type": "heading",
+          "id": "employment-section",
+          "level": 2,
+          "children": [
+            { "type": "text", "value": "Employment Information" }
+          ]
+        },
+        {
+          "type": "forms:dropdown",
+          "id": "field-employment",
+          "name": "employmentType",
+          "label": "Employment Status",
+          "required": true,
+          "options": [
+            { "value": "employed", "label": "Employed" },
+            { "value": "self-employed", "label": "Self-Employed" },
+            { "value": "student", "label": "Student" },
+            { "value": "retired", "label": "Retired" },
+            { "value": "other", "label": "Other" }
+          ]
+        },
+        {
+          "type": "forms:textInput",
+          "id": "field-company",
+          "name": "companyName",
+          "label": "Company/Organization Name",
+          "placeholder": "Enter company name",
+          "conditionalValidation": {
+            "when": { "field": "employmentType", "equals": "employed" },
+            "then": {
+              "required": true,
+              "minLength": 2,
+              "message": "Company name is required for employed attendees"
+            }
+          }
+        },
+        {
+          "type": "forms:textInput",
+          "id": "field-job-title",
+          "name": "jobTitle",
+          "label": "Job Title",
+          "placeholder": "e.g., Software Engineer"
+        },
+        {
+          "type": "heading",
+          "id": "registration-section",
+          "level": 2,
+          "children": [
+            { "type": "text", "value": "Registration Options" }
+          ]
+        },
+        {
+          "type": "forms:radioGroup",
+          "id": "field-ticket",
+          "name": "ticketType",
+          "label": "Ticket Type",
+          "required": true,
+          "options": [
+            { "value": "standard", "label": "Standard ($299)" },
+            { "value": "premium", "label": "Premium with Workshops ($499)" },
+            { "value": "student", "label": "Student ($99)" },
+            { "value": "virtual", "label": "Virtual Attendance ($49)" }
+          ]
+        },
+        {
+          "type": "forms:dropdown",
+          "id": "field-sessions",
+          "name": "sessions",
+          "label": "Preferred Sessions",
+          "multiple": true,
+          "searchable": true,
+          "options": [
+            { "value": "ai-ml", "label": "AI & Machine Learning" },
+            { "value": "web-dev", "label": "Web Development" },
+            { "value": "security", "label": "Cybersecurity" },
+            { "value": "cloud", "label": "Cloud Computing" },
+            { "value": "mobile", "label": "Mobile Development" },
+            { "value": "data", "label": "Data Science" }
+          ]
+        },
+        {
+          "type": "forms:checkbox",
+          "id": "field-lunch",
+          "name": "includeLunch",
+          "label": "Include lunch package (+$50)"
+        },
+        {
+          "type": "heading",
+          "id": "dietary-section",
+          "level": 2,
+          "children": [
+            { "type": "text", "value": "Dietary Requirements" }
+          ]
+        },
+        {
+          "type": "forms:dropdown",
+          "id": "field-dietary",
+          "name": "dietaryRequirements",
+          "label": "Dietary Restrictions",
+          "options": [
+            { "value": "none", "label": "No restrictions" },
+            { "value": "vegetarian", "label": "Vegetarian" },
+            { "value": "vegan", "label": "Vegan" },
+            { "value": "halal", "label": "Halal" },
+            { "value": "kosher", "label": "Kosher" },
+            { "value": "gluten-free", "label": "Gluten-free" },
+            { "value": "other", "label": "Other (please specify)" }
+          ]
+        },
+        {
+          "type": "forms:textArea",
+          "id": "field-dietary-notes",
+          "name": "dietaryNotes",
+          "label": "Additional Dietary Notes",
+          "placeholder": "Please describe any allergies or special requirements",
+          "rows": 3,
+          "conditionalValidation": {
+            "when": { "field": "dietaryRequirements", "equals": "other" },
+            "then": {
+              "required": true,
+              "message": "Please specify your dietary requirements"
+            }
+          }
+        },
+        {
+          "type": "heading",
+          "id": "terms-section",
+          "level": 2,
+          "children": [
+            { "type": "text", "value": "Terms and Conditions" }
+          ]
+        },
+        {
+          "type": "forms:checkbox",
+          "id": "field-terms",
+          "name": "agreeTerms",
+          "label": "I agree to the terms and conditions",
+          "required": true,
+          "validation": {
+            "required": true,
+            "message": "You must agree to the terms and conditions to register"
+          }
+        },
+        {
+          "type": "forms:checkbox",
+          "id": "field-newsletter",
+          "name": "subscribeNewsletter",
+          "label": "Subscribe to our newsletter for updates"
+        },
+        {
+          "type": "forms:signature",
+          "id": "field-signature",
+          "name": "signature",
+          "label": "Signature",
+          "required": true,
+          "width": 400,
+          "height": 150
+        },
+        {
+          "type": "forms:datePicker",
+          "id": "field-date",
+          "name": "signatureDate",
+          "label": "Date",
+          "format": "YYYY-MM-DD",
+          "maxDate": "today",
+          "required": true
+        },
+        {
+          "type": "forms:submit",
+          "id": "submit-btn",
+          "label": "Complete Registration"
+        }
+      ]
+    }
+  ]
+}

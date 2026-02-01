@@ -237,39 +237,65 @@ Implementations SHOULD validate that anchor targets (block IDs, named anchor IDs
 - `offset` MUST be non-negative
 - For valid ranges, `end` SHOULD NOT exceed the target block's text content length
 
-## 8. Shared Types
+## 8. Terminology Glossary
 
-### 8.1 Person Object
+This section defines anchor-related terminology used throughout the specification:
 
-The Person object is a base type used across multiple extensions to represent a person (author, signer, creator). Defining it once ensures consistency across the specification.
+| Term | Usage Context | Definition |
+|------|---------------|------------|
+| Content Anchor URI | Formal name | URI string referencing a content location (e.g., `#blockId/10-25`) |
+| ContentAnchor | Schema object type | JSON object representing an anchor with `blockId`, `offset`, `start`, `end` fields |
+| anchor | Shorthand | Informal reference to either Content Anchor URI or ContentAnchor object |
+| anchor mark | Mark type | A named anchor point within text (`{ "type": "anchor", "id": "..." }`) |
+| Content Anchor URI syntax | Pattern description | The `#id[/offset[-end]]` format |
+
+### 8.1 Content Terminology
+
+| Term | Description |
+|------|-------------|
+| `blocks` | Top-level array of block objects (used in root document and phantom content) |
+| `children` | Nested content within a block (paragraphs, list items, etc.) |
+| `content` | Plain text shorthand in specific contexts (e.g., footnote simple form) |
+
+The distinction is intentional: `blocks` represents a document-level content array, while `children` represents nested block content.
+
+## 9. Shared Types
+
+### 9.1 Person Object
+
+The Person object is a base type used across multiple extensions to represent a person (author, signer, creator). It is defined in `anchor.schema.json` for reuse across extensions.
 
 **Base Person fields:**
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | Yes | Display name |
-| `email` | string | No | Email address |
+| `email` | string | No | Email address (format: email) |
+| `identifier` | string | No | Persistent identifier (ORCID, DID, URL, institutional ID) |
 
 **Base example:**
 
 ```json
 {
   "name": "Jane Doe",
-  "email": "jane@example.com"
+  "email": "jane@example.com",
+  "identifier": "https://orcid.org/0000-0002-1825-0097"
 }
 ```
 
-Extensions extend the base Person type with additional fields as needed:
+For scholarly documents, the `identifier` field SHOULD use ORCID format (e.g., `https://orcid.org/0000-0002-1825-0097`).
 
-| Extension | Additional Fields | Description |
-|-----------|------------------|-------------|
-| Security (signer) | `organization`, `certificate`, `keyId` | Cryptographic identity |
-| Provenance (creator) | `identifier` | DID or URI-based identifier |
-| Collaboration (presence) | `userId`, `color` | Real-time collaboration identity |
+Extensions extend the base Person type with additional fields via schema composition (`allOf`):
 
-All Person objects MUST include at minimum the `name` field. Extensions SHOULD include the base fields alongside their extension-specific fields.
+| Extension | Object Name | Additional Fields | Description |
+|-----------|-------------|------------------|-------------|
+| Collaboration | `author` | `userId`, `avatar`, `color` | Real-time collaboration identity |
+| Security | `signer` | `organization`, `certificate`, `keyId` | Cryptographic identity |
+| Phantoms | `author` | (none) | Basic author attribution |
 
-## 9. Relationship to Extensions
+All Person objects MUST include at minimum the `name` field. Extensions SHOULD include the base fields alongside their extension-specific fields. The naming distinction between "author" and "signer" is intentional to reflect the semantic difference in their contexts.
+
+## 10. Relationship to Extensions
 
 The anchor system is defined in the core specification but is primarily consumed by extensions:
 

@@ -171,7 +171,14 @@
               },
               { "$ref": "#/$defs/linkMark" },
               { "$ref": "#/$defs/anchorMark" },
-              { "$ref": "#/$defs/mathMark" }
+              { "$ref": "#/$defs/mathMark" },
+              { "$ref": "https://codex.document/schemas/semantic.schema.json#/$defs/citationMark" },
+              { "$ref": "https://codex.document/schemas/semantic.schema.json#/$defs/footnoteMark" },
+              { "$ref": "https://codex.document/schemas/semantic.schema.json#/$defs/entityMark" },
+              { "$ref": "https://codex.document/schemas/semantic.schema.json#/$defs/glossaryMark" },
+              { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/theoremRefMark" },
+              { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/equationRefMark" },
+              { "$ref": "https://codex.document/schemas/academic.schema.json#/$defs/algorithmRefMark" }
             ]
           }
         }

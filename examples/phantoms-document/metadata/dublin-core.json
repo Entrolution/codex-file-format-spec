@@ -1,0 +1,14 @@
+{
+  "version": "1.1",
+  "terms": {
+    "title": "Software Architecture Overview",
+    "creator": "Engineering Team",
+    "subject": ["software architecture", "system design", "documentation"],
+    "description": "A demonstration of phantoms extension features including annotation clusters with different scopes (shared, role-based, private), phantom connections, and nested content.",
+    "date": "2025-01-28",
+    "type": "Text",
+    "format": "application/vnd.codex+zip",
+    "language": "en",
+    "rights": "Internal Use Only"
+  }
+}

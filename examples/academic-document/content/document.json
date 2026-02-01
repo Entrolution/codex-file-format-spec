@@ -1,0 +1,392 @@
+{
+  "version": "0.1",
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "title",
+      "level": 1,
+      "children": [
+        { "type": "text", "value": "Introduction to Analysis" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "intro",
+      "children": [
+        { "type": "text", "value": "This document demonstrates the academic extension with theorems, proofs, exercises, equations, and algorithms." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "ch1",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Chapter 1: Foundations" }
+      ]
+    },
+    {
+      "type": "academic:theorem",
+      "variant": "definition",
+      "id": "def-continuous",
+      "number": "1.1",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "A function " },
+            { "type": "text", "value": "f: X -> Y", "marks": [{ "type": "math", "format": "latex", "source": "f: X \\to Y" }] },
+            { "type": "text", "value": " is " },
+            { "type": "text", "value": "continuous", "marks": ["bold"] },
+            { "type": "text", "value": " at a point " },
+            { "type": "text", "value": "x_0", "marks": [{ "type": "math", "format": "latex", "source": "x_0" }] },
+            { "type": "text", "value": " if for every " },
+            { "type": "text", "value": "epsilon > 0", "marks": [{ "type": "math", "format": "latex", "source": "\\epsilon > 0" }] },
+            { "type": "text", "value": " there exists " },
+            { "type": "text", "value": "delta > 0", "marks": [{ "type": "math", "format": "latex", "source": "\\delta > 0" }] },
+            { "type": "text", "value": " such that " },
+            { "type": "text", "value": "|x - x_0| < delta implies |f(x) - f(x_0)| < epsilon", "marks": [{ "type": "math", "format": "latex", "source": "|x - x_0| < \\delta \\implies |f(x) - f(x_0)| < \\epsilon" }] },
+            { "type": "text", "value": "." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "academic:theorem",
+      "variant": "theorem",
+      "id": "thm-ivt",
+      "number": "1.2",
+      "title": "Intermediate Value Theorem",
+      "uses": ["#def-continuous"],
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Let " },
+            { "type": "text", "value": "f: [a,b] -> R", "marks": [{ "type": "math", "format": "latex", "source": "f: [a,b] \\to \\mathbb{R}" }] },
+            { "type": "text", "value": " be continuous. If " },
+            { "type": "text", "value": "y", "marks": [{ "type": "math", "format": "latex", "source": "y" }] },
+            { "type": "text", "value": " is between " },
+            { "type": "text", "value": "f(a)", "marks": [{ "type": "math", "format": "latex", "source": "f(a)" }] },
+            { "type": "text", "value": " and " },
+            { "type": "text", "value": "f(b)", "marks": [{ "type": "math", "format": "latex", "source": "f(b)" }] },
+            { "type": "text", "value": ", then there exists " },
+            { "type": "text", "value": "c in (a,b)", "marks": [{ "type": "math", "format": "latex", "source": "c \\in (a,b)" }] },
+            { "type": "text", "value": " such that " },
+            { "type": "text", "value": "f(c) = y", "marks": [{ "type": "math", "format": "latex", "source": "f(c) = y" }] },
+            { "type": "text", "value": "." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "academic:proof",
+      "of": "#thm-ivt",
+      "method": "construction",
+      "qed": "symbol",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Without loss of generality, assume " },
+            { "type": "text", "value": "f(a) < y < f(b)", "marks": [{ "type": "math", "format": "latex", "source": "f(a) < y < f(b)" }] },
+            { "type": "text", "value": ". Define " },
+            { "type": "text", "value": "S = {x in [a,b] : f(x) < y}", "marks": [{ "type": "math", "format": "latex", "source": "S = \\{x \\in [a,b] : f(x) < y\\}" }] },
+            { "type": "text", "value": ". The set " },
+            { "type": "text", "value": "S", "marks": [{ "type": "math", "format": "latex", "source": "S" }] },
+            { "type": "text", "value": " is non-empty (contains " },
+            { "type": "text", "value": "a", "marks": [{ "type": "math", "format": "latex", "source": "a" }] },
+            { "type": "text", "value": ") and bounded above by " },
+            { "type": "text", "value": "b", "marks": [{ "type": "math", "format": "latex", "source": "b" }] },
+            { "type": "text", "value": ". Let " },
+            { "type": "text", "value": "c = sup S", "marks": [{ "type": "math", "format": "latex", "source": "c = \\sup S" }] },
+            { "type": "text", "value": ". By continuity, " },
+            { "type": "text", "value": "f(c) = y", "marks": [{ "type": "math", "format": "latex", "source": "f(c) = y" }] },
+            { "type": "text", "value": "." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "thm-ref-example",
+      "children": [
+        { "type": "text", "value": "By " },
+        {
+          "type": "text",
+          "value": "Theorem 1.2",
+          "marks": [
+            {
+              "type": "theorem-ref",
+              "target": "#thm-ivt",
+              "format": "Theorem {number}"
+            }
+          ]
+        },
+        { "type": "text", "value": ", every polynomial of odd degree has a real root." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "sec-equations",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Multi-Line Equations" }
+      ]
+    },
+    {
+      "type": "academic:equation-group",
+      "environment": "align",
+      "id": "eq-taylor",
+      "lines": [
+        {
+          "value": "e^x &= \\sum_{n=0}^{\\infty} \\frac{x^n}{n!}",
+          "number": "1",
+          "id": "eq-exp"
+        },
+        {
+          "value": "&= 1 + x + \\frac{x^2}{2!} + \\frac{x^3}{3!} + \\cdots",
+          "number": null
+        },
+        {
+          "value": "\\sin x &= \\sum_{n=0}^{\\infty} \\frac{(-1)^n x^{2n+1}}{(2n+1)!}",
+          "number": "2",
+          "id": "eq-sin"
+        },
+        {
+          "value": "\\cos x &= \\sum_{n=0}^{\\infty} \\frac{(-1)^n x^{2n}}{(2n)!}",
+          "number": "3",
+          "id": "eq-cos"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "eq-ref-example",
+      "children": [
+        { "type": "text", "value": "From " },
+        {
+          "type": "text",
+          "value": "(1)",
+          "marks": [
+            {
+              "type": "equation-ref",
+              "target": "#eq-exp",
+              "format": "({number})"
+            }
+          ]
+        },
+        { "type": "text", "value": " and " },
+        {
+          "type": "text",
+          "value": "(2)",
+          "marks": [
+            {
+              "type": "equation-ref",
+              "target": "#eq-sin",
+              "format": "({number})"
+            }
+          ]
+        },
+        { "type": "text", "value": ", we can derive Euler's formula." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "sec-algorithms",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Algorithms" }
+      ]
+    },
+    {
+      "type": "academic:algorithm",
+      "id": "alg-bisection",
+      "number": "1",
+      "title": "Bisection",
+      "caption": "Root finding by bisection method",
+      "lineNumbering": true,
+      "inputs": [
+        { "name": "f", "description": "Continuous function" },
+        { "name": "a, b", "description": "Interval endpoints with f(a)f(b) < 0" },
+        { "name": "tol", "description": "Tolerance" }
+      ],
+      "outputs": [
+        { "name": "c", "description": "Approximate root" }
+      ],
+      "lines": [
+        { "content": "\\textbf{while} |b - a| > \\text{tol} \\textbf{do}", "label": "loop" },
+        { "content": "c \\gets (a + b) / 2", "indent": 1, "label": "midpoint" },
+        { "content": "\\textbf{if} f(c) = 0 \\textbf{then}", "indent": 1 },
+        { "content": "\\textbf{return} c", "indent": 2 },
+        { "content": "\\textbf{else if} f(a) \\cdot f(c) < 0 \\textbf{then}", "indent": 1 },
+        { "content": "b \\gets c", "indent": 2 },
+        { "content": "\\textbf{else}", "indent": 1 },
+        { "content": "a \\gets c", "indent": 2 },
+        { "content": "\\textbf{end if}", "indent": 1 },
+        { "content": "\\textbf{end while}", "label": "endloop" },
+        { "content": "\\textbf{return} (a + b) / 2", "comment": "approximate root" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "alg-ref-example",
+      "children": [
+        { "type": "text", "value": "The loop at " },
+        {
+          "type": "text",
+          "value": "line 1",
+          "marks": [
+            {
+              "type": "algorithm-ref",
+              "target": "#alg-bisection",
+              "line": "loop",
+              "format": "line {line}"
+            }
+          ]
+        },
+        { "type": "text", "value": " of " },
+        {
+          "type": "text",
+          "value": "Algorithm 1",
+          "marks": [
+            {
+              "type": "algorithm-ref",
+              "target": "#alg-bisection",
+              "format": "Algorithm {number}"
+            }
+          ]
+        },
+        { "type": "text", "value": " converges linearly." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "sec-exercises",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Exercises" }
+      ]
+    },
+    {
+      "type": "academic:exercise",
+      "id": "ex-1",
+      "number": "1.1",
+      "difficulty": "easy",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Prove that " },
+            { "type": "text", "value": "f(x) = x^2", "marks": [{ "type": "math", "format": "latex", "source": "f(x) = x^2" }] },
+            { "type": "text", "value": " is continuous at " },
+            { "type": "text", "value": "x = 0", "marks": [{ "type": "math", "format": "latex", "source": "x = 0" }] },
+            { "type": "text", "value": " using the epsilon-delta definition." }
+          ]
+        }
+      ],
+      "hints": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Try " },
+            { "type": "text", "value": "delta = sqrt(epsilon)", "marks": [{ "type": "math", "format": "latex", "source": "\\delta = \\sqrt{\\epsilon}" }] },
+            { "type": "text", "value": "." }
+          ]
+        }
+      ],
+      "solution": {
+        "visibility": "spoiler",
+        "children": [
+          {
+            "type": "paragraph",
+            "children": [
+              { "type": "text", "value": "Given " },
+              { "type": "text", "value": "epsilon > 0", "marks": [{ "type": "math", "format": "latex", "source": "\\epsilon > 0" }] },
+              { "type": "text", "value": ", choose " },
+              { "type": "text", "value": "delta = sqrt(epsilon)", "marks": [{ "type": "math", "format": "latex", "source": "\\delta = \\sqrt{\\epsilon}" }] },
+              { "type": "text", "value": ". Then " },
+              { "type": "text", "value": "|x| < delta implies |x^2| < delta^2 = epsilon", "marks": [{ "type": "math", "format": "latex", "source": "|x| < \\delta \\implies |x^2| < \\delta^2 = \\epsilon" }] },
+              { "type": "text", "value": "." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "academic:exercise",
+      "id": "ex-2",
+      "number": "1.2",
+      "difficulty": "medium",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Let " },
+            { "type": "text", "value": "f(x) = x^3 - x - 1", "marks": [{ "type": "math", "format": "latex", "source": "f(x) = x^3 - x - 1" }] },
+            { "type": "text", "value": "." }
+          ]
+        }
+      ],
+      "parts": [
+        {
+          "label": "a",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Show that " },
+                { "type": "text", "value": "f", "marks": [{ "type": "math", "format": "latex", "source": "f" }] },
+                { "type": "text", "value": " has a root in " },
+                { "type": "text", "value": "(1, 2)", "marks": [{ "type": "math", "format": "latex", "source": "(1, 2)" }] },
+                { "type": "text", "value": "." }
+              ]
+            }
+          ],
+          "solution": {
+            "visibility": "hidden",
+            "children": [
+              {
+                "type": "paragraph",
+                "children": [
+                  { "type": "text", "value": "We have " },
+                  { "type": "text", "value": "f(1) = -1 < 0", "marks": [{ "type": "math", "format": "latex", "source": "f(1) = -1 < 0" }] },
+                  { "type": "text", "value": " and " },
+                  { "type": "text", "value": "f(2) = 5 > 0", "marks": [{ "type": "math", "format": "latex", "source": "f(2) = 5 > 0" }] },
+                  { "type": "text", "value": ". By the IVT, there exists a root in " },
+                  { "type": "text", "value": "(1, 2)", "marks": [{ "type": "math", "format": "latex", "source": "(1, 2)" }] },
+                  { "type": "text", "value": "." }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "label": "b",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Apply three iterations of the bisection method." }
+              ]
+            }
+          ],
+          "solution": {
+            "visibility": "hidden",
+            "children": [
+              {
+                "type": "paragraph",
+                "children": [
+                  { "type": "text", "value": "Iteration 1: " },
+                  { "type": "text", "value": "c = 1.5, f(1.5) = 0.875 > 0", "marks": [{ "type": "math", "format": "latex", "source": "c = 1.5, f(1.5) = 0.875 > 0" }] },
+                  { "type": "text", "value": ", so root is in " },
+                  { "type": "text", "value": "(1, 1.5)", "marks": [{ "type": "math", "format": "latex", "source": "(1, 1.5)" }] },
+                  { "type": "text", "value": "." }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

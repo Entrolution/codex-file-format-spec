@@ -1,0 +1,341 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/collaboration.schema.json",
+  "title": "Codex Collaboration Extension",
+  "description": "Schema for collaboration extension files in a Codex document",
+  "$defs": {
+    "crdtFormat": {
+      "type": "string",
+      "description": "CRDT library format for interoperability",
+      "enum": ["yjs", "automerge", "diamond-types", "custom"]
+    },
+    "author": {
+      "description": "Comment/change author information extending base person",
+      "allOf": [
+        { "$ref": "https://codex.document/schemas/anchor.schema.json#/$defs/person" },
+        {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string",
+              "description": "User identifier in an external system"
+            },
+            "avatar": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL to avatar image"
+            },
+            "color": {
+              "type": "string",
+              "description": "Color for real-time cursor/highlight display (CSS color value)"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "commentType": {
+      "type": "string",
+      "description": "Type of comment annotation",
+      "enum": ["comment", "highlight", "suggestion", "reaction"]
+    },
+    "suggestionStatus": {
+      "type": "string",
+      "description": "Status of a suggestion",
+      "enum": ["pending", "accepted", "rejected"]
+    },
+    "reply": {
+      "type": "object",
+      "description": "A reply to a comment",
+      "required": ["id", "author", "created", "content"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique reply identifier"
+        },
+        "author": {
+          "$ref": "#/$defs/author"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 creation timestamp"
+        },
+        "content": {
+          "type": "string",
+          "description": "Reply text content"
+        }
+      },
+      "additionalProperties": false
+    },
+    "baseComment": {
+      "type": "object",
+      "description": "Base comment properties shared by all comment types",
+      "required": ["id", "type", "anchor", "author", "created"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique comment identifier"
+        },
+        "type": {
+          "$ref": "#/$defs/commentType"
+        },
+        "anchor": {
+          "$ref": "https://codex.document/schemas/anchor.schema.json#/$defs/contentAnchor",
+          "description": "Anchor to content (see Anchors and References spec)"
+        },
+        "author": {
+          "$ref": "#/$defs/author"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 creation timestamp"
+        },
+        "modified": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 last modification timestamp"
+        },
+        "resolved": {
+          "type": "boolean",
+          "description": "Whether the comment is resolved",
+          "default": false
+        },
+        "replies": {
+          "type": "array",
+          "description": "Reply comments",
+          "items": {
+            "$ref": "#/$defs/reply"
+          }
+        }
+      }
+    },
+    "comment": {
+      "allOf": [
+        { "$ref": "#/$defs/baseComment" },
+        {
+          "type": "object",
+          "required": ["content"],
+          "properties": {
+            "type": { "const": "comment" },
+            "content": {
+              "type": "string",
+              "description": "Comment text content"
+            }
+          }
+        }
+      ]
+    },
+    "highlight": {
+      "allOf": [
+        { "$ref": "#/$defs/baseComment" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "highlight" },
+            "content": {
+              "type": "string",
+              "description": "Optional note for the highlight"
+            }
+          }
+        }
+      ]
+    },
+    "suggestion": {
+      "allOf": [
+        { "$ref": "#/$defs/baseComment" },
+        {
+          "type": "object",
+          "required": ["originalText", "suggestedText"],
+          "properties": {
+            "type": { "const": "suggestion" },
+            "originalText": {
+              "type": "string",
+              "description": "Original text being replaced"
+            },
+            "suggestedText": {
+              "type": "string",
+              "description": "Suggested replacement text"
+            },
+            "status": {
+              "$ref": "#/$defs/suggestionStatus",
+              "default": "pending"
+            }
+          }
+        }
+      ]
+    },
+    "reaction": {
+      "allOf": [
+        { "$ref": "#/$defs/baseComment" },
+        {
+          "type": "object",
+          "required": ["emoji"],
+          "properties": {
+            "type": { "const": "reaction" },
+            "emoji": {
+              "type": "string",
+              "description": "Unicode CLDR short name (e.g., 'thumbsup', 'heart')"
+            }
+          }
+        }
+      ]
+    },
+    "commentEntry": {
+      "oneOf": [
+        { "$ref": "#/$defs/comment" },
+        { "$ref": "#/$defs/highlight" },
+        { "$ref": "#/$defs/suggestion" },
+        { "$ref": "#/$defs/reaction" }
+      ]
+    },
+    "changeType": {
+      "type": "string",
+      "description": "Type of tracked change",
+      "enum": ["insert", "delete", "modify", "move", "format"]
+    },
+    "changeStatus": {
+      "type": "string",
+      "description": "Status of a tracked change",
+      "enum": ["pending", "accepted", "rejected"]
+    },
+    "changePosition": {
+      "type": "object",
+      "description": "Position for inserted/moved blocks",
+      "properties": {
+        "after": {
+          "type": "string",
+          "description": "Block ID to insert after"
+        },
+        "before": {
+          "type": "string",
+          "description": "Block ID to insert before"
+        }
+      },
+      "additionalProperties": false
+    },
+    "change": {
+      "type": "object",
+      "description": "A tracked change record",
+      "required": ["id", "type", "anchor", "author", "timestamp"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique change identifier"
+        },
+        "type": {
+          "$ref": "#/$defs/changeType"
+        },
+        "anchor": {
+          "$ref": "https://codex.document/schemas/anchor.schema.json#/$defs/contentAnchor",
+          "description": "Anchor to affected content"
+        },
+        "position": {
+          "$ref": "#/$defs/changePosition",
+          "description": "Position for insert/move operations"
+        },
+        "before": {
+          "type": "object",
+          "description": "Content state before the change (for modify/delete)"
+        },
+        "after": {
+          "type": "object",
+          "description": "Content state after the change (for modify/insert)"
+        },
+        "author": {
+          "$ref": "#/$defs/author"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 change timestamp"
+        },
+        "status": {
+          "$ref": "#/$defs/changeStatus",
+          "default": "pending"
+        }
+      },
+      "additionalProperties": false
+    },
+    "crdtMetadata": {
+      "type": "object",
+      "description": "CRDT metadata for block-level synchronization",
+      "properties": {
+        "clock": {
+          "type": "object",
+          "description": "Vector clock for causal ordering",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "origin": {
+          "type": "string",
+          "description": "Site/peer ID where this version originated"
+        },
+        "seq": {
+          "type": "integer",
+          "description": "Local sequence number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "commentsFile": {
+      "type": "object",
+      "description": "Schema for collaboration/comments.json",
+      "required": ["version", "comments"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Collaboration extension version",
+          "pattern": "^\\d+\\.\\d+$"
+        },
+        "crdtFormat": {
+          "$ref": "#/$defs/crdtFormat",
+          "description": "CRDT library format hint for interoperability"
+        },
+        "comments": {
+          "type": "array",
+          "description": "Array of comment entries",
+          "items": {
+            "$ref": "#/$defs/commentEntry"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "changesFile": {
+      "type": "object",
+      "description": "Schema for collaboration/changes.json",
+      "required": ["version", "changes"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Collaboration extension version",
+          "pattern": "^\\d+\\.\\d+$"
+        },
+        "baseVersion": {
+          "type": "string",
+          "description": "Document ID (hash) of the base version",
+          "pattern": "^(sha256|sha384|sha512|sha3-256|sha3-512|blake3):[a-f0-9]+$"
+        },
+        "crdtFormat": {
+          "$ref": "#/$defs/crdtFormat",
+          "description": "CRDT library format hint for interoperability"
+        },
+        "changes": {
+          "type": "array",
+          "description": "Array of tracked changes",
+          "items": {
+            "$ref": "#/$defs/change"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/commentsFile" },
+    { "$ref": "#/$defs/changesFile" }
+  ]
+}

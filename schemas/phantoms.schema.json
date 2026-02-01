@@ -187,20 +187,11 @@
       "additionalProperties": false
     },
     "author": {
-      "type": "object",
-      "required": ["name"],
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Author display name"
-        },
-        "email": {
-          "type": "string",
-          "format": "email",
-          "description": "Author email address"
-        }
-      },
-      "additionalProperties": false
+      "description": "Author identity extending base person",
+      "allOf": [
+        { "$ref": "https://codex.document/schemas/anchor.schema.json#/$defs/person" }
+      ],
+      "unevaluatedProperties": false
     }
   }
 }

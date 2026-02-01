@@ -897,3 +897,49 @@ This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
   }
 ]
 ```
+
+## 11. Author Identification
+
+For scholarly documents, author identification is critical for attribution and citation. The Codex specification uses a base `person` object defined in `anchor.schema.json` that includes an `identifier` field for persistent identifiers.
+
+### 11.1 ORCID Recommendation
+
+For academic documents, the `identifier` field SHOULD use ORCID (Open Researcher and Contributor ID) format:
+
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@university.edu",
+  "identifier": "https://orcid.org/0000-0002-1825-0097"
+}
+```
+
+ORCID provides:
+- Unique, persistent identification across all scholarly outputs
+- Automatic disambiguation of authors with similar names
+- Links to affiliations, grants, and publications
+- Integration with major publishers and funding agencies
+
+### 11.2 Other Identifier Formats
+
+The `identifier` field also supports:
+
+| Format | Example | Use Case |
+|--------|---------|----------|
+| ORCID | `https://orcid.org/0000-0002-1825-0097` | Researchers (recommended) |
+| ISNI | `https://isni.org/isni/0000000121032683` | Name authority records |
+| DID | `did:web:example.com:jane` | Decentralized identity |
+| Institutional | `https://university.edu/faculty/jdoe` | University profiles |
+
+### 11.3 Dublin Core Integration
+
+Author identifiers should also be included in Dublin Core metadata (`metadata/dublin-core.json`) for discoverability:
+
+```json
+{
+  "creator": ["Jane Doe", "John Smith"],
+  "contributor": ["Research Assistant"]
+}
+```
+
+For richer author metadata, use the semantic extension's JSON-LD annotations to provide Schema.org `Person` objects with ORCID identifiers.

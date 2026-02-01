@@ -1,9 +1,30 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://codex.document/schemas/anchor.schema.json",
-  "title": "Codex Content Anchor Definitions",
-  "description": "Reusable schema definitions for ContentAnchor and ContentAnchorUri, used by collaboration, phantoms, and other extensions.",
+  "title": "Codex Content Anchor and Person Definitions",
+  "description": "Reusable schema definitions for ContentAnchor, ContentAnchorUri, and Person, used by collaboration, phantoms, security, and other extensions.",
   "$defs": {
+    "person": {
+      "type": "object",
+      "description": "Base person/agent identity. Extensions may add additional properties via allOf composition.",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Display name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address"
+        },
+        "identifier": {
+          "type": "string",
+          "description": "Persistent identifier (ORCID, DID, URL, institutional ID). For scholarly documents, ORCID format is recommended: https://orcid.org/0000-0002-1825-0097"
+        }
+      },
+      "additionalProperties": true
+    },
     "contentAnchor": {
       "type": "object",
       "description": "Structured content anchor referencing a block, point, or range within document content.",

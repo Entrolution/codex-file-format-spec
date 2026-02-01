@@ -21,8 +21,8 @@ const standaloneSchemas: string[] = [
   'academic.schema.json',
   'anchor.schema.json',
   'asset-index.schema.json',
-  'content.schema.json',
   'dublin-core.schema.json',
+  'forms.schema.json',
   'manifest.schema.json',
   'precise-layout.schema.json',
   'presentation.schema.json',
@@ -33,7 +33,10 @@ const standaloneSchemas: string[] = [
 // Schemas that reference other schemas
 const dependentSchemas: DependentSchema[] = [
   { schema: 'annotations.schema.json', refs: ['anchor.schema.json'] },
+  { schema: 'collaboration.schema.json', refs: ['anchor.schema.json'] },
+  { schema: 'content.schema.json', refs: ['semantic.schema.json', 'academic.schema.json'] },
   { schema: 'phantoms.schema.json', refs: ['anchor.schema.json'] },
+  { schema: 'security.schema.json', refs: ['anchor.schema.json'] },
 ];
 
 let hasErrors = false;
