@@ -35,7 +35,7 @@
           "enum": ["comment", "highlight", "note", "reaction"]
         },
         "anchor": {
-          "$ref": "anchor.schema.json#/$defs/contentAnchor",
+          "$ref": "https://codex.document/schemas/anchor.schema.json#/$defs/contentAnchor",
           "description": "Anchor to document content"
         },
         "author": {

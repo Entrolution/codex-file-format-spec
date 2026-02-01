@@ -1,0 +1,787 @@
+{
+  "version": "0.1",
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "title",
+      "level": 1,
+      "children": [
+        { "type": "text", "value": "Comprehensive Block Type Reference" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "intro",
+      "children": [
+        { "type": "text", "value": "This document demonstrates " },
+        { "type": "text", "value": "all block types", "marks": ["bold"] },
+        { "type": "text", "value": " supported by the Codex format. It serves as both documentation and a validation test case." }
+      ]
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-1"
+    },
+    {
+      "type": "heading",
+      "id": "text-content-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Text Content Blocks" }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "paragraph-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "Paragraphs and Text Marks" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "text-marks-demo",
+      "children": [
+        { "type": "text", "value": "Text can be ", "marks": [] },
+        { "type": "text", "value": "bold", "marks": ["bold"] },
+        { "type": "text", "value": ", " },
+        { "type": "text", "value": "italic", "marks": ["italic"] },
+        { "type": "text", "value": ", " },
+        { "type": "text", "value": "underlined", "marks": ["underline"] },
+        { "type": "text", "value": ", " },
+        { "type": "text", "value": "strikethrough", "marks": ["strikethrough"] },
+        { "type": "text", "value": ", " },
+        { "type": "text", "value": "inline code", "marks": ["code"] },
+        { "type": "text", "value": ", " },
+        { "type": "text", "value": "superscript", "marks": ["superscript"] },
+        { "type": "text", "value": ", or " },
+        { "type": "text", "value": "subscript", "marks": ["subscript"] },
+        { "type": "text", "value": ". Marks can be " },
+        { "type": "text", "value": "combined", "marks": ["bold", "italic"] },
+        { "type": "text", "value": "." }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "link-demo",
+      "children": [
+        { "type": "text", "value": "Links can be " },
+        {
+          "type": "text",
+          "value": "external",
+          "marks": [{ "type": "link", "href": "https://example.com", "title": "Example Website" }]
+        },
+        { "type": "text", "value": " or " },
+        {
+          "type": "text",
+          "value": "internal references",
+          "marks": [{ "type": "link", "href": "#table-section" }]
+        },
+        { "type": "text", "value": ". You can also create " },
+        {
+          "type": "text",
+          "value": "named anchors",
+          "marks": [{ "type": "anchor", "id": "anchor-demo" }]
+        },
+        { "type": "text", "value": " for precise linking." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "lists-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "Lists" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "unordered-list-intro",
+      "children": [
+        { "type": "text", "value": "Unordered list:" }
+      ]
+    },
+    {
+      "type": "list",
+      "id": "unordered-list",
+      "ordered": false,
+      "children": [
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "First item" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Second item with " },
+                { "type": "text", "value": "formatting", "marks": ["bold"] }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Third item" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "ordered-list-intro",
+      "children": [
+        { "type": "text", "value": "Ordered list starting at 5:" }
+      ]
+    },
+    {
+      "type": "list",
+      "id": "ordered-list",
+      "ordered": true,
+      "start": 5,
+      "children": [
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Fifth item" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Sixth item" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "task-list-intro",
+      "children": [
+        { "type": "text", "value": "Task list with checkboxes:" }
+      ]
+    },
+    {
+      "type": "list",
+      "id": "task-list",
+      "ordered": false,
+      "children": [
+        {
+          "type": "listItem",
+          "checked": true,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Completed task" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "checked": false,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Pending task" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                { "type": "text", "value": "Regular item (not a checkbox)" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "blockquote-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "Blockquotes" }
+      ]
+    },
+    {
+      "type": "blockquote",
+      "id": "blockquote-demo",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "This is a blockquote. It can contain multiple paragraphs and other block types." }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            { "type": "text", "value": "Second paragraph in the blockquote." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "definition-list-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "Definition Lists" }
+      ]
+    },
+    {
+      "type": "definitionList",
+      "id": "definition-list-demo",
+      "children": [
+        {
+          "type": "definitionItem",
+          "children": [
+            {
+              "type": "definitionTerm",
+              "children": [
+                { "type": "text", "value": "Codex" }
+              ]
+            },
+            {
+              "type": "definitionDescription",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "An open document format that unifies viewing and editing modes." }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "definitionItem",
+          "children": [
+            {
+              "type": "definitionTerm",
+              "children": [
+                { "type": "text", "value": "Block" }
+              ]
+            },
+            {
+              "type": "definitionDescription",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "A discrete unit of content (paragraph, heading, image, etc.)." }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-2"
+    },
+    {
+      "type": "heading",
+      "id": "code-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Code Blocks" }
+      ]
+    },
+    {
+      "type": "codeBlock",
+      "id": "code-block-demo",
+      "language": "typescript",
+      "children": [
+        {
+          "type": "text",
+          "value": "interface CodexDocument {\n  version: string;\n  blocks: Block[];\n}\n\nfunction validate(doc: CodexDocument): boolean {\n  return doc.blocks.every(block => block.type !== undefined);\n}"
+        }
+      ]
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-3"
+    },
+    {
+      "type": "heading",
+      "id": "table-section",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Tables" }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "table-demo",
+      "children": [
+        {
+          "type": "tableRow",
+          "header": true,
+          "children": [
+            {
+              "type": "tableCell",
+              "align": "left",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "Block Type" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "align": "center",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "Category" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "align": "right",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "Children" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "children": [
+            {
+              "type": "tableCell",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "paragraph" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "Text" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "textNode[]" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "children": [
+            {
+              "type": "tableCell",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "image" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "Media" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "none" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "children": [
+            {
+              "type": "tableCell",
+              "colspan": 2,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "This cell spans two columns", "marks": ["italic"] }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    { "type": "text", "value": "n/a" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-4"
+    },
+    {
+      "type": "heading",
+      "id": "math-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Mathematics" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "math-intro",
+      "children": [
+        { "type": "text", "value": "Display-mode math block (LaTeX):" }
+      ]
+    },
+    {
+      "type": "math",
+      "id": "math-display",
+      "display": true,
+      "format": "latex",
+      "value": "\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}"
+    },
+    {
+      "type": "paragraph",
+      "id": "inline-math-demo",
+      "children": [
+        { "type": "text", "value": "Inline math can be used via marks: the equation " },
+        {
+          "type": "text",
+          "value": "E = mc^2",
+          "marks": [{ "type": "math", "format": "latex", "source": "E = mc^2" }]
+        },
+        { "type": "text", "value": " describes mass-energy equivalence." }
+      ]
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-5"
+    },
+    {
+      "type": "heading",
+      "id": "media-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Media and Graphics" }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "image-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "Images" }
+      ]
+    },
+    {
+      "type": "image",
+      "id": "image-demo",
+      "src": "assets/images/example.png",
+      "alt": "Example image demonstrating the image block type",
+      "title": "Example Image",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "type": "heading",
+      "id": "svg-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "SVG Graphics" }
+      ]
+    },
+    {
+      "type": "svg",
+      "id": "svg-demo",
+      "content": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"40\" fill=\"#4a90d9\"/></svg>",
+      "alt": "A blue circle",
+      "title": "Simple SVG Circle",
+      "width": 100,
+      "height": 100
+    },
+    {
+      "type": "heading",
+      "id": "figure-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "Figures with Captions" }
+      ]
+    },
+    {
+      "type": "figure",
+      "id": "figure-demo",
+      "numbering": "auto",
+      "children": [
+        {
+          "type": "image",
+          "id": "figure-image",
+          "src": "assets/images/diagram.png",
+          "alt": "Architecture diagram"
+        },
+        {
+          "type": "figcaption",
+          "children": [
+            { "type": "text", "value": "Figure: Codex document architecture showing the relationship between content, presentation, and metadata layers." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "barcode-heading",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "Barcodes" }
+      ]
+    },
+    {
+      "type": "barcode",
+      "id": "qr-demo",
+      "format": "qr",
+      "data": "https://codex.document/spec",
+      "alt": "QR code linking to Codex specification",
+      "errorCorrection": "M",
+      "size": 150
+    },
+    {
+      "type": "barcode",
+      "id": "barcode-demo",
+      "format": "code128",
+      "data": "CDX-2025-001",
+      "alt": "Document identifier barcode",
+      "size": 200
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-6"
+    },
+    {
+      "type": "heading",
+      "id": "metrology-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Metrology and Measurements" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "measurement-intro",
+      "children": [
+        { "type": "text", "value": "Measurement blocks preserve semantic numeric data with uncertainty:" }
+      ]
+    },
+    {
+      "type": "measurement",
+      "id": "measurement-demo-1",
+      "value": 9.80665,
+      "uncertainty": 0.00001,
+      "uncertaintyNotation": "plusminus",
+      "unit": "m/s^2",
+      "display": "9.80665 +/- 0.00001 m/s^2"
+    },
+    {
+      "type": "measurement",
+      "id": "measurement-demo-2",
+      "value": 2.998,
+      "exponent": 8,
+      "uncertainty": 0.001,
+      "uncertaintyNotation": "parenthetical",
+      "unit": "m/s",
+      "display": "2.998(1) x 10^8 m/s"
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-7"
+    },
+    {
+      "type": "heading",
+      "id": "signature-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Signatures" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "signature-intro",
+      "children": [
+        { "type": "text", "value": "Signature blocks represent visual signature placeholders:" }
+      ]
+    },
+    {
+      "type": "signature",
+      "id": "signature-demo",
+      "signatureType": "digital",
+      "signer": {
+        "name": "Jane Smith",
+        "title": "Technical Lead",
+        "organization": "Codex Foundation",
+        "email": "jane.smith@example.com"
+      },
+      "timestamp": "2025-01-28T14:00:00Z",
+      "purpose": "approval",
+      "digitalSignatureRef": "security/signatures.json#sig-001"
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-8"
+    },
+    {
+      "type": "heading",
+      "id": "break-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Page and Section Breaks" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "break-intro",
+      "children": [
+        { "type": "text", "value": "A break block follows this paragraph:" }
+      ]
+    },
+    {
+      "type": "break",
+      "id": "break-demo"
+    },
+    {
+      "type": "paragraph",
+      "id": "break-outro",
+      "children": [
+        { "type": "text", "value": "Content continues after the break." }
+      ]
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-9"
+    },
+    {
+      "type": "heading",
+      "id": "i18n-heading",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Internationalization" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "rtl-demo",
+      "attributes": {
+        "dir": "rtl",
+        "lang": "ar"
+      },
+      "children": [
+        { "type": "text", "value": "This paragraph demonstrates right-to-left text direction support." }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "vertical-demo",
+      "attributes": {
+        "writingMode": "vertical-rl",
+        "lang": "ja"
+      },
+      "children": [
+        { "type": "text", "value": "Vertical writing mode for East Asian text." }
+      ]
+    },
+    {
+      "type": "horizontalRule",
+      "id": "hr-final"
+    },
+    {
+      "type": "paragraph",
+      "id": "conclusion",
+      "children": [
+        { "type": "text", "value": "This document demonstrates all block types defined in the Codex content schema. Each block type serves a specific semantic purpose, enabling reliable machine processing and consistent rendering across implementations." }
+      ]
+    }
+  ]
+}

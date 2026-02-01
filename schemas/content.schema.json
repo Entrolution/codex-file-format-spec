@@ -116,6 +116,14 @@
         {
           "if": { "properties": { "type": { "const": "figcaption" } } },
           "then": { "$ref": "#/$defs/figcaption" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "horizontalRule" } } },
+          "then": { "$ref": "#/$defs/horizontalRule" }
+        },
+        {
+          "if": { "properties": { "type": { "const": "break" } } },
+          "then": { "$ref": "#/$defs/break" }
         }
       ]
     },
@@ -381,12 +389,8 @@
         },
         "children": {
           "type": "array",
-          "items": {
-            "oneOf": [
-              { "$ref": "#/$defs/textNode" },
-              { "$ref": "#/$defs/block" }
-            ]
-          }
+          "description": "Block-level content (typically paragraph blocks)",
+          "items": { "$ref": "#/$defs/block" }
         }
       }
     },
