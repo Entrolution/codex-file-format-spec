@@ -1,0 +1,95 @@
+{
+  "version": "0.1",
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "title",
+      "level": 1,
+      "children": [
+        { "type": "text", "value": "Software Architecture Overview" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "intro",
+      "children": [
+        { "type": "text", "value": "This document provides an overview of the system architecture, including key components and their interactions." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "components",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "System Components" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "para-components",
+      "children": [
+        { "type": "text", "value": "The system consists of three main components: the API Gateway, the Application Server, and the Database Layer. Each component is designed for horizontal scalability." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "api-section",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "API Gateway" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "para-api",
+      "children": [
+        { "type": "text", "value": "The API Gateway handles all incoming requests, performs authentication, rate limiting, and routes requests to appropriate services." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "app-section",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "Application Server" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "para-app",
+      "children": [
+        { "type": "text", "value": "The Application Server contains the business logic and processes requests from the API Gateway. It communicates with the Database Layer for data persistence." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "db-section",
+      "level": 3,
+      "children": [
+        { "type": "text", "value": "Database Layer" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "para-db",
+      "children": [
+        { "type": "text", "value": "The Database Layer provides data storage using a combination of PostgreSQL for relational data and Redis for caching." }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "deployment",
+      "level": 2,
+      "children": [
+        { "type": "text", "value": "Deployment Architecture" }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "para-deployment",
+      "children": [
+        { "type": "text", "value": "The system is deployed on Kubernetes, with each component running in its own pod. Auto-scaling is configured based on CPU and memory utilization." }
+      ]
+    }
+  ]
+}

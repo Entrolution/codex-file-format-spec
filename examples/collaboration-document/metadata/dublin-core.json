@@ -1,0 +1,14 @@
+{
+  "version": "1.1",
+  "terms": {
+    "title": "Project Proposal: Document Management System",
+    "creator": ["Bob Martinez", "Alice Chen", "Carol Davis", "David Lee"],
+    "subject": ["project proposal", "document management", "collaboration"],
+    "description": "A demonstration of collaboration extension features including comments, suggestions, reactions, and tracked changes with multiple authors.",
+    "date": "2025-01-28",
+    "type": "Text",
+    "format": "application/vnd.codex+zip",
+    "language": "en",
+    "rights": "Confidential"
+  }
+}

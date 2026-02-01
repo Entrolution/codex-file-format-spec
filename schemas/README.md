@@ -23,6 +23,9 @@ This directory contains JSON Schema definitions for validating Codex document co
 |--------|---------|-----------|
 | `semantic.schema.json` | Semantic extension | `semantic:*` blocks and marks |
 | `academic.schema.json` | Academic extension | `academic:*` blocks and marks |
+| `collaboration.schema.json` | Collaboration extension | `collaboration/comments.json`, `collaboration/changes.json` |
+| `forms.schema.json` | Forms extension | `forms/data.json`, `forms:*` blocks |
+| `security.schema.json` | Security extension | `security/signatures.json`, `security/encryption.json` |
 
 ## Schema Dependencies
 
@@ -32,11 +35,18 @@ Some schemas reference definitions from other schema files:
 annotations.schema.json
     └── $ref: anchor.schema.json#/$defs/contentAnchor
 
+collaboration.schema.json
+    └── $ref: anchor.schema.json#/$defs/contentAnchor
+
+content.schema.json
+    ├── $ref: semantic.schema.json#/$defs/*Mark
+    └── $ref: academic.schema.json#/$defs/*Mark
+
 phantoms.schema.json
     └── $ref: anchor.schema.json#/$defs/contentAnchor
 ```
 
-The `anchor.schema.json` file provides shared definitions for `ContentAnchor` and `ContentAnchorUri` that are used by core annotations, phantoms, collaboration, and other extensions.
+The `anchor.schema.json` file provides shared definitions for `ContentAnchor`, `ContentAnchorUri`, and `person` that are used by core annotations, phantoms, collaboration, and other extensions.
 
 ## Using These Schemas
 
@@ -100,3 +110,41 @@ All schemas are written for JSON Schema Draft 2020-12 (`https://json-schema.org/
 - Schemas use `additionalProperties: false` on most objects to catch typos and invalid properties
 - The `metadata` object in `phantoms.schema.json` intentionally allows additional properties for application-specific extensibility
 - The `styles` object in `presentation.schema.json` allows arbitrary named styles, but each style definition is strictly validated
+
+## Extension Policy
+
+### additionalProperties Defaults
+
+- **Default**: `additionalProperties: false` for strict validation
+- **Exceptions**:
+  - `metadata` objects allow custom properties (application extensibility)
+  - CSL bibliography entries allow additional fields (CSL spec compatibility)
+  - JSON-LD annotations allow arbitrary properties (linked data)
+  - Base Person object allows extension-specific fields via `allOf` composition
+
+### Shared Type Composition
+
+Extension schemas that need Person/author objects use `allOf` composition with the base definition from `anchor.schema.json`:
+
+```json
+{
+  "author": {
+    "allOf": [
+      { "$ref": "anchor.schema.json#/$defs/person" },
+      {
+        "type": "object",
+        "properties": {
+          "extensionSpecificField": { "type": "string" }
+        }
+      }
+    ]
+  }
+}
+```
+
+### Versioning
+
+- Extension READMEs declare version in header (e.g., `Version: 0.1`)
+- Data files include `version` field for file format versioning
+- Schema `$id` URIs don't include versions (versioned by spec release)
+- collaboration v0.2 is intentional (migration from v0.1 with `blockRef`/`range` to `anchor`)

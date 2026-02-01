@@ -192,6 +192,51 @@ For cross-field validation (e.g., password confirmation):
 }
 ```
 
+### 4.3 Conditional Validation
+
+Apply validation rules based on other field values using `conditionalValidation`:
+
+```json
+{
+  "type": "forms:textInput",
+  "name": "state",
+  "label": "State/Province",
+  "conditionalValidation": {
+    "when": { "field": "country", "equals": "us" },
+    "then": { "required": true }
+  }
+}
+```
+
+The `when` condition supports the following operators:
+
+| Operator | Description |
+|----------|-------------|
+| `equals` | Condition is true when the field equals the specified value |
+| `notEquals` | Condition is true when the field does not equal the specified value |
+| `isEmpty` | Condition is true when the field is empty (set to `true`) |
+| `isNotEmpty` | Condition is true when the field has a value (set to `true`) |
+
+Only one operator should be used per condition. When the condition evaluates to true, all validation rules in `then` are applied to the field.
+
+Example with multiple conditional rules:
+
+```json
+{
+  "type": "forms:textInput",
+  "name": "companyName",
+  "label": "Company Name",
+  "conditionalValidation": {
+    "when": { "field": "employmentType", "equals": "employed" },
+    "then": {
+      "required": true,
+      "minLength": 2,
+      "message": "Company name is required for employed individuals"
+    }
+  }
+}
+```
+
 ## 5. Form Data
 
 ### 5.1 Storage

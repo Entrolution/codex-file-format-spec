@@ -1,0 +1,22 @@
+{
+  "version": "0.1",
+  "equations": {
+    "style": "number",
+    "resetOn": "chapter"
+  },
+  "theorems": {
+    "style": "chapter.number",
+    "counters": {
+      "theorem": { "share": ["lemma", "proposition", "corollary"] },
+      "definition": { "share": [] }
+    }
+  },
+  "algorithms": {
+    "style": "number",
+    "resetOn": "none"
+  },
+  "exercises": {
+    "style": "chapter.number",
+    "resetOn": "chapter"
+  }
+}

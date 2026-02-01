@@ -1,0 +1,487 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.document/schemas/forms.schema.json",
+  "title": "Codex Forms Extension",
+  "description": "Schema for forms extension blocks and data files in a Codex document",
+  "$defs": {
+    "validatorType": {
+      "type": "string",
+      "description": "Built-in validator types",
+      "enum": [
+        "required",
+        "minLength",
+        "maxLength",
+        "min",
+        "max",
+        "pattern",
+        "email",
+        "url",
+        "containsUppercase",
+        "containsLowercase",
+        "containsDigit",
+        "containsSpecial",
+        "matchesField"
+      ]
+    },
+    "validation": {
+      "type": "object",
+      "description": "Validation rules for a form field",
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "description": "Field must have a value"
+        },
+        "minLength": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum string length"
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum string length"
+        },
+        "min": {
+          "type": "number",
+          "description": "Minimum numeric value"
+        },
+        "max": {
+          "type": "number",
+          "description": "Maximum numeric value"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Regular expression pattern to match"
+        },
+        "email": {
+          "type": "boolean",
+          "description": "Must be a valid email format"
+        },
+        "url": {
+          "type": "boolean",
+          "description": "Must be a valid URL format"
+        },
+        "containsUppercase": {
+          "type": "boolean",
+          "description": "Must contain at least one uppercase letter"
+        },
+        "containsLowercase": {
+          "type": "boolean",
+          "description": "Must contain at least one lowercase letter"
+        },
+        "containsDigit": {
+          "type": "boolean",
+          "description": "Must contain at least one digit"
+        },
+        "containsSpecial": {
+          "type": "boolean",
+          "description": "Must contain at least one special character"
+        },
+        "matchesField": {
+          "type": "string",
+          "description": "Must match the value of another named field"
+        },
+        "message": {
+          "type": "string",
+          "description": "Custom error message for validation failure"
+        }
+      },
+      "additionalProperties": false
+    },
+    "conditionalValidation": {
+      "type": "object",
+      "description": "Conditional validation rules based on other field values",
+      "required": ["when", "then"],
+      "properties": {
+        "when": {
+          "type": "object",
+          "description": "Condition to evaluate",
+          "required": ["field"],
+          "properties": {
+            "field": {
+              "type": "string",
+              "description": "Name of the field to check"
+            },
+            "equals": {
+              "description": "Condition is true when field equals this value"
+            },
+            "notEquals": {
+              "description": "Condition is true when field does not equal this value"
+            },
+            "isEmpty": {
+              "type": "boolean",
+              "description": "Condition is true when field is empty"
+            },
+            "isNotEmpty": {
+              "type": "boolean",
+              "description": "Condition is true when field is not empty"
+            }
+          },
+          "additionalProperties": false
+        },
+        "then": {
+          "$ref": "#/$defs/validation",
+          "description": "Validation rules to apply when condition is met"
+        }
+      },
+      "additionalProperties": false
+    },
+    "option": {
+      "type": "object",
+      "description": "Option for dropdown, radio group, or checkbox group",
+      "required": ["value", "label"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "Option value"
+        },
+        "label": {
+          "type": "string",
+          "description": "Display label"
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Whether option is disabled",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "fallbackBlock": {
+      "type": "object",
+      "description": "Fallback content for viewers that don't support forms",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Block type (typically 'paragraph')"
+        },
+        "children": {
+          "type": "array",
+          "description": "Child content"
+        }
+      }
+    },
+    "baseFormField": {
+      "type": "object",
+      "description": "Base properties shared by all form fields",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique block identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Field name for form data"
+        },
+        "label": {
+          "type": "string",
+          "description": "Display label"
+        },
+        "placeholder": {
+          "type": "string",
+          "description": "Placeholder text"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether field is required",
+          "default": false
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Whether field is disabled",
+          "default": false
+        },
+        "validation": {
+          "$ref": "#/$defs/validation"
+        },
+        "conditionalValidation": {
+          "$ref": "#/$defs/conditionalValidation"
+        },
+        "fallback": {
+          "$ref": "#/$defs/fallbackBlock"
+        }
+      }
+    },
+    "formContainer": {
+      "type": "object",
+      "description": "Form container block",
+      "required": ["type", "children"],
+      "properties": {
+        "type": { "const": "forms:form" },
+        "id": {
+          "type": "string",
+          "description": "Unique form identifier"
+        },
+        "action": {
+          "type": "string",
+          "format": "uri",
+          "description": "Form submission URL"
+        },
+        "method": {
+          "type": "string",
+          "enum": ["GET", "POST"],
+          "description": "HTTP method for submission",
+          "default": "POST"
+        },
+        "encoding": {
+          "type": "string",
+          "description": "Form encoding type",
+          "default": "application/json"
+        },
+        "children": {
+          "type": "array",
+          "description": "Form field blocks"
+        }
+      },
+      "additionalProperties": false
+    },
+    "textInputBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/baseFormField" },
+        {
+          "type": "object",
+          "required": ["type", "name"],
+          "properties": {
+            "type": { "const": "forms:textInput" },
+            "inputType": {
+              "type": "string",
+              "enum": ["text", "email", "password", "tel", "number"],
+              "description": "HTML input type",
+              "default": "text"
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Maximum character length"
+            },
+            "autocomplete": {
+              "type": "string",
+              "description": "Autocomplete hint"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "textAreaBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/baseFormField" },
+        {
+          "type": "object",
+          "required": ["type", "name"],
+          "properties": {
+            "type": { "const": "forms:textArea" },
+            "rows": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of visible text rows",
+              "default": 4
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Maximum character length"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "checkboxBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/baseFormField" },
+        {
+          "type": "object",
+          "required": ["type", "name"],
+          "properties": {
+            "type": { "const": "forms:checkbox" },
+            "defaultChecked": {
+              "type": "boolean",
+              "description": "Initial checked state",
+              "default": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "radioGroupBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/baseFormField" },
+        {
+          "type": "object",
+          "required": ["type", "name", "options"],
+          "properties": {
+            "type": { "const": "forms:radioGroup" },
+            "options": {
+              "type": "array",
+              "description": "Radio button options",
+              "items": { "$ref": "#/$defs/option" },
+              "minItems": 1
+            },
+            "defaultValue": {
+              "type": "string",
+              "description": "Default selected value"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "dropdownBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/baseFormField" },
+        {
+          "type": "object",
+          "required": ["type", "name", "options"],
+          "properties": {
+            "type": { "const": "forms:dropdown" },
+            "options": {
+              "type": "array",
+              "description": "Dropdown options",
+              "items": { "$ref": "#/$defs/option" },
+              "minItems": 1
+            },
+            "defaultValue": {
+              "type": "string",
+              "description": "Default selected value"
+            },
+            "searchable": {
+              "type": "boolean",
+              "description": "Enable search/filter functionality",
+              "default": false
+            },
+            "multiple": {
+              "type": "boolean",
+              "description": "Allow multiple selections",
+              "default": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "datePickerBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/baseFormField" },
+        {
+          "type": "object",
+          "required": ["type", "name"],
+          "properties": {
+            "type": { "const": "forms:datePicker" },
+            "format": {
+              "type": "string",
+              "description": "Date format pattern (e.g., 'YYYY-MM-DD')",
+              "default": "YYYY-MM-DD"
+            },
+            "minDate": {
+              "type": "string",
+              "description": "Minimum selectable date (ISO date or 'today')"
+            },
+            "maxDate": {
+              "type": "string",
+              "description": "Maximum selectable date (ISO date or 'today')"
+            },
+            "includeTime": {
+              "type": "boolean",
+              "description": "Include time selection",
+              "default": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "signatureBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/baseFormField" },
+        {
+          "type": "object",
+          "required": ["type", "name"],
+          "properties": {
+            "type": { "const": "forms:signature" },
+            "width": {
+              "type": "integer",
+              "minimum": 100,
+              "description": "Signature pad width in pixels"
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 50,
+              "description": "Signature pad height in pixels"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "submitBlock": {
+      "type": "object",
+      "description": "Form submit button",
+      "required": ["type"],
+      "properties": {
+        "type": { "const": "forms:submit" },
+        "id": {
+          "type": "string",
+          "description": "Unique block identifier"
+        },
+        "label": {
+          "type": "string",
+          "description": "Button label",
+          "default": "Submit"
+        }
+      },
+      "additionalProperties": false
+    },
+    "formBlock": {
+      "oneOf": [
+        { "$ref": "#/$defs/formContainer" },
+        { "$ref": "#/$defs/textInputBlock" },
+        { "$ref": "#/$defs/textAreaBlock" },
+        { "$ref": "#/$defs/checkboxBlock" },
+        { "$ref": "#/$defs/radioGroupBlock" },
+        { "$ref": "#/$defs/dropdownBlock" },
+        { "$ref": "#/$defs/datePickerBlock" },
+        { "$ref": "#/$defs/signatureBlock" },
+        { "$ref": "#/$defs/submitBlock" }
+      ]
+    },
+    "dataFile": {
+      "type": "object",
+      "description": "Schema for forms/data.json",
+      "required": ["version", "values"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Forms extension version",
+          "pattern": "^\\d+\\.\\d+$"
+        },
+        "values": {
+          "type": "object",
+          "description": "Map of field names to values",
+          "additionalProperties": true
+        },
+        "submitted": {
+          "type": "boolean",
+          "description": "Whether the form has been submitted",
+          "default": false
+        },
+        "submittedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 submission timestamp"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 last modification timestamp"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "description": "Forms data file",
+  "$ref": "#/$defs/dataFile"
+}

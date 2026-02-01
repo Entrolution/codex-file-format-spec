@@ -1,5 +1,8 @@
 # Codex Document Format
 
+[![Validate Schemas](https://github.com/gvonness-apolitical/codex-file-format-spec/actions/workflows/validate-schemas.yml/badge.svg)](https://github.com/gvonness-apolitical/codex-file-format-spec/actions/workflows/validate-schemas.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
 **An open specification for documents that unify viewing and editing, with modern security and machine readability.**
 
 > Status: Draft Specification (v0.1)

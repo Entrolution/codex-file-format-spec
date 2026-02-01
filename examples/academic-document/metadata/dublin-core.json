@@ -1,0 +1,14 @@
+{
+  "version": "1.1",
+  "terms": {
+    "title": "Introduction to Analysis",
+    "creator": ["Dr. Jane Smith"],
+    "subject": ["mathematics", "analysis", "calculus"],
+    "description": "A demonstration of academic extension features including theorems, proofs, exercises, and algorithms.",
+    "date": "2025-01-28",
+    "type": "Text",
+    "format": "application/vnd.codex+zip",
+    "language": "en",
+    "rights": "CC BY 4.0"
+  }
+}

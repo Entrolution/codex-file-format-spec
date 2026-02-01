@@ -1,0 +1,14 @@
+{
+  "version": "1.1",
+  "terms": {
+    "title": "Conference Registration Form",
+    "creator": "Conference Organizers",
+    "subject": ["registration", "forms", "conference"],
+    "description": "A demonstration of forms extension features including text inputs, dropdowns, checkboxes, validation, conditional validation, and signatures.",
+    "date": "2025-01-28",
+    "type": "InteractiveResource",
+    "format": "application/vnd.codex+zip",
+    "language": "en",
+    "rights": "All rights reserved"
+  }
+}
