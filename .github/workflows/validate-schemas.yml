@@ -6,6 +6,7 @@ on:
       - 'schemas/**'
       - 'examples/**'
       - 'scripts/**'
+      - 'spec/**'
       - 'package.json'
       - '.github/workflows/validate-schemas.yml'
   pull_request:
@@ -13,6 +14,7 @@ on:
       - 'schemas/**'
       - 'examples/**'
       - 'scripts/**'
+      - 'spec/**'
       - 'package.json'
       - '.github/workflows/validate-schemas.yml'
 
@@ -30,8 +32,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
       - name: Validate schemas and examples
         run: npm test
 
       - name: Check spec-schema sync
         run: npm run check:sync
+
+      - name: Validate cross-references
+        run: npm run check:refs
+
+      - name: Check example coverage
+        run: npm run check:coverage

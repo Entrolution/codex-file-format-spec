@@ -171,10 +171,13 @@ function extractTypesFromSchema(filePath: string): BlockType[] {
 
     // Also check allOf conditionals in block definitions
     if (schema.$defs?.block?.allOf) {
-      const allOf = schema.$defs.block.allOf as Array<Record<string, unknown>>;
+      const allOf = schema.$defs.block.allOf as Array<{
+        if?: { properties?: { type?: { const?: string } } };
+        then?: unknown;
+      }>;
       for (const condition of allOf) {
         if (condition.if?.properties?.type?.const) {
-          const typeName = condition.if.properties.type.const as string;
+          const typeName = condition.if.properties.type.const;
           // Skip 'text' as it's ubiquitous (matches spec extraction behavior)
           if (typeName !== 'text' && !extractedTypes.includes(typeName)) {
             extractedTypes.push(typeName);

@@ -4,12 +4,7 @@
  * Validates that all JSON schemas compile correctly.
  */
 
-import Ajv2020 from 'ajv/dist/2020';
-import addFormats from 'ajv-formats';
-import * as fs from 'fs';
-import * as path from 'path';
-
-const schemasDir = path.join(__dirname, '..', 'schemas');
+import { createAjv, loadSchema } from './lib/ajv-utils.js';
 
 interface DependentSchema {
   schema: string;
@@ -41,21 +36,6 @@ const dependentSchemas: DependentSchema[] = [
 ];
 
 let hasErrors = false;
-
-function createAjv(): Ajv2020 {
-  const ajv = new Ajv2020({
-    strict: false,
-    allErrors: true,
-  });
-  addFormats(ajv);
-  return ajv;
-}
-
-function loadSchema(filename: string): object {
-  const filepath = path.join(schemasDir, filename);
-  const content = fs.readFileSync(filepath, 'utf8');
-  return JSON.parse(content);
-}
 
 console.log('Validating JSON schemas...\n');
 
