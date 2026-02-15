@@ -4,12 +4,11 @@
  * Validates example documents against their corresponding schemas.
  */
 
-import Ajv2020, { ValidateFunction } from 'ajv/dist/2020';
-import addFormats from 'ajv-formats';
+import { ValidateFunction } from 'ajv/dist/2020';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createAjv, loadSchema } from './lib/ajv-utils.js';
 
-const schemasDir = path.join(__dirname, '..', 'schemas');
 const examplesDir = path.join(__dirname, '..', 'examples');
 
 interface Validation {
@@ -19,21 +18,6 @@ interface Validation {
 
 // Schema validators (compiled once)
 const validators: Record<string, ValidateFunction> = {};
-
-function createAjv(): Ajv2020 {
-  const ajv = new Ajv2020({
-    strict: false,
-    allErrors: true,
-  });
-  addFormats(ajv);
-  return ajv;
-}
-
-function loadSchema(filename: string): object {
-  const filepath = path.join(schemasDir, filename);
-  const content = fs.readFileSync(filepath, 'utf8');
-  return JSON.parse(content);
-}
 
 function loadJson(filepath: string): unknown {
   const content = fs.readFileSync(filepath, 'utf8');
@@ -46,6 +30,7 @@ const schemaDependencies: Record<string, string[]> = {
   'collaboration.schema.json': ['anchor.schema.json'],
   'phantoms.schema.json': ['anchor.schema.json'],
   'security.schema.json': ['anchor.schema.json'],
+  'annotations.schema.json': ['anchor.schema.json'],
 };
 
 function getValidator(schemaName: string): ValidateFunction {
@@ -76,6 +61,9 @@ const extensionValidations: Validation[] = [
   { schema: 'collaboration.schema.json', file: 'collaboration/changes.json' },
   { schema: 'forms.schema.json', file: 'forms/data.json' },
   { schema: 'phantoms.schema.json', file: 'phantoms/clusters.json' },
+  { schema: 'annotations.schema.json', file: 'security/annotations.json' },
+  { schema: 'asset-index.schema.json', file: 'assets/index.json' },
+  { schema: 'provenance.schema.json', file: 'provenance/lineage.json' },
 ];
 
 let hasErrors = false;

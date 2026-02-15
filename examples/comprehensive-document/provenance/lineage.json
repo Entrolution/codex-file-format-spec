@@ -1,0 +1,36 @@
+{
+  "version": "0.1",
+  "documentId": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "created": "2025-01-28T14:00:00Z",
+  "creator": {
+    "name": "Document Author",
+    "identifier": "https://orcid.org/0000-0002-1825-0097",
+    "organization": "Example University"
+  },
+  "lineage": {
+    "parent": null,
+    "ancestors": [],
+    "depth": 1
+  },
+  "merkle": {
+    "root": "sha256:f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3",
+    "blockCount": 24,
+    "algorithm": "sha256"
+  },
+  "timestamps": [
+    {
+      "type": "rfc3161",
+      "time": "2025-01-28T14:05:00Z",
+      "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "authority": "http://timestamp.digicert.com",
+      "token": "MIIEjDAVBgkqhkiG9w0BCQUxCDAGBgQBMjM0..."
+    }
+  ],
+  "derivedFrom": [
+    {
+      "documentId": "sha256:a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+      "relationship": "revision",
+      "blocks": ["section-2", "section-3"]
+    }
+  ]
+}
