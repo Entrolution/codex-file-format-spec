@@ -9,12 +9,12 @@ If you discover a security vulnerability in this specification, please report it
 If you find a security flaw in the specification itself (e.g., a cryptographic weakness, a design flaw that could be exploited), please:
 
 1. **Do not** open a public issue
-2. Email the maintainers directly with details
+2. Email [greg.vonnessi@entrolution.ai](mailto:greg.vonnessi@entrolution.ai) with details
 3. Allow reasonable time for the issue to be addressed before public disclosure
 
 ### For Implementation Issues
 
-If you find a security issue in the reference implementation (cdx-core), please report it in that repository's security advisories.
+If you find a security issue in the reference implementation ([cdx-core](https://github.com/gvonness-apolitical/cdx-core)), please report it in that repository's security advisories.
 
 ## Scope
 

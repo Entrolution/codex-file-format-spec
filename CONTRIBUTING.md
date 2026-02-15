@@ -54,8 +54,10 @@ All contributors must agree to the following:
 
 ## Getting Help
 
-- Open a GitHub Issue for questions
-- Tag issues with `question` for general inquiries
+- Open a [GitHub Issue](https://github.com/gvonness-apolitical/codex-file-format-spec/issues) for questions
+- Use [GitHub Discussions](https://github.com/gvonness-apolitical/codex-file-format-spec/discussions) for general conversation and ideas
+- Tag issues with `question` for specific inquiries
+- Email [greg.vonnessi@entrolution.ai](mailto:greg.vonnessi@entrolution.ai) for private matters
 
 ## Recognition
 
