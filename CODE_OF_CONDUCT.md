@@ -6,7 +6,7 @@ For the full text, please visit: https://www.contributor-covenant.org/version/2/
 
 ## Reporting
 
-If you experience or witness unacceptable behavior, please report it by contacting the project maintainers.
+If you experience or witness unacceptable behavior, please report it by emailing [greg.vonnessi@entrolution.ai](mailto:greg.vonnessi@entrolution.ai).
 
 ## Attribution
 
