@@ -14,7 +14,7 @@ If you find a security flaw in the specification itself (e.g., a cryptographic w
 
 ### For Implementation Issues
 
-If you find a security issue in the reference implementation ([cdx-core](https://github.com/gvonness-apolitical/cdx-core)), please report it in that repository's security advisories.
+If you find a security issue in the reference implementation ([cdx-core](https://github.com/Entrolution/cdx-core)), please report it in that repository's security advisories.
 
 ## Scope
 

@@ -20,7 +20,7 @@ Built the full Codex Document Format specification from the feasibility study:
 
 ### Repository Setup
 
-- Pushed to GitHub: `gvonness-apolitical/codex-file-format-spec`
+- Pushed to GitHub: `Entrolution/codex-file-format-spec`
 - File extension: `.cdx`, MIME type: `application/vnd.codex+json`
 - Key design choices: ZIP container, content-addressable hashing (SHA-256), explicit state machine (draft → review → frozen → published), ES256 required for signatures, no scripting
 
