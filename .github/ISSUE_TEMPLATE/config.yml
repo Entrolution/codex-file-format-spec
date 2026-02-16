@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: Discussions
-    url: https://github.com/gvonness-apolitical/codex-file-format-spec/discussions
+    url: https://github.com/Entrolution/codex-file-format-spec/discussions
     about: For general questions and community discussion
   - name: Reference Implementation
-    url: https://github.com/gvonness-apolitical/cdx-core
+    url: https://github.com/Entrolution/cdx-core
     about: For issues with the Rust reference implementation
