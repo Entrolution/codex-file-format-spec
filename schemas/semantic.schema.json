@@ -20,6 +20,15 @@
           "type": "string",
           "description": "Page, chapter, section, or other locator (CSL-compatible, more general than pages)"
         },
+        "locatorType": {
+          "type": "string",
+          "description": "Type of locator (CSL-compatible). Defaults to \"page\" if omitted.",
+          "enum": [
+            "page", "chapter", "section", "paragraph", "line",
+            "verse", "volume", "issue", "part", "book",
+            "figure", "table", "note", "opus", "sub-verbo"
+          ]
+        },
         "pages": {
           "type": "string",
           "description": "Page range (deprecated: prefer locator for flexibility)"

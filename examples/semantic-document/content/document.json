@@ -42,7 +42,8 @@
             {
               "type": "citation",
               "refs": ["turing1936"],
-              "locator": "pp. 230-265"
+              "locator": "230-265",
+              "locatorType": "page"
             }
           ]
         },
