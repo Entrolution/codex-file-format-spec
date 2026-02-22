@@ -295,6 +295,8 @@ Extensions extend the base Person type with additional fields via schema composi
 
 All Person objects MUST include at minimum the `name` field. Extensions SHOULD include the base fields alongside their extension-specific fields. The naming distinction between "author" and "signer" is intentional to reflect the semantic difference in their contexts.
 
+Extensions MAY add domain-specific identity fields to the Person object. The core `identifier` field remains available for persistent scholarly or decentralized identifiers. Extension-specific identity fields are additive — they do not replace `identifier`. For example, the collaboration extension adds `userId` for session-level identity, and the security extension adds `keyId` for cryptographic key association. A Person object MAY include both `identifier` and extension-specific fields simultaneously.
+
 ## 10. Relationship to Extensions
 
 The anchor system is defined in the core specification but is primarily consumed by extensions:
@@ -307,3 +309,16 @@ The anchor system is defined in the core specification but is primarily consumed
 | Semantic (`codex.semantic`) | Internal `semantic:ref` `target` fields use Content Anchor URI syntax |
 
 See the respective extension specifications for details.
+
+## 11. Cross-Reference Mechanism Selection
+
+Multiple mechanisms exist for cross-referencing within Codex documents. Use the following guidance:
+
+| Mechanism | Extension | Use When |
+|-----------|-----------|----------|
+| `link` mark (with `#anchor` href) | Core | General-purpose internal links; hyperlink-style references |
+| `semantic:ref` | Semantic | Scholarly cross-references (e.g., 'see Section 3', 'as shown in Figure 2') with automatic label generation |
+| `presentation:reference` | Presentation | Layout-aware references that need presentation-specific formatting or page numbers |
+| `academic:theoremRef` / `academic:equationRef` | Academic | References to theorems, equations, or other numbered academic elements |
+
+For simple internal links, use the core `link` mark. For documents requiring automatic numbering and label generation (e.g., 'Figure 3', 'Theorem 2.1'), use extension-specific reference marks. When multiple reference types apply, prefer the most semantically specific mechanism.

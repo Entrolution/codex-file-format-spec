@@ -129,7 +129,7 @@ document.cdx
     └── dublin-core.json    # Dublin Core metadata (required)
 ```
 
-### 1.5a Annotation Layers
+### 1.6 Annotation Layers
 
 Codex provides three annotation storage locations, each serving different purposes:
 
@@ -151,7 +151,7 @@ All annotation layers are **outside the content hash boundary** — adding annot
 
 **Implementation note**: Core annotations live in `security/annotations.json` because they share the security directory's "outside content hash" semantics. When migrating from core annotations to the collaboration extension, implementations SHOULD convert existing annotations to the collaboration format and remove the core annotations file. The two formats SHOULD NOT coexist in the same document to avoid confusion.
 
-### 1.6 Specification Organization
+### 1.7 Specification Organization
 
 This specification is organized into the following sections:
 
@@ -173,8 +173,9 @@ Extension specifications (optional modules) are defined separately:
 - Phantom Extension
 - Forms Extension
 - Semantic Extension
+- Legal Extension
 
-### 1.7 Versioning
+### 1.8 Versioning
 
 This specification uses semantic versioning (MAJOR.MINOR.PATCH):
 

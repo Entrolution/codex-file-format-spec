@@ -632,7 +632,7 @@ Location: `academic/numbering.json`
   "version": "0.1",
   "equations": {
     "style": "chapter.number",
-    "resetOn": "chapter"
+    "resetOn": "heading1"
   },
   "theorems": {
     "style": "chapter.section.number",
@@ -644,11 +644,11 @@ Location: `academic/numbering.json`
   },
   "algorithms": {
     "style": "number",
-    "resetOn": "chapter"
+    "resetOn": "heading1"
   },
   "exercises": {
     "style": "chapter.number",
-    "resetOn": "chapter"
+    "resetOn": "heading1"
   },
   "customVariants": {
     "axiom": {
@@ -690,10 +690,16 @@ This produces: Theorem 1, Lemma 2, Proposition 3, Theorem 4, etc.
 
 ### 10.3 Reset Triggers
 
+The `resetOn` field accepts heading level identifiers: `heading1` through `heading6`, corresponding to the core `heading` block's `level` attribute. For example, `"heading1"` resets numbering at each level-1 heading.
+
 | Reset On | Description |
 |----------|-------------|
-| `chapter` | Reset at each chapter |
-| `section` | Reset at each section |
+| `heading1` | Reset at each level-1 heading |
+| `heading2` | Reset at each level-2 heading |
+| `heading3` | Reset at each level-3 heading |
+| `heading4` | Reset at each level-4 heading |
+| `heading5` | Reset at each level-5 heading |
+| `heading6` | Reset at each level-6 heading |
 | `none` | Never reset (document-wide numbering) |
 
 ## 11. Examples

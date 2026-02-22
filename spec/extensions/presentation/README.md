@@ -13,6 +13,18 @@ The Presentation Extension provides advanced layout and styling capabilities bey
 - Master pages and templates
 - Advanced typography
 
+### File Paths
+
+Presentation extension data is stored within the `presentation/` directory in the Codex archive:
+
+| File | Purpose |
+|------|---------|
+| `presentation/styles.json` | Typography, colors, and style definitions |
+| `presentation/layout.json` | Master pages, templates, and layout rules |
+| `presentation/toc.json` | Table of contents configuration |
+
+These files are referenced from the manifest's extension declaration.
+
 ## 2. Extension Declaration
 
 ```json
@@ -407,7 +419,9 @@ Span options: `column`, `page`, `spread`
 
 ### 7.2 Advanced Figure Numbering
 
-The core `figure` block supports basic `numbering` ("auto", "none", or explicit number). This extension adds chapter-based numbering:
+The core `figure` block supports basic `numbering` ("auto", "none", or explicit number). This extension adds chapter-based numbering via the `numberingConfig` field:
+
+The `numberingConfig` field provides extended numbering configuration beyond the core `numbering` field. The core `numbering` field (string or integer) controls basic numbering mode, while `numberingConfig` provides presentation-specific formatting options.
 
 ```json
 {
@@ -419,7 +433,7 @@ The core `figure` block supports basic `numbering` ("auto", "none", or explicit 
       "children": [{ "type": "text", "value": "Figure 1: System architecture" }]
     }
   ],
-  "numbering": {
+  "numberingConfig": {
     "style": "Figure #",
     "chapter": true
   }
@@ -512,6 +526,8 @@ In content:
 ## 10. Footnotes and Endnotes
 
 ### 10.1 Footnote Definition
+
+**Cross-Extension Note:** When both the presentation and semantic extensions are active, the semantic extension provides the canonical footnote model with separate `semantic:footnote` blocks for footnote content. In this configuration, the presentation extension's footnote marks control styling and positioning only — the inline `content` array on presentation footnote marks is not used. The inline `content` array is a simplified alternative for documents that use the presentation extension without the semantic extension.
 
 In content:
 

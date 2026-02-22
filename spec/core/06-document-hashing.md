@@ -122,8 +122,11 @@ The following table summarizes what is included in and excluded from the documen
 | Security | No | Signatures reference the hash — not part of it |
 | Timestamps | No | Administrative metadata (`created`, `modified`) |
 | Provenance | No | Lineage tracking and derivation history |
+| CRDT metadata | No | Transient synchronization state from collaboration extension |
 
 This boundary ensures that the document's identity represents its **semantic content** — what the document says — rather than how it appears or administrative metadata about it.
+
+> **Note:** CRDT metadata added by the collaboration extension (`crdt` fields on content blocks) is excluded from the content hash. CRDT data represents transient synchronization state and MUST be stripped before computing the document hash.
 
 ### 4.2 Canonical Content Structure
 

@@ -1003,6 +1003,15 @@ Example:
 }
 ```
 
+### 5.1 Extension Mark Types
+
+Extensions MAY define additional mark types for use within text nodes. Unlike block types, extension marks are NOT required to use a namespace prefix — marks operate within the text node's `marks` array where the collision risk is lower. However, extensions MAY use a namespace prefix (e.g., `legal:cite`) when the unqualified name could cause confusion with marks from other extensions.
+
+Extension marks:
+- SHOULD be documented in the extension specification
+- MUST define their field table (type, required fields, optional fields)
+- SHOULD avoid names that collide with core marks or marks from commonly-paired extensions
+
 ## 6. Internationalization
 
 ### 6.1 Text Direction and Writing Mode

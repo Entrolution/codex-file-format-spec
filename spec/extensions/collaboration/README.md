@@ -64,6 +64,8 @@ Each content block can carry CRDT metadata:
 }
 ```
 
+**Hashing:** CRDT metadata (`crdt` fields on content blocks) MUST be stripped before computing the document content hash (see Core Specification, Section 6 — Document Hashing). CRDT metadata represents transient synchronization state, not document content. Implementations MUST materialize CRDT operations to plain content before hashing.
+
 ### 3.4 Text CRDTs
 
 For rich text editing within blocks, integrate with text CRDTs:
@@ -231,7 +233,27 @@ Location: `collaboration/comments.json`
 | `resolved` | boolean | No | Whether comment is resolved |
 | `replies` | array | No | Reply comments |
 
-### 4.3a Author Object
+### 4.3a Reply Object
+
+The `replies` array contains reply objects. Replies are flat — they do not nest (a reply cannot contain further replies). Replies do not have their own anchors; they inherit the anchor context of the parent comment.
+
+```json
+{
+  "id": "c1-r1",
+  "author": { "name": "Author", "email": "author@example.com" },
+  "created": "2025-01-15T10:30:00Z",
+  "content": "Good point, I'll expand this section."
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | Yes | Unique reply identifier |
+| `author` | object | Yes | Reply author (see Author Object below) |
+| `created` | string | Yes | ISO 8601 creation timestamp |
+| `content` | string | Yes | Reply text content |
+
+### 4.3b Author Object
 
 The `author` field uses a consistent structure throughout the collaboration extension:
 
@@ -359,7 +381,21 @@ Location: `collaboration/changes.json`
 }
 ```
 
-### 5.3 Change Types
+### 5.3 Change Record Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | Yes | Unique change identifier |
+| `type` | string | Yes | Change type (see Change Types below) |
+| `anchor` | ContentAnchor | Yes | Anchor to the affected content (see Anchors and References spec) |
+| `position` | object | No | Position for insert/move operations (e.g., `{ "after": "block-id" }`) |
+| `before` | object | No | Content state before the change (for `modify` and `delete` types) |
+| `after` | object | No | Content state after the change (for `modify` and `insert` types) |
+| `author` | object | Yes | Change author (see Author Object in section 4.3a) |
+| `timestamp` | string | Yes | ISO 8601 change timestamp |
+| `status` | string | No | Change status: `"pending"`, `"accepted"`, or `"rejected"` (default: `"pending"`) |
+
+### 5.4 Change Types
 
 | Type | Description |
 |------|-------------|
@@ -369,7 +405,7 @@ Location: `collaboration/changes.json`
 | `move` | Block moved to new position |
 | `format` | Formatting changed |
 
-### 5.4 Accepting/Rejecting Changes
+### 5.5 Accepting/Rejecting Changes
 
 Changes can be:
 - `pending` - Not yet reviewed

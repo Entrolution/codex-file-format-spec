@@ -37,6 +37,8 @@ Location: `metadata/extended.json` (or custom paths)
 
 ### 3.1 File Format
 
+The `version` field in Dublin Core metadata refers to the Dublin Core Metadata Element Set standard version (currently 1.1), not the Codex specification version. The Codex specification version is declared in the manifest's `specVersion` field.
+
 ```json
 {
   "version": "1.1",

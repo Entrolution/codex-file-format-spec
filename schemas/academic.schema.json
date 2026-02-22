@@ -92,8 +92,8 @@
     },
     "resetTrigger": {
       "type": "string",
-      "description": "When to reset counters",
-      "enum": ["chapter", "section", "none"]
+      "description": "When to reset counters. Uses heading level identifiers corresponding to the core heading block's level attribute.",
+      "enum": ["heading1", "heading2", "heading3", "heading4", "heading5", "heading6", "none"]
     },
     "theoremBlock": {
       "type": "object",

@@ -288,14 +288,24 @@ Embedded files are attachments that accompany the document but are not directly 
 
 ### 6.3 Referencing Embedded Files
 
-Embedded files can be referenced from content:
+Embedded files can be referenced from content using a `paragraph` block with a `link` mark pointing to the embedded file:
 
 ```json
 {
-  "type": "attachment",
-  "ref": "assets/embeds/quarterly-data.xlsx",
-  "title": "Download source data",
-  "icon": "spreadsheet"
+  "type": "paragraph",
+  "children": [
+    {
+      "type": "text",
+      "value": "Download source data",
+      "marks": [
+        {
+          "type": "link",
+          "href": "assets/embeds/quarterly-data.xlsx",
+          "title": "Download source data"
+        }
+      ]
+    }
+  ]
 }
 ```
 
