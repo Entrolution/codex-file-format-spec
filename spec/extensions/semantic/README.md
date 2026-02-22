@@ -94,6 +94,7 @@ Location: `metadata/jsonld.json`
 | `type` | string | Yes | Always `"citation"` |
 | `refs` | array | Yes | Bibliography entry IDs to cite |
 | `locator` | string | No | Page, chapter, section, or other location reference (CSL-compatible) |
+| `locatorType` | string | No | Type of locator (CSL-compatible). One of: `page`, `chapter`, `section`, `paragraph`, `line`, `verse`, `volume`, `issue`, `part`, `book`, `figure`, `table`, `note`, `opus`, `sub-verbo`. Defaults to `"page"` if omitted. |
 | `prefix` | string | No | Text to display before the citation (e.g., "see", "cf.") |
 | `suffix` | string | No | Text to display after the citation |
 | `suppressAuthor` | boolean | No | If true, omit the author name from the rendered citation |
@@ -191,9 +192,13 @@ The bibliography block renders citations. It can reference an external bibliogra
 
 When `entries` is provided, each entry MAY include a `renderedText` field containing pre-rendered citation text from citeproc. This enables accurate display without requiring a CSL processor in the reader.
 
+**Note:** Both CSL date formats are supported for the `issued` field: the short form (`{ "year": 2023 }`) and the standard form (`{ "date-parts": [[2023, 3, 15]] }`). Implementations MUST accept both formats.
+
 ### 4.5 Footnotes
 
 Footnotes provide numbered references to supplementary content. The semantic extension defines the footnote content; the presentation extension (section 10) controls footnote styling and positioning.
+
+> **Cross-Extension Note:** The semantic extension provides the canonical footnote model. When both the semantic and presentation extensions are active, the presentation extension's footnote styling applies to semantic footnote blocks. The presentation extension's inline `content` array on footnote marks is a simplified alternative for documents that do not use the semantic extension. See the Presentation extension for details.
 
 #### 4.5.1 Footnote Mark
 
@@ -286,7 +291,8 @@ Footnote content is stored as a block, typically at the end of a section or docu
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `type` | string | Yes | Always `"semantic:footnote"` |
-| `number` | integer | Yes | Footnote number (must match mark) |
+| `number` | integer | Conditional | Footnote number (must match mark). Required unless `symbol` is provided. |
+| `symbol` | string | Conditional | Symbol-based footnote marker (must match mark). Required unless `number` is provided. |
 | `id` | string | No | Unique identifier (must match mark if present) |
 | `children` | array | Yes | Footnote content (paragraph blocks) |
 
@@ -444,6 +450,16 @@ Internal references use Content Anchor URI syntax (see core Anchors and Referenc
 }
 ```
 
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"semantic:term"` |
+| `id` | string | No | Unique term identifier for cross-referencing |
+| `term` | string | Yes | The term being defined |
+| `definition` | string | Yes | Plain-text definition of the term |
+| `see` | array | No | Related term IDs for cross-references |
+
+The `definition` field is intentionally a plain string for simplicity, portability, and use in search, indexing, and accessibility contexts. For definitions requiring rich formatting, place formatted content (e.g., paragraph blocks with inline marks) following the `semantic:term` block, with the `definition` field serving as a plain-text summary.
+
 ### 8.2 Term Usage
 
 ```json
@@ -458,6 +474,8 @@ Internal references use Content Anchor URI syntax (see core Anchors and Referenc
 
 ### 8.3 Glossary Block
 
+The `semantic:glossary` block renders a collected glossary by aggregating all `semantic:term` blocks found in the document. Implementations MUST scan the document content for `semantic:term` blocks and include their definitions in the rendered glossary.
+
 ```json
 {
   "type": "semantic:glossary",
@@ -465,6 +483,12 @@ Internal references use Content Anchor URI syntax (see core Anchors and Referenc
   "sort": "alphabetical"
 }
 ```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"semantic:glossary"` |
+| `title` | string | No | Section heading for the glossary |
+| `sort` | string | No | Sort order for terms. One of: `alphabetical` (sort by term name, A-Z), `appearance` (document order), `none` (no sorting applied). Defaults to implementation-defined behavior. |
 
 ## 9. Provenance
 

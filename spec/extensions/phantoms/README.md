@@ -202,6 +202,10 @@ Connections between phantoms MUST satisfy the following rules:
 
 Implementations MUST validate connection targets when loading phantom data. Broken connection targets (referencing non-existent phantom IDs) indicate data corruption in frozen documents and partial construction in mutable documents.
 
+### 4.8 Known Limitations
+
+Phantom content blocks exist in a separate namespace from the main document content. Anchors within phantom blocks reference other phantom blocks within the same cluster; they cannot directly reference blocks in the main document content tree. To associate phantom content with specific document locations, use the cluster's `anchor` field to attach the phantom cluster to a document position. Cross-referencing between phantom content and document blocks requires an intermediary cluster-level anchor.
+
 ## 5. Hashing Boundary
 
 Phantoms are explicitly OUTSIDE the content hash boundary. The `phantoms/` directory has no `hash` field in the manifest reference. Adding, editing, or removing phantoms never changes the document ID or invalidates signatures.

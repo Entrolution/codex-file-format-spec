@@ -30,6 +30,47 @@ The Forms Extension enables interactive form fields within documents:
 
 ## 3. Form Block Types
 
+### 3.0a Form Container
+
+The `forms:form` block is a container that groups form fields together. It wraps child form field blocks and provides submission configuration.
+
+```json
+{
+  "type": "forms:form",
+  "id": "contact-form",
+  "action": "https://api.example.com/submit",
+  "method": "POST",
+  "encoding": "application/json",
+  "children": [...]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"forms:form"` |
+| `id` | string | No | Unique form identifier |
+| `action` | string (URI) | No | Form submission endpoint/handler URL |
+| `method` | string | No | HTTP method for submission. One of: `GET`, `POST`. Defaults to `"POST"`. |
+| `encoding` | string | No | Form encoding type. Defaults to `"application/json"`. |
+| `children` | array | Yes | Array of form field blocks and submit buttons |
+
+### 3.0b Submit Button
+
+The `forms:submit` block renders a submission button within a form.
+
+```json
+{
+  "type": "forms:submit",
+  "label": "Send Message"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"forms:submit"` |
+| `id` | string | No | Unique block identifier |
+| `label` | string | No | Button text. Defaults to `"Submit"`. |
+
 ### 3.1 Text Input
 
 ```json
@@ -47,6 +88,21 @@ The Forms Extension enables interactive form fields within documents:
 }
 ```
 
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"forms:textInput"` |
+| `name` | string | Yes | Field name for form data |
+| `label` | string | No | Display label |
+| `placeholder` | string | No | Placeholder text |
+| `required` | boolean | No | Whether field is required. Defaults to `false`. |
+| `disabled` | boolean | No | Whether field is disabled. Defaults to `false`. |
+| `inputType` | string | No | Input type. One of: `text`, `email`, `password`, `tel`, `number`. Defaults to `"text"`. |
+| `maxLength` | integer | No | Maximum character length |
+| `autocomplete` | string | No | Autocomplete hint |
+| `validation` | object | No | Validation rules (see section 4) |
+| `conditionalValidation` | object | No | Conditional validation rules (see section 4.3) |
+| `fallback` | object | No | Fallback block for non-forms viewers (see section 7) |
+
 ### 3.2 Text Area
 
 ```json
@@ -59,6 +115,20 @@ The Forms Extension enables interactive form fields within documents:
 }
 ```
 
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"forms:textArea"` |
+| `name` | string | Yes | Field name for form data |
+| `label` | string | No | Display label |
+| `placeholder` | string | No | Placeholder text |
+| `required` | boolean | No | Whether field is required. Defaults to `false`. |
+| `disabled` | boolean | No | Whether field is disabled. Defaults to `false`. |
+| `rows` | integer | No | Number of visible text rows. Defaults to `4`. |
+| `maxLength` | integer | No | Maximum character length |
+| `validation` | object | No | Validation rules (see section 4) |
+| `conditionalValidation` | object | No | Conditional validation rules (see section 4.3) |
+| `fallback` | object | No | Fallback block for non-forms viewers (see section 7) |
+
 ### 3.3 Checkbox
 
 ```json
@@ -69,6 +139,18 @@ The Forms Extension enables interactive form fields within documents:
   "required": true
 }
 ```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"forms:checkbox"` |
+| `name` | string | Yes | Field name for form data |
+| `label` | string | No | Display label |
+| `required` | boolean | No | Whether field is required. Defaults to `false`. |
+| `disabled` | boolean | No | Whether field is disabled. Defaults to `false`. |
+| `defaultChecked` | boolean | No | Initial checked state. Defaults to `false`. |
+| `validation` | object | No | Validation rules (see section 4) |
+| `conditionalValidation` | object | No | Conditional validation rules (see section 4.3) |
+| `fallback` | object | No | Fallback block for non-forms viewers (see section 7) |
 
 ### 3.4 Radio Group
 
@@ -86,6 +168,19 @@ The Forms Extension enables interactive form fields within documents:
 }
 ```
 
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"forms:radioGroup"` |
+| `name` | string | Yes | Field name for form data |
+| `label` | string | No | Display label |
+| `required` | boolean | No | Whether field is required. Defaults to `false`. |
+| `disabled` | boolean | No | Whether field is disabled. Defaults to `false`. |
+| `options` | array | Yes | Array of option objects (`{ "value": string, "label": string, "disabled"?: boolean }`) |
+| `defaultValue` | string | No | Default selected value |
+| `validation` | object | No | Validation rules (see section 4) |
+| `conditionalValidation` | object | No | Conditional validation rules (see section 4.3) |
+| `fallback` | object | No | Fallback block for non-forms viewers (see section 7) |
+
 ### 3.5 Dropdown
 
 ```json
@@ -102,6 +197,21 @@ The Forms Extension enables interactive form fields within documents:
 }
 ```
 
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"forms:dropdown"` |
+| `name` | string | Yes | Field name for form data |
+| `label` | string | No | Display label |
+| `required` | boolean | No | Whether field is required. Defaults to `false`. |
+| `disabled` | boolean | No | Whether field is disabled. Defaults to `false`. |
+| `options` | array | Yes | Array of option objects (`{ "value": string, "label": string, "disabled"?: boolean }`) |
+| `defaultValue` | string | No | Default selected value |
+| `searchable` | boolean | No | Enable search/filter functionality. Defaults to `false`. |
+| `multiple` | boolean | No | Allow multiple selections. Defaults to `false`. |
+| `validation` | object | No | Validation rules (see section 4) |
+| `conditionalValidation` | object | No | Conditional validation rules (see section 4.3) |
+| `fallback` | object | No | Fallback block for non-forms viewers (see section 7) |
+
 ### 3.6 Date Picker
 
 ```json
@@ -115,6 +225,23 @@ The Forms Extension enables interactive form fields within documents:
 }
 ```
 
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"forms:datePicker"` |
+| `name` | string | Yes | Field name for form data |
+| `label` | string | No | Display label |
+| `required` | boolean | No | Whether field is required. Defaults to `false`. |
+| `disabled` | boolean | No | Whether field is disabled. Defaults to `false`. |
+| `format` | string | No | Date format pattern (e.g., `"YYYY-MM-DD"`). Defaults to `"YYYY-MM-DD"`. |
+| `minDate` | string | No | Minimum selectable date (ISO 8601 date string or `"today"`) |
+| `maxDate` | string | No | Maximum selectable date (ISO 8601 date string or `"today"`) |
+| `includeTime` | boolean | No | Include time selection. Defaults to `false`. |
+| `validation` | object | No | Validation rules (see section 4) |
+| `conditionalValidation` | object | No | Conditional validation rules (see section 4.3) |
+| `fallback` | object | No | Fallback block for non-forms viewers (see section 7) |
+
+The `minDate` and `maxDate` fields accept ISO 8601 date strings (e.g., `"2024-01-01"`). The special value `"today"` is also supported, representing the current date at the time of form rendering. No other relative date keywords are defined.
+
 ### 3.7 Signature Field
 
 ```json
@@ -125,6 +252,21 @@ The Forms Extension enables interactive form fields within documents:
   "required": true
 }
 ```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | Always `"forms:signature"` |
+| `name` | string | Yes | Field name for form data |
+| `label` | string | No | Display label |
+| `required` | boolean | No | Whether field is required. Defaults to `false`. |
+| `disabled` | boolean | No | Whether field is disabled. Defaults to `false`. |
+| `width` | integer | No | Signature pad width in pixels (minimum 100) |
+| `height` | integer | No | Signature pad height in pixels (minimum 50) |
+| `validation` | object | No | Validation rules (see section 4) |
+| `conditionalValidation` | object | No | Conditional validation rules (see section 4.3) |
+| `fallback` | object | No | Fallback block for non-forms viewers (see section 7) |
+
+The `forms:signature` field captures visual/input signatures (e.g., drawn signatures or typed names) as part of form data. This is distinct from the security extension's cryptographic digital signatures, which provide tamper detection and non-repudiation. For documents requiring both visual and cryptographic signatures, use `forms:signature` for the user-facing input and the security extension for cryptographic verification.
 
 ## 4. Validation
 

@@ -13,20 +13,22 @@ This directory contains specifications for Codex extensions. Each extension adds
 | [Security](security/README.md) | `codex.security` | 0.1 | Draft | Digital signatures, encryption, access control |
 | [Phantoms](phantoms/README.md) | `codex.phantoms` | 0.1 | Draft | Off-page annotation clusters |
 | [Presentation](presentation/README.md) | `codex.presentation` | 0.1 | Draft | Layout templates and rendering hints |
+| [Legal](legal/README.md) | `codex.legal` | 0.1 | Draft | Legal citations, clause references, jurisdiction metadata |
 
 ## Extension Compatibility
 
 Extensions are designed to work together. The following matrix shows compatibility between extensions:
 
-| Extension | semantic | academic | forms | collaboration | security | phantoms | presentation |
-|-----------|----------|----------|-------|---------------|----------|----------|--------------|
-| semantic | - | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| academic | ✓ | - | △* | ✓ | ✓ | ✓ | ✓ |
-| forms | ✓ | △* | - | ✓ | ✓ | ✓ | ✓ |
-| collaboration | ✓ | ✓ | ✓ | - | ✓ | ✓ | ✓ |
-| security | ✓ | ✓ | ✓ | ✓ | - | ✓ | ✓ |
-| phantoms | ✓ | ✓ | ✓ | ✓ | ✓ | - | ✓ |
-| presentation | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | - |
+| Extension | semantic | academic | forms | collaboration | security | phantoms | presentation | legal |
+|-----------|----------|----------|-------|---------------|----------|----------|--------------|-------|
+| semantic | - | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| academic | ✓ | - | △* | ✓ | ✓ | ✓ | ✓ | ✓ |
+| forms | ✓ | △* | - | ✓ | ✓ | ✓ | ✓ | ✓ |
+| collaboration | ✓ | ✓ | ✓ | - | ✓ | ✓ | ✓ | ✓ |
+| security | ✓ | ✓ | ✓ | ✓ | - | ✓ | ✓ | ✓ |
+| phantoms | ✓ | ✓ | ✓ | ✓ | ✓ | - | ✓ | ✓ |
+| presentation | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | - | ✓ |
+| legal | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | - |
 
 **Legend:**
 - ✓ = Fully compatible
@@ -69,6 +71,7 @@ Most extensions store data in dedicated directories:
 | collaboration | `collaboration/` | `comments.json`, `changes.json` |
 | security | `security/` | `signatures.json`, `encryption.json` |
 | phantoms | `phantoms/` | `clusters.json` |
+| legal | `legal/` | `citations.json` |
 
 ### Shared Definitions
 

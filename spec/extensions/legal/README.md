@@ -30,6 +30,8 @@ The Legal Extension provides specialized blocks and marks for legal documents, i
 
 The `legal:cite` mark annotates text with legal citation information for automatic Table of Authorities generation.
 
+> **Note:** The `legal:cite` mark uses the `legal:` namespace prefix to distinguish it from the semantic extension's `citation` mark, which serves a different purpose (scholarly citations vs. legal citations). See the core Content Blocks specification (Section 5) for the extension mark naming convention.
+
 ### 3.1 Basic Usage
 
 ```json
